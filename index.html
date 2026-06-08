@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>D100 – Desafio 100 | Leão do Inglês</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:   #0a0a0a;
+      --purple:  #7c3aed;
+      --purple-l:#a78bfa;
+      --bg2:     #1a1a2e;
+      --text:    #fafafa;
+      --muted:   #9ca3af;
+      --radius:  12px;
+    }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      padding: 24px 16px 60px;
+    }
+
+    /* ── LAYOUT ─────────────────────────────────────── */
+    .container { max-width: 680px; margin: 0 auto; }
+
+    /* ── HEADER ─────────────────────────────────────── */
+    .site-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid #222;
+      margin-bottom: 36px;
+    }
+    .site-header .lion { font-size: 28px; }
+    .site-header .brand {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .site-header .challenge-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    /* ── BADGE ──────────────────────────────────────── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(124, 58, 237, .18);
+      border: 1px solid rgba(124, 58, 237, .4);
+      color: var(--purple-l);
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 24px;
+    }
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: .4; transform: scale(.75); }
+    }
+
+    /* ── TITLES ─────────────────────────────────────── */
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(26px, 6vw, 40px);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 10px;
+    }
+    h1 span { color: var(--purple-l); }
+    .subtitle {
+      font-size: 16px;
+      color: var(--muted);
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    /* ── PROGRESS BAR ───────────────────────────────── */
+    .progress-wrap {
+      margin-bottom: 32px;
+    }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .progress-bar {
+      height: 6px;
+      background: #222;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--purple);
+      border-radius: 999px;
+      transition: width .6s ease;
+    }
+
+    /* ── CARDS ──────────────────────────────────────── */
+    .card {
+      background: var(--bg2);
+      border: 1px solid #2a2a40;
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .card-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--purple-l);
+      margin-bottom: 10px;
+    }
+    .card p { font-size: 15px; line-height: 1.7; color: #d1d5db; }
+
+    /* ── TIP CARD ───────────────────────────────────── */
+    .tip-card {
+      background: rgba(124, 58, 237, .08);
+      border: 1px solid rgba(124, 58, 237, .25);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 32px;
+    }
+    .tip-card .tip-icon { font-size: 18px; margin-bottom: 8px; }
+    .tip-card p { font-size: 14px; line-height: 1.7; color: #c4b5fd; }
+
+    /* ── SECTION HEADINGS ───────────────────────────── */
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 19px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      margin-top: 36px;
+    }
+    .section-desc { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
+
+    /* ── PATTERN PHRASE ─────────────────────────────── */
+    .pattern-phrase {
+      background: #111;
+      border-left: 3px solid var(--purple);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+    }
+    .pattern-phrase .en {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .pattern-phrase .pt { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+    /* ── SENTENCE FIELDS ─────────────────────────────── */
+    .sentence-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 8px; }
+    .sentence-field {}
+    .sentence-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--purple-l);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 4px;
+    }
+    .scaffold {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      line-height: 1.5;
+    }
+    textarea {
+      width: 100%;
+      background: #111;
+      border: 1px solid #2a2a40;
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      padding: 12px 14px;
+      resize: vertical;
+      min-height: 56px;
+      transition: border-color .2s;
+    }
+    textarea:focus {
+      outline: none;
+      border-color: var(--purple);
+    }
+    textarea::placeholder { color: #444; }
+
+    /* ── NAME / EMAIL ───────────────────────────────── */
+    .id-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px; }
+    @media (max-width: 480px) { .id-fields { grid-template-columns: 1fr; } }
+    .field-wrap label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 6px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    input[type="text"], input[type="email"] {
+      width: 100%;
+      background: #111;
+      border: 1px solid #2a2a40;
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      padding: 12px 14px;
+      transition: border-color .2s;
+    }
+    input:focus { outline: none; border-color: var(--purple); }
+
+    /* ── DIVIDER ─────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: #222;
+      margin: 32px 0;
+    }
+
+    /* ── SUBMIT BUTTON ──────────────────────────────── */
+    .btn-submit {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      background: var(--purple);
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      letter-spacing: .04em;
+      transition: background .2s, transform .1s;
+      margin-top: 28px;
+    }
+    .btn-submit:hover:not(:disabled) { background: #6d28d9; }
+    .btn-submit:active:not(:disabled) { transform: scale(.98); }
+    .btn-submit:disabled { opacity: .6; cursor: not-allowed; }
+
+    /* ── SUCCESS STATE ──────────────────────────────── */
+    #success-msg {
+      display: none;
+      text-align: center;
+      padding: 32px 24px;
+    }
+    #success-msg .check { font-size: 48px; margin-bottom: 12px; }
+    #success-msg h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    #success-msg p { font-size: 15px; color: #d1d5db; line-height: 1.7; }
+
+    /* ── LION CARD ──────────────────────────────────── */
+    .lion-card {
+      background: var(--bg2);
+      border: 1px solid #2a2a40;
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-top: 32px;
+      text-align: center;
+    }
+    .lion-card .lion-icon { font-size: 36px; margin-bottom: 12px; }
+    .lion-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .lion-card p { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 18px; }
+    .btn-lion {
+      display: inline-block;
+      padding: 13px 28px;
+      background: transparent;
+      border: 2px solid var(--purple);
+      color: var(--purple-l);
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      border-radius: var(--radius);
+      text-decoration: none;
+      letter-spacing: .04em;
+      transition: background .2s, color .2s;
+    }
+    .btn-lion:hover { background: var(--purple); color: #fff; }
+
+    /* ── INSTAGRAM CARD ─────────────────────────────── */
+    .insta-card {
+      background: #111;
+      border: 1px solid #2a2a40;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-top: 16px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .insta-card .insta-icon { font-size: 26px; flex-shrink: 0; margin-top: 2px; }
+    .insta-card p { font-size: 14px; color: #d1d5db; line-height: 1.6; }
+    .insta-card strong { color: var(--purple-l); }
+
+    /* ── COUNTDOWN ──────────────────────────────────── */
+    #countdown-view { text-align: center; padding: 40px 0; }
+    #countdown-view h1 { font-size: clamp(28px, 7vw, 44px); margin-bottom: 12px; }
+    #countdown-view .sub { font-size: 16px; color: var(--muted); margin-bottom: 40px; }
+    .countdown-grid {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    .count-unit {
+      background: var(--bg2);
+      border: 1px solid #2a2a40;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      min-width: 88px;
+    }
+    .count-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 44px;
+      font-weight: 800;
+      color: var(--purple-l);
+      display: block;
+      line-height: 1;
+    }
+    .count-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-top: 6px;
+      display: block;
+    }
+
+    /* ── DONE VIEW ──────────────────────────────────── */
+    #done-view { text-align: center; padding: 40px 0; }
+    #done-view .trophy { font-size: 64px; margin-bottom: 20px; }
+    #done-view h1 { font-size: clamp(26px, 6vw, 38px); margin-bottom: 14px; }
+    #done-view p { font-size: 16px; color: #d1d5db; line-height: 1.7; max-width: 500px; margin: 0 auto 20px; }
+
+    /* ── ERROR MSG ──────────────────────────────────── */
+    #error-msg {
+      display: none;
+      background: rgba(239,68,68,.1);
+      border: 1px solid rgba(239,68,68,.3);
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-size: 14px;
+      color: #fca5a5;
+      margin-top: 14px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <span class="lion">🦁</span>
+    <div>
+      <div class="brand">Leão do Inglês</div>
+      <div class="challenge-name">D100 – Desafio 100</div>
+    </div>
+  </header>
+
+  <!-- COUNTDOWN VIEW -->
+  <div id="countdown-view" style="display:none;">
+    <h1>O desafio começa em <span style="color:var(--purple-l)">breve!</span></h1>
+    <p class="sub">Fique de olho — em breve você vai montar 100 frases reais em inglês.</p>
+    <div class="countdown-grid">
+      <div class="count-unit"><span class="count-num" id="cd-days">00</span><span class="count-label">dias</span></div>
+      <div class="count-unit"><span class="count-num" id="cd-hours">00</span><span class="count-label">horas</span></div>
+      <div class="count-unit"><span class="count-num" id="cd-mins">00</span><span class="count-label">min</span></div>
+      <div class="count-unit"><span class="count-num" id="cd-secs">00</span><span class="count-label">seg</span></div>
+    </div>
+    <p style="color:var(--muted);font-size:14px;">Você receberá todas as instruções pelo grupo de WhatsApp.</p>
+  </div>
+
+  <!-- DONE VIEW -->
+  <div id="done-view" style="display:none;">
+    <div class="trophy">🏆</div>
+    <h1>Você <span style="color:var(--purple-l)">completou</span> o D100!</h1>
+    <p>Parabéns! Você chegou ao fim do Desafio 100 com consistência e comprometimento. Seu inglês nunca mais vai ser o mesmo.</p>
+    <p style="color:var(--muted);font-size:14px;">Fique atento às próximas novidades do <strong style="color:var(--purple-l)">@leaodoingles</strong> no Instagram.</p>
+  </div>
+
+  <!-- ACTIVE VIEW -->
+  <div id="active-view" style="display:none;">
+
+    <div class="badge"><span class="dot"></span> <span id="badge-text">Dia 1 de 14 · Ao vivo</span></div>
+
+    <h1 id="oficina-title">Oficina 01</h1>
+    <p class="subtitle" id="oficina-subtitle">Subtítulo</p>
+
+    <!-- Progress -->
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>Progresso do desafio</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+
+    <!-- Opening message -->
+    <div class="card">
+      <div class="card-label">✉️ Mensagem de hoje</div>
+      <p id="oficina-msg"></p>
+    </div>
+
+    <!-- Tip -->
+    <div class="tip-card">
+      <div class="tip-icon">💡</div>
+      <p id="oficina-tip"></p>
+    </div>
+
+    <!-- FORM -->
+    <form id="oficina-form" novalidate>
+      <input type="hidden" name="dia" id="field-dia" />
+      <input type="hidden" name="oficina" id="field-oficina" />
+
+      <!-- Identification -->
+      <div class="id-fields">
+        <div class="field-wrap">
+          <label for="nome">Seu nome completo *</label>
+          <input type="text" id="nome" name="nome" placeholder="Maria da Silva" required />
+        </div>
+        <div class="field-wrap">
+          <label for="email">Seu e-mail *</label>
+          <input type="email" id="email" name="email" placeholder="maria@email.com" required />
+        </div>
+      </div>
+
+      <!-- PART 1 -->
+      <div class="section-title" id="p1-title">Parte 1</div>
+      <p class="section-desc" id="p1-struct"></p>
+      <div class="pattern-phrase">
+        <div class="en" id="p1-en"></div>
+        <div class="pt" id="p1-pt"></div>
+      </div>
+      <div class="sentence-group" id="p1-fields"></div>
+
+      <div class="divider"></div>
+
+      <!-- PART 2 -->
+      <div class="section-title" id="p2-title">Parte 2</div>
+      <p class="section-desc" id="p2-struct"></p>
+      <div class="pattern-phrase">
+        <div class="en" id="p2-en"></div>
+        <div class="pt" id="p2-pt"></div>
+      </div>
+      <div class="sentence-group" id="p2-fields"></div>
+
+      <button type="submit" class="btn-submit" id="submit-btn">
+        Enviar Oficina do Dia 🚀
+      </button>
+      <div id="error-msg">Ops! Algo deu errado. Tente novamente em alguns instantes.</div>
+    </form>
+
+    <!-- SUCCESS -->
+    <div id="success-msg">
+      <div class="check">🎉</div>
+      <h2>Oficina enviada!</h2>
+      <p>Suas frases foram registradas com sucesso. Agora é hora de passar pelo <strong>Mecânico Lion</strong> pra receber seu feedback personalizado!</p>
+    </div>
+
+    <!-- Mecânico Lion -->
+    <div class="lion-card">
+      <div class="lion-icon">🦁</div>
+      <h3>Mecânico Lion</h3>
+      <p>Abra o GPT personalizado, cole suas frases e receba correção e feedback na hora.</p>
+      <a id="lion-link" href="#" target="_blank" rel="noopener" class="btn-lion">Abrir o Mecânico Lion →</a>
+    </div>
+
+    <!-- Instagram -->
+    <div class="insta-card">
+      <span class="insta-icon">📸</span>
+      <p>Depois de receber o feedback do Lion, <strong>manda um print da correção na DM</strong> do <strong>@leaodoingles</strong> no Instagram para registrar sua conclusão do dia!</p>
+    </div>
+
+  </div><!-- /active-view -->
+
+</div><!-- /container -->
+
+<script>
+/* ─────────────────────────────────────────────────────
+   CONFIGURAÇÃO — edite aqui antes de publicar
+───────────────────────────────────────────────────── */
+const CONFIG = {
+  dataInicio: '2026-06-09',
+  formspreeEndpoint: 'https://formspree.io/f/mdavzoez',
+  linkMecanicoLion: 'https://chatgpt.com/g/g-6816a8bfd21881919f0327d722e7435d-lion-o-seu-mecanico',
+};
+
+/* ─────────────────────────────────────────────────────
+   CONTEÚDO DAS 14 OFICINAS
+───────────────────────────────────────────────────── */
+const OFICINAS = [
+  {
+    titulo: 'Oficina 01 – Falando do que eu gosto e do que eu tenho',
+    subtitulo: 'Estruturas: I like… / I have…',
+    msg: 'Hey hey hey! Chegamos ao nosso primeiro dia de Oficina! Se você tá aqui, já tá fazendo mais do que muita gente que só pensa em aprender. Aqui é prática leve, com método e com frases que fazem sentido na sua rotina. Bora montar suas primeiras frases com clareza, criatividade e confiança!',
+    dica: 'Não precisa tentar ser perfeito(a). O mais importante é tornar a frase sua. Use coisas do seu mundo real — algo que você viveu, pensou ou ouviu.',
+    p1: {
+      estrutura: 'Estrutura: I like…',
+      frase_en: 'I like coffee in the morning.',
+      frase_pt: 'Eu gosto de café pela manhã.',
+      frases: [
+        { scaffold_en: 'I like coffee in the _____.', scaffold_pt: 'Eu gosto de café na/no _____.', placeholder: 'Ex: I like coffee in the evening.' },
+        { scaffold_en: 'I like coffee in _____.', scaffold_pt: 'Eu gosto de café na/no _____.', placeholder: 'Ex: I like coffee in silence.' },
+        { scaffold_en: 'I like coffee _____.', scaffold_pt: 'Eu gosto de café _____.', placeholder: 'Ex: I like coffee with milk.' },
+        { scaffold_en: 'I like _____.', scaffold_pt: 'Eu gosto de _____.', placeholder: 'Ex: I like music.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+    p2: {
+      estrutura: 'Estrutura: I have…',
+      frase_en: 'I have a busy day today.',
+      frase_pt: 'Eu tenho um dia cheio hoje.',
+      frases: [
+        { scaffold_en: 'I have a busy day _____.', scaffold_pt: 'Eu tenho um dia cheio _____.', placeholder: 'Ex: I have a busy day tomorrow.' },
+        { scaffold_en: 'I have a busy _____.', scaffold_pt: 'Eu tenho um/uma _____ cheio(a).', placeholder: 'Ex: I have a busy week.' },
+        { scaffold_en: 'I have a _____.', scaffold_pt: 'Eu tenho um/uma _____.', placeholder: 'Ex: I have a meeting.' },
+        { scaffold_en: 'I have _____.', scaffold_pt: 'Eu tenho _____.', placeholder: 'Ex: I have two dogs.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+  },
+  {
+    titulo: 'Oficina 02 – Falando do que eu preciso e do que eu quero',
+    subtitulo: 'Estruturas: I need… / I want…',
+    msg: 'Hey hey hey! Chegamos ao nosso segundo dia de Oficina! Você tá criando o hábito certo: praticar inglês com leveza, todos os dias, com estrutura e intenção. Hoje é dia de expressar suas vontades e necessidades com frases que você realmente pode usar.',
+    dica: 'Você não precisa impressionar ninguém. O que você precisa é se expressar. Transforme a frase em algo que tem a ver com você. Você não tá só estudando. Tá criando o seu inglês.',
+    p1: {
+      estrutura: 'Estrutura: I need…',
+      frase_en: 'I need more time to finish.',
+      frase_pt: 'Eu preciso de mais tempo para terminar.',
+      frases: [
+        { scaffold_en: 'I need more time to _____.', scaffold_pt: 'Eu preciso de mais tempo para _____.', placeholder: 'Ex: I need more time to rest.' },
+        { scaffold_en: 'I need more _____.', scaffold_pt: 'Eu preciso de mais _____.', placeholder: 'Ex: I need more sleep.' },
+        { scaffold_en: 'I need _____.', scaffold_pt: 'Eu preciso de _____.', placeholder: 'Ex: I need a break.' },
+        { scaffold_en: 'I need to _____.', scaffold_pt: 'Eu preciso _____.', placeholder: 'Ex: I need to study.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+    p2: {
+      estrutura: 'Estrutura: I want…',
+      frase_en: 'I want to learn something new.',
+      frase_pt: 'Eu quero aprender algo novo.',
+      frases: [
+        { scaffold_en: 'I want to learn something _____.', scaffold_pt: 'Eu quero aprender algo _____.', placeholder: 'Ex: I want to learn something useful.' },
+        { scaffold_en: 'I want to learn _____.', scaffold_pt: 'Eu quero aprender _____.', placeholder: 'Ex: I want to learn English.' },
+        { scaffold_en: 'I want to _____.', scaffold_pt: 'Eu quero _____.', placeholder: 'Ex: I want to travel.' },
+        { scaffold_en: 'I want _____.', scaffold_pt: 'Eu quero _____.', placeholder: 'Ex: I want a new job.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+  },
+  {
+    titulo: 'Oficina 03 – Falando sobre o que eu posso ou não posso fazer',
+    subtitulo: 'Estruturas: I can… / I can\'t…',
+    msg: 'Hey hey hey! Terceiro dia chegou! E olha você aqui firme no desafio! Hoje a gente vai explorar frases que ajudam você a falar sobre seus limites e possibilidades — o que dá ou não dá pra fazer agora. São frases super úteis pra qualquer conversa do dia a dia.',
+    dica: 'Não tenha medo de errar. Hoje o foco é explorar possibilidades. Se quiser variar, experimente também usar "can\'t" em vez de "can". Quanto mais você se permite experimentar e errar, mais você aprende.',
+    p1: {
+      estrutura: 'Estrutura: I can…',
+      frase_en: 'I can help you with that.',
+      frase_pt: 'Eu posso te ajudar com isso.',
+      frases: [
+        { scaffold_en: 'I can help you with _____.', scaffold_pt: 'Eu posso te ajudar com _____.', placeholder: 'Ex: I can help you with the form.' },
+        { scaffold_en: 'I can help _____.', scaffold_pt: 'Eu posso ajudar _____.', placeholder: 'Ex: I can help my friend.' },
+        { scaffold_en: 'I can _____.', scaffold_pt: 'Eu posso _____.', placeholder: 'Ex: I can cook.' },
+        { scaffold_en: 'I can\'t _____.', scaffold_pt: 'Eu não posso _____.', placeholder: 'Ex: I can\'t go today.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+    p2: {
+      estrutura: 'Estrutura: I can\'t…',
+      frase_en: 'I can\'t do this right now.',
+      frase_pt: 'Eu não consigo fazer isso agora.',
+      frases: [
+        { scaffold_en: 'I can\'t do this right _____.', scaffold_pt: 'Eu não consigo fazer isso _____.', placeholder: 'Ex: I can\'t do this right now.' },
+        { scaffold_en: 'I can\'t do _____.', scaffold_pt: 'Eu não consigo fazer _____.', placeholder: 'Ex: I can\'t do everything alone.' },
+        { scaffold_en: 'I can\'t _____.', scaffold_pt: 'Eu não consigo _____.', placeholder: 'Ex: I can\'t sleep.' },
+        { scaffold_en: 'I can _____.', scaffold_pt: 'Eu consigo _____.', placeholder: 'Ex: I can try.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+  },
+  {
+    titulo: 'Oficina 04 – Falando sobre o que eu gosto de fazer',
+    subtitulo: 'Estruturas: I like to… / I don\'t like…',
+    msg: 'Hey hey hey! Olha você aqui mais uma vez — firme no seu compromisso com o inglês! Hoje a gente vai falar de algo que tem tudo a ver com leveza: o que você gosta de fazer. É com esse tipo de frase que você vai aprendendo a criar conversas mais pessoais e naturais.',
+    dica: 'Essa é uma das estruturas que mais aparece em conversas do dia a dia. Não tente montar frases aleatórias. Pense: o que eu gosto MESMO de fazer? É aí que a mágica da fluência começa a acontecer.',
+    p1: {
+      estrutura: 'Estrutura: I like to…',
+      frase_en: 'I like to watch movies at night.',
+      frase_pt: 'Eu gosto de assistir filmes à noite.',
+      frases: [
+        { scaffold_en: 'I like to watch movies at _____.', scaffold_pt: 'Eu gosto de assistir filmes _____.', placeholder: 'Ex: I like to watch movies at home.' },
+        { scaffold_en: 'I like to watch _____.', scaffold_pt: 'Eu gosto de assistir _____.', placeholder: 'Ex: I like to watch series.' },
+        { scaffold_en: 'I like to _____.', scaffold_pt: 'Eu gosto de _____.', placeholder: 'Ex: I like to run.' },
+        { scaffold_en: 'I like _____.', scaffold_pt: 'Eu gosto de _____.', placeholder: 'Ex: I like weekends.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+    p2: {
+      estrutura: 'Estrutura: I don\'t like…',
+      frase_en: 'I don\'t like waking up early.',
+      frase_pt: 'Eu não gosto de acordar cedo.',
+      frases: [
+        { scaffold_en: 'I don\'t like waking up _____.', scaffold_pt: 'Eu não gosto de acordar _____.', placeholder: 'Ex: I don\'t like waking up at 5am.' },
+        { scaffold_en: 'I don\'t like waking _____.', scaffold_pt: 'Eu não gosto de _____.', placeholder: 'Ex: I don\'t like waking anyone up.' },
+        { scaffold_en: 'I don\'t like _____.', scaffold_pt: 'Eu não gosto de _____.', placeholder: 'Ex: I don\'t like traffic.' },
+        { scaffold_en: 'I don\'t _____.', scaffold_pt: 'Eu não _____.', placeholder: 'Ex: I don\'t eat fast food.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+  },
+  {
+    titulo: 'Oficina 05 – Falando do que você fez ou viveu',
+    subtitulo: 'Estruturas: I went… / I watched…',
+    msg: 'Hey hey hey! Já são 5 dias na ativa — isso é mais do que a metade da primeira semana! Se você chegou até aqui, é porque tá comprometido de verdade com o seu inglês. Você tá criando uma base forte com frases reais, com estrutura, clareza e leveza. Hoje é dia de relembrar momentos vividos.',
+    dica: 'Use algo que realmente aconteceu: um atraso, uma mensagem, uma série, uma conversa com alguém, um perrengue. Quanto mais conectado com a sua realidade, mais poder essa frase tem.',
+    p1: {
+      estrutura: 'Estrutura: I went…',
+      frase_en: 'I went to the market yesterday.',
+      frase_pt: 'Eu fui ao mercado ontem.',
+      frases: [
+        { scaffold_en: 'I went to the market _____.', scaffold_pt: 'Eu fui ao mercado _____.', placeholder: 'Ex: I went to the market today.' },
+        { scaffold_en: 'I went to the _____.', scaffold_pt: 'Eu fui ao/à _____.', placeholder: 'Ex: I went to the pharmacy.' },
+        { scaffold_en: 'I went _____.', scaffold_pt: 'Eu fui _____.', placeholder: 'Ex: I went for a walk.' },
+        { scaffold_en: 'I _____ yesterday.', scaffold_pt: 'Eu _____ ontem.', placeholder: 'Ex: I worked yesterday.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+    p2: {
+      estrutura: 'Estrutura: I watched / I ate…',
+      frase_en: 'I watched a good series last night.',
+      frase_pt: 'Eu assisti uma boa série ontem à noite.',
+      frases: [
+        { scaffold_en: 'I watched a good series _____.', scaffold_pt: 'Eu assisti uma boa série _____.', placeholder: 'Ex: I watched a good series yesterday.' },
+        { scaffold_en: 'I watched a good _____.', scaffold_pt: 'Eu assisti um(a) bom/boa _____.', placeholder: 'Ex: I watched a good movie.' },
+        { scaffold_en: 'I watched _____.', scaffold_pt: 'Eu assisti _____.', placeholder: 'Ex: I watched the news.' },
+        { scaffold_en: 'I _____ last night.', scaffold_pt: 'Eu _____ ontem à noite.', placeholder: 'Ex: I ate pizza last night.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+  },
+  {
+    titulo: 'Oficina 06 – Falando de rotina e pequenas ações',
+    subtitulo: 'Estruturas: I wake up… / I take a shower…',
+    msg: 'Hey hey hey! Metade do caminho já foi! E se você chegou até aqui, é porque já tá fazendo do inglês um hábito real — com consistência e leveza. Hoje a gente vai treinar ações simples do seu dia a dia, aquelas que parecem pequenas e bobas, mas que quando viram frases, são essenciais pra comunicação fluente.',
+    dica: 'A rotina é o melhor lugar pra praticar inglês, porque é onde o vocabulário mora. Fale do que você já faz todos os dias — e comece a fazer isso em inglês. Mesmo que pareça simples, falar sobre o que você faz no banho, na cozinha, no ônibus ou no trabalho é muito mais poderoso do que parece.',
+    p1: {
+      estrutura: 'Estrutura: I wake up…',
+      frase_en: 'I wake up early every day.',
+      frase_pt: 'Eu acordo cedo todo dia.',
+      frases: [
+        { scaffold_en: 'I wake up early every _____.', scaffold_pt: 'Eu acordo cedo todo(a) _____.', placeholder: 'Ex: I wake up early every morning.' },
+        { scaffold_en: 'I wake up early _____.', scaffold_pt: 'Eu acordo cedo _____.', placeholder: 'Ex: I wake up early on weekdays.' },
+        { scaffold_en: 'I wake up _____.', scaffold_pt: 'Eu acordo _____.', placeholder: 'Ex: I wake up tired.' },
+        { scaffold_en: 'I _____ every day.', scaffold_pt: 'Eu _____ todo dia.', placeholder: 'Ex: I walk every day.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+    p2: {
+      estrutura: 'Estrutura: I take a shower…',
+      frase_en: 'I take a shower in the morning.',
+      frase_pt: 'Eu tomo banho de manhã.',
+      frases: [
+        { scaffold_en: 'I take a shower in the _____.', scaffold_pt: 'Eu tomo banho de _____.', placeholder: 'Ex: I take a shower in the evening.' },
+        { scaffold_en: 'I take a shower _____.', scaffold_pt: 'Eu tomo banho _____.', placeholder: 'Ex: I take a shower every day.' },
+        { scaffold_en: 'I take a _____.', scaffold_pt: 'Eu tomo _____.', placeholder: 'Ex: I take a break.' },
+        { scaffold_en: 'I _____ in the morning.', scaffold_pt: 'Eu _____ de manhã.', placeholder: 'Ex: I eat in the morning.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+  },
+  {
+    titulo: 'Oficina 07 – Falando do que precisa ou quer fazer',
+    subtitulo: 'Estruturas: I need to… / I want to…',
+    msg: 'Hey hey hey! Metade do caminho já foi! Hoje é dia de praticar frases com necessidade e desejo — coisas que você precisa ou quer fazer. São expressões muito usadas no dia a dia e que ajudam você a falar de planos, tarefas e até sonhos de forma simples e direta. Bora transformar vontade em vocabulário?',
+    dica: 'Use frases que façam sentido na sua rotina. Não tente "soar bonito", tente soar verdadeiro. Fale do que você realmente precisa fazer, quer fazer ou até tá tentando evitar. IMPORTANTE: Sempre que usar "I need to" ou "I want to", o que vem depois precisa ser um verbo (uma ação). ✅ I need to sleep. ✅ I want to learn. ❌ I need to money.',
+    p1: {
+      estrutura: 'Estrutura: I need to…',
+      frase_en: 'I need to finish this today.',
+      frase_pt: 'Eu preciso terminar isso hoje.',
+      frases: [
+        { scaffold_en: 'I need to finish this _____.', scaffold_pt: 'Eu preciso terminar isso _____.', placeholder: 'Ex: I need to finish this tonight.' },
+        { scaffold_en: 'I need to finish _____.', scaffold_pt: 'Eu preciso terminar _____.', placeholder: 'Ex: I need to finish my work.' },
+        { scaffold_en: 'I need to _____.', scaffold_pt: 'Eu preciso _____.', placeholder: 'Ex: I need to sleep.' },
+        { scaffold_en: 'I need _____.', scaffold_pt: 'Eu preciso de _____.', placeholder: 'Ex: I need more time.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+    p2: {
+      estrutura: 'Estrutura: I want to…',
+      frase_en: 'I want to travel next year.',
+      frase_pt: 'Eu quero viajar no ano que vem.',
+      frases: [
+        { scaffold_en: 'I want to travel _____.', scaffold_pt: 'Eu quero viajar _____.', placeholder: 'Ex: I want to travel to Europe.' },
+        { scaffold_en: 'I want to _____ next year.', scaffold_pt: 'Eu quero _____ no ano que vem.', placeholder: 'Ex: I want to study next year.' },
+        { scaffold_en: 'I want to _____.', scaffold_pt: 'Eu quero _____.', placeholder: 'Ex: I want to change my life.' },
+        { scaffold_en: 'I want _____.', scaffold_pt: 'Eu quero _____.', placeholder: 'Ex: I want a better routine.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+  },
+  {
+    titulo: 'Oficina 08 – Falando sobre o que gosta de comer ou beber',
+    subtitulo: 'Estruturas: I drink… / I eat…',
+    msg: 'Hey hey hey! Você tá criando um vocabulário cada vez mais real e útil. Hoje é dia de falar sobre algo que faz parte da rotina de todo mundo: comida e bebida. Esses são temas que sempre aparecem em conversas informais, e saber se expressar aqui te dá mais segurança pra trocar ideia com qualquer pessoa.',
+    dica: 'Fale do que você realmente come, bebe e gosta. Não inventa coisa gourmet só pra parecer mais bonito em inglês. Fale do seu café com leite, da marmita, do pão com ovo. É isso que vai te fazer pensar em inglês com leveza e segurança.',
+    p1: {
+      estrutura: 'Estrutura: I drink…',
+      frase_en: 'I drink coffee every morning.',
+      frase_pt: 'Eu bebo café toda manhã.',
+      frases: [
+        { scaffold_en: 'I drink coffee every _____.', scaffold_pt: 'Eu bebo café toda _____.', placeholder: 'Ex: I drink coffee every afternoon.' },
+        { scaffold_en: 'I drink coffee _____.', scaffold_pt: 'Eu bebo café _____.', placeholder: 'Ex: I drink coffee at work.' },
+        { scaffold_en: 'I drink _____.', scaffold_pt: 'Eu bebo _____.', placeholder: 'Ex: I drink water.' },
+        { scaffold_en: 'I _____ every morning.', scaffold_pt: 'Eu _____ toda manhã.', placeholder: 'Ex: I exercise every morning.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+    p2: {
+      estrutura: 'Estrutura: I eat…',
+      frase_en: 'I eat rice and beans for lunch.',
+      frase_pt: 'Eu como arroz e feijão no almoço.',
+      frases: [
+        { scaffold_en: 'I eat rice and beans _____.', scaffold_pt: 'Eu como arroz e feijão _____.', placeholder: 'Ex: I eat rice and beans every day.' },
+        { scaffold_en: 'I eat rice and _____.', scaffold_pt: 'Eu como arroz e _____.', placeholder: 'Ex: I eat rice and chicken.' },
+        { scaffold_en: 'I eat _____.', scaffold_pt: 'Eu como _____.', placeholder: 'Ex: I eat fruit.' },
+        { scaffold_en: 'I _____ for lunch.', scaffold_pt: 'Eu _____ no almoço.', placeholder: 'Ex: I cook for lunch.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+  },
+  {
+    titulo: 'Oficina 09 – Falando de algo que aconteceu com você',
+    subtitulo: 'Estruturas: I had… / I talked…',
+    msg: 'Hey hey hey! Já tá dando orgulho ver o quanto você tá evoluindo! Hoje é dia de praticar frases no passado simples — pra contar algo que aconteceu com você. Essas estruturas são essenciais porque te ajudam a compartilhar histórias, experiências e momentos reais, sem depender de frases decoradas.',
+    dica: 'Não precisa saber "o passado de todos os verbos" — se errar, o Lion te ajuda a corrigir com leveza.',
+    p1: {
+      estrutura: 'Estrutura: I had…',
+      frase_en: 'I had a great day yesterday.',
+      frase_pt: 'Eu tive um ótimo dia ontem.',
+      frases: [
+        { scaffold_en: 'I had a great day _____.', scaffold_pt: 'Eu tive um ótimo dia _____.', placeholder: 'Ex: I had a great day last Sunday.' },
+        { scaffold_en: 'I had a great _____.', scaffold_pt: 'Eu tive um(a) ótimo(a) _____.', placeholder: 'Ex: I had a great meeting.' },
+        { scaffold_en: 'I had a _____.', scaffold_pt: 'Eu tive um(a) _____.', placeholder: 'Ex: I had a long day.' },
+        { scaffold_en: 'I had _____.', scaffold_pt: 'Eu tive _____.', placeholder: 'Ex: I had good news.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+    p2: {
+      estrutura: 'Estrutura: I talked / I called…',
+      frase_en: 'I talked to my friend last night.',
+      frase_pt: 'Eu conversei com meu amigo ontem à noite.',
+      frases: [
+        { scaffold_en: 'I talked to my friend _____.', scaffold_pt: 'Eu conversei com meu amigo _____.', placeholder: 'Ex: I talked to my friend this morning.' },
+        { scaffold_en: 'I talked to _____.', scaffold_pt: 'Eu conversei com _____.', placeholder: 'Ex: I talked to my boss.' },
+        { scaffold_en: 'I talked _____.', scaffold_pt: 'Eu conversei _____.', placeholder: 'Ex: I talked for a long time.' },
+        { scaffold_en: 'I _____ last night.', scaffold_pt: 'Eu _____ ontem à noite.', placeholder: 'Ex: I called my mom last night.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+  },
+  {
+    titulo: 'Oficina 10 – Falando de coisas que você ama ou odeia',
+    subtitulo: 'Estruturas: I love… / I hate…',
+    msg: 'Hey hey hey! Chegamos na oficina número 10! Faltam só 4 dias pro fim do desafio — e você já construiu dezenas de frases com vocabulário real, útil e com a sua cara. Hoje é dia de falar sobre coisas que você ama ou odeia — sentimentos que vêm com força e que fazem parte de quem você é.',
+    dica: 'Fale com verdade. Pode ser uma série, um lugar, um tipo de pessoa, uma comida ou uma situação. Tanto faz se for "eu amo miojo com ketchup" ou "eu odeio filas longas" — o que importa é que seja real pra você. Essa é a base da fluência: falar de você com leveza e clareza.',
+    p1: {
+      estrutura: 'Estrutura: I love…',
+      frase_en: 'I love spending time with my family.',
+      frase_pt: 'Eu amo passar tempo com minha família.',
+      frases: [
+        { scaffold_en: 'I love spending time with _____.', scaffold_pt: 'Eu amo passar tempo com _____.', placeholder: 'Ex: I love spending time with my friends.' },
+        { scaffold_en: 'I love spending time _____.', scaffold_pt: 'Eu amo passar tempo _____.', placeholder: 'Ex: I love spending time at home.' },
+        { scaffold_en: 'I love spending _____.', scaffold_pt: 'Eu amo passar _____.', placeholder: 'Ex: I love spending the weekend outside.' },
+        { scaffold_en: 'I love _____.', scaffold_pt: 'Eu amo _____.', placeholder: 'Ex: I love music.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+    p2: {
+      estrutura: 'Estrutura: I hate…',
+      frase_en: 'I hate waiting in long lines.',
+      frase_pt: 'Eu odeio esperar em filas longas.',
+      frases: [
+        { scaffold_en: 'I hate waiting in long _____.', scaffold_pt: 'Eu odeio esperar em _____ longas.', placeholder: 'Ex: I hate waiting in long queues.' },
+        { scaffold_en: 'I hate waiting in _____.', scaffold_pt: 'Eu odeio esperar em _____.', placeholder: 'Ex: I hate waiting in traffic.' },
+        { scaffold_en: 'I hate waiting _____.', scaffold_pt: 'Eu odeio esperar _____.', placeholder: 'Ex: I hate waiting all day.' },
+        { scaffold_en: 'I hate _____.', scaffold_pt: 'Eu odeio _____.', placeholder: 'Ex: I hate Mondays.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+  },
+  {
+    titulo: 'Oficina 11 – Falando de lugares que você vai (ou foi)',
+    subtitulo: 'Estruturas: I go to… / I went to…',
+    msg: 'Hey hey hey! Reta final! Faltam só 3 oficinas pra gente fechar o ciclo com chave de ouro. Hoje a gente vai praticar lugares que fazem parte da sua rotina ou da sua memória — seja onde você costuma ir, quer ir ou já foi. Essas frases te ajudam a construir uma comunicação mais geográfica e real.',
+    dica: 'Use lugares que você realmente frequenta ou já foi: mercado, padaria, farmácia, casa de alguém, trabalho, praça... Se quiser falar de algum lugar diferente e não souber como, o Lion te ajuda!',
+    p1: {
+      estrutura: 'Estrutura: I go to…',
+      frase_en: 'I go to the gym three times a week.',
+      frase_pt: 'Eu vou à academia três vezes por semana.',
+      frases: [
+        { scaffold_en: 'I go to the gym _____.', scaffold_pt: 'Eu vou à academia _____.', placeholder: 'Ex: I go to the gym on weekdays.' },
+        { scaffold_en: 'I go to the _____.', scaffold_pt: 'Eu vou ao/à _____.', placeholder: 'Ex: I go to the bakery.' },
+        { scaffold_en: 'I go _____.', scaffold_pt: 'Eu vou _____.', placeholder: 'Ex: I go home early.' },
+        { scaffold_en: 'I _____ three times a week.', scaffold_pt: 'Eu _____ três vezes por semana.', placeholder: 'Ex: I exercise three times a week.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+    p2: {
+      estrutura: 'Estrutura: I went to…',
+      frase_en: 'I went to the park last Sunday.',
+      frase_pt: 'Eu fui ao parque no último domingo.',
+      frases: [
+        { scaffold_en: 'I went to the park last _____.', scaffold_pt: 'Eu fui ao parque no último _____.', placeholder: 'Ex: I went to the park last Saturday.' },
+        { scaffold_en: 'I went to the _____.', scaffold_pt: 'Eu fui ao/à _____.', placeholder: 'Ex: I went to the hospital.' },
+        { scaffold_en: 'I went _____.', scaffold_pt: 'Eu fui _____.', placeholder: 'Ex: I went downtown.' },
+        { scaffold_en: 'I _____ last Sunday.', scaffold_pt: 'Eu _____ no último domingo.', placeholder: 'Ex: I rested last Sunday.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+  },
+  {
+    titulo: 'Oficina 12 – Falando de algo que você comprou, achou ou recebeu',
+    subtitulo: 'Estruturas: I bought… / I got…',
+    msg: 'Hey hey hey! Já são 12 dias de prática com consistência! Você tá quase cruzando a linha de chegada — e com uma bagagem de frases reais que te fazem pensar e se expressar com muito mais clareza. Hoje é dia de praticar ações que aconteceram com você: algo que comprou, achou, ganhou...',
+    dica: 'Foque em coisas simples e reais: um presente, uma blusa, um item do mercado, algo que achou em casa, algo que alguém te deu. Use seu mundo real como base.',
+    p1: {
+      estrutura: 'Estrutura: I bought…',
+      frase_en: 'I bought a new shirt last week.',
+      frase_pt: 'Eu comprei uma camisa nova semana passada.',
+      frases: [
+        { scaffold_en: 'I bought a new shirt _____.', scaffold_pt: 'Eu comprei uma camisa nova _____.', placeholder: 'Ex: I bought a new shirt yesterday.' },
+        { scaffold_en: 'I bought a new _____.', scaffold_pt: 'Eu comprei um(a) novo(a) _____.', placeholder: 'Ex: I bought a new book.' },
+        { scaffold_en: 'I bought a _____.', scaffold_pt: 'Eu comprei um(a) _____.', placeholder: 'Ex: I bought a gift.' },
+        { scaffold_en: 'I bought _____.', scaffold_pt: 'Eu comprei _____.', placeholder: 'Ex: I bought food.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+    p2: {
+      estrutura: 'Estrutura: I got…',
+      frase_en: 'I got a message from a friend.',
+      frase_pt: 'Eu recebi uma mensagem de um amigo.',
+      frases: [
+        { scaffold_en: 'I got a message from _____.', scaffold_pt: 'Eu recebi uma mensagem de _____.', placeholder: 'Ex: I got a message from my boss.' },
+        { scaffold_en: 'I got a message _____.', scaffold_pt: 'Eu recebi uma mensagem _____.', placeholder: 'Ex: I got a message this morning.' },
+        { scaffold_en: 'I got a _____.', scaffold_pt: 'Eu recebi um(a) _____.', placeholder: 'Ex: I got a gift.' },
+        { scaffold_en: 'I got _____.', scaffold_pt: 'Eu recebi / consegui _____.', placeholder: 'Ex: I got good news.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+  },
+  {
+    titulo: 'Oficina 13 – Falando sobre o que você precisa lembrar, fazer ou terminar',
+    subtitulo: 'Estruturas: I need to remember… / I forgot to…',
+    msg: 'Hey hey hey! Já pensou no tanto que você já construiu até aqui? É hora de praticar frases com foco em tarefas e compromissos — tudo aquilo que você precisa lembrar, fazer ou concluir. Essas estruturas são úteis demais pra falar do dia a dia, do trabalho, dos estudos, da vida prática.',
+    dica: 'Sabe aquela listinha mental de coisas pra fazer ou lembrar? Transforma isso em frases hoje! Coisas que você precisa entregar, tarefas que quer terminar, recados que precisa dar... Use o que é real pra você e pratique com leveza.',
+    p1: {
+      estrutura: 'Estrutura: I need to remember…',
+      frase_en: 'I need to remember to call her.',
+      frase_pt: 'Eu preciso lembrar de ligar pra ela.',
+      frases: [
+        { scaffold_en: 'I need to remember to _____.', scaffold_pt: 'Eu preciso lembrar de _____.', placeholder: 'Ex: I need to remember to pay the bill.' },
+        { scaffold_en: 'I need to remember _____.', scaffold_pt: 'Eu preciso lembrar _____.', placeholder: 'Ex: I need to remember that.' },
+        { scaffold_en: 'I need to _____.', scaffold_pt: 'Eu preciso _____.', placeholder: 'Ex: I need to finish this.' },
+        { scaffold_en: 'I need _____.', scaffold_pt: 'Eu preciso de _____.', placeholder: 'Ex: I need a reminder.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+    p2: {
+      estrutura: 'Estrutura: I forgot to…',
+      frase_en: 'I forgot to send the message.',
+      frase_pt: 'Eu esqueci de mandar a mensagem.',
+      frases: [
+        { scaffold_en: 'I forgot to send the _____.', scaffold_pt: 'Eu esqueci de mandar o(a) _____.', placeholder: 'Ex: I forgot to send the file.' },
+        { scaffold_en: 'I forgot to send _____.', scaffold_pt: 'Eu esqueci de mandar _____.', placeholder: 'Ex: I forgot to send the email.' },
+        { scaffold_en: 'I forgot to _____.', scaffold_pt: 'Eu esqueci de _____.', placeholder: 'Ex: I forgot to call.' },
+        { scaffold_en: 'I forgot _____.', scaffold_pt: 'Eu esqueci _____.', placeholder: 'Ex: I forgot my password.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+  },
+  {
+    titulo: 'Oficina 14 – Encerrando o ciclo com sua apresentação pessoal em inglês',
+    subtitulo: 'Apresentação: Quem sou eu / O que sinto e o que quero',
+    msg: 'Hey hey hey! Chegamos ao final da jornada! Se você chegou até aqui, saiba que você já venceu. Você praticou com constância, pensou em inglês todos os dias, e construiu um vocabulário que veio da sua própria realidade. Hoje a proposta é especial: montar sua apresentação pessoal. Falar sobre você, com suas palavras, com o que viveu, com o que sabe. Esse é o momento de olhar pra trás e ver o quanto você já consegue se expressar com clareza.',
+    dica: 'Não se preocupe com perfeição. A fluência é construída com uso constante, leve e sincero. Hoje você pode reciclar tudo o que já usou — porque agora é sobre mostrar o que já está em você. A apresentação é sua. Pode ser simples, curta, leve. O importante é ser de verdade.',
+    p1: {
+      estrutura: 'Apresentação: Quem sou eu',
+      frase_en: 'My name is… / I live in… / I work as…',
+      frase_pt: 'Meu nome é… / Eu moro em… / Eu trabalho como…',
+      frases: [
+        { scaffold_en: 'My name is _____.', scaffold_pt: 'Meu nome é _____.', placeholder: 'Ex: My name is Maria.' },
+        { scaffold_en: 'I live in _____.', scaffold_pt: 'Eu moro em _____.', placeholder: 'Ex: I live in São Paulo.' },
+        { scaffold_en: 'I work as _____ / I study _____.', scaffold_pt: 'Eu trabalho como _____ / Eu estudo _____.', placeholder: 'Ex: I work as a teacher.' },
+        { scaffold_en: 'I like to _____ in my free time.', scaffold_pt: 'Eu gosto de _____ no meu tempo livre.', placeholder: 'Ex: I like to read in my free time.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+    p2: {
+      estrutura: 'Apresentação: O que sinto e o que quero',
+      frase_en: 'I love… / I hate… / In the future, I want to…',
+      frase_pt: 'Eu amo… / Eu odeio… / No futuro, eu quero…',
+      frases: [
+        { scaffold_en: 'I love _____.', scaffold_pt: 'Eu amo _____.', placeholder: 'Ex: I love my family.' },
+        { scaffold_en: 'I hate _____.', scaffold_pt: 'Eu odeio _____.', placeholder: 'Ex: I hate traffic.' },
+        { scaffold_en: 'In the future, I want to _____.', scaffold_pt: 'No futuro, eu quero _____.', placeholder: 'Ex: In the future, I want to travel.' },
+        { scaffold_en: 'This challenge helped me to _____.', scaffold_pt: 'Esse desafio me ajudou a _____.', placeholder: 'Ex: This challenge helped me to be more confident.' },
+        { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
+      ],
+    },
+  },
+];
+
+/* ─────────────────────────────────────────────────────
+   HELPERS
+───────────────────────────────────────────────────── */
+function parseDate(str) {
+  const [y, m, d] = str.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
+function getDayIndex() {
+  const start = parseDate(CONFIG.dataInicio);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  start.setHours(0, 0, 0, 0);
+  const diff = Math.floor((today - start) / 86400000);
+  return diff; // negative = before, 0–13 = active, ≥14 = done
+}
+
+function pad(n) { return String(n).padStart(2, '0'); }
+
+/* ─────────────────────────────────────────────────────
+   BUILD SENTENCE FIELDS
+───────────────────────────────────────────────────── */
+function buildFields(containerEl, frases, prefix) {
+  containerEl.innerHTML = '';
+  frases.forEach((f, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'sentence-field';
+
+    const num = document.createElement('div');
+    num.className = 'sentence-num';
+    num.textContent = `Frase ${i + 1}`;
+
+    const scaf = document.createElement('div');
+    scaf.className = 'scaffold';
+    scaf.textContent = `${f.scaffold_en}  •  ${f.scaffold_pt}`;
+
+    const ta = document.createElement('textarea');
+    ta.name = `${prefix}_frase_${i + 1}`;
+    ta.placeholder = f.placeholder;
+    ta.rows = 2;
+
+    wrap.appendChild(num);
+    wrap.appendChild(scaf);
+    wrap.appendChild(ta);
+    containerEl.appendChild(wrap);
+  });
+}
+
+/* ─────────────────────────────────────────────────────
+   RENDER ACTIVE DAY
+───────────────────────────────────────────────────── */
+function renderDay(dayIndex) {
+  const o = OFICINAS[dayIndex];
+  const dayNum = dayIndex + 1;
+  const pct = Math.round((dayNum / 14) * 100);
+
+  document.getElementById('badge-text').textContent = `Dia ${dayNum} de 14 · Ao vivo`;
+
+  document.getElementById('oficina-title').innerHTML =
+    `<span style="color:var(--purple-l)">Dia ${dayNum}</span> — ${o.titulo.replace(/^Oficina \d+ – /, '')}`;
+  document.getElementById('oficina-subtitle').textContent = o.subtitulo;
+  document.getElementById('oficina-msg').textContent = o.msg;
+  document.getElementById('oficina-tip').textContent = o.dica;
+
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+  // Hidden fields
+  document.getElementById('field-dia').value = dayNum;
+  document.getElementById('field-oficina').value = o.titulo;
+
+  // Part 1
+  document.getElementById('p1-title').textContent = 'Parte 1';
+  document.getElementById('p1-struct').textContent = o.p1.estrutura;
+  document.getElementById('p1-en').textContent = o.p1.frase_en;
+  document.getElementById('p1-pt').textContent = o.p1.frase_pt;
+  buildFields(document.getElementById('p1-fields'), o.p1.frases, 'p1');
+
+  // Part 2
+  document.getElementById('p2-title').textContent = 'Parte 2';
+  document.getElementById('p2-struct').textContent = o.p2.estrutura;
+  document.getElementById('p2-en').textContent = o.p2.frase_en;
+  document.getElementById('p2-pt').textContent = o.p2.frase_pt;
+  buildFields(document.getElementById('p2-fields'), o.p2.frases, 'p2');
+
+  // Lion link
+  document.getElementById('lion-link').href = CONFIG.linkMecanicoLion;
+}
+
+/* ─────────────────────────────────────────────────────
+   COUNTDOWN
+───────────────────────────────────────────────────── */
+function startCountdown() {
+  function tick() {
+    const now = new Date();
+    const start = parseDate(CONFIG.dataInicio);
+    start.setHours(0, 0, 0, 0);
+    const diff = start - now;
+    if (diff <= 0) { location.reload(); return; }
+    const days  = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins  = Math.floor((diff % 3600000)  / 60000);
+    const secs  = Math.floor((diff % 60000)    / 1000);
+    document.getElementById('cd-days').textContent  = pad(days);
+    document.getElementById('cd-hours').textContent = pad(hours);
+    document.getElementById('cd-mins').textContent  = pad(mins);
+    document.getElementById('cd-secs').textContent  = pad(secs);
+  }
+  tick();
+  setInterval(tick, 1000);
+}
+
+/* ─────────────────────────────────────────────────────
+   FORM SUBMISSION
+───────────────────────────────────────────────────── */
+document.getElementById('oficina-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const nome  = document.getElementById('nome').value.trim();
+  const email = document.getElementById('email').value.trim();
+  if (!nome || !email) {
+    alert('Por favor, preencha seu nome e e-mail antes de enviar.');
+    return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  const errEl = document.getElementById('error-msg');
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+  errEl.style.display = 'none';
+
+  const data = new FormData(this);
+
+  try {
+    const res = await fetch(CONFIG.formspreeEndpoint, {
+      method: 'POST',
+      body: data,
+      headers: { 'Accept': 'application/json' },
+    });
+
+    if (res.ok) {
+      this.style.display = 'none';
+      document.getElementById('success-msg').style.display = 'block';
+      window.scrollTo({ top: document.getElementById('success-msg').offsetTop - 20, behavior: 'smooth' });
+    } else {
+      throw new Error('server error');
+    }
+  } catch {
+    btn.disabled = false;
+    btn.textContent = 'Enviar Oficina do Dia 🚀';
+    errEl.style.display = 'block';
+  }
+});
+
+/* ─────────────────────────────────────────────────────
+   INIT
+───────────────────────────────────────────────────── */
+(function init() {
+  const idx = getDayIndex();
+
+  if (idx < 0) {
+    // Before start
+    document.getElementById('countdown-view').style.display = 'block';
+    startCountdown();
+  } else if (idx >= 14) {
+    // After challenge
+    document.getElementById('done-view').style.display = 'block';
+  } else {
+    // Active day
+    document.getElementById('active-view').style.display = 'block';
+    renderDay(idx);
+  }
+})();
+</script>
+</body>
+</html>
