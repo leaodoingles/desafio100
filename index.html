@@ -3,27 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>D100 – Desafio 100 | Leão do Inglês</title> 
+  <title>D100 – Desafio 100 | Leão do Inglês</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --black:   #0a0a0a;
+      --black:   #0f0b1e;
       --purple:  #7c3aed;
-      --purple-l:#a78bfa;
-      --bg2:     #1a1a2e;
-      --text:    #fafafa;
-      --muted:   #9ca3af;
-      --radius:  12px;
+      --purple-l:#b197fc;
+      --bg2:     #1c1535;
+      --bg3:     #241d42;
+      --text:    #f0eaff;
+      --muted:   #9b8ec4;
+      --radius:  14px;
     }
 
     body {
       background: var(--black);
       color: var(--text);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       min-height: 100vh;
       padding: 24px 16px 60px;
     }
@@ -37,12 +38,12 @@
       align-items: center;
       gap: 10px;
       padding-bottom: 32px;
-      border-bottom: 1px solid #222;
+      border-bottom: 1px solid #2e2550;
       margin-bottom: 36px;
     }
-    .site-header .lion { font-size: 28px; }
+    .site-header .lion { width: 48px; height: 48px; object-fit: contain; }
     .site-header .brand {
-      font-family: 'Syne', sans-serif;
+      font-family: 'Outfit', sans-serif;
       font-size: 13px;
       font-weight: 700;
       color: var(--muted);
@@ -50,7 +51,7 @@
       text-transform: uppercase;
     }
     .site-header .challenge-name {
-      font-family: 'Syne', sans-serif;
+      font-family: 'Outfit', sans-serif;
       font-size: 15px;
       font-weight: 800;
       color: var(--text);
@@ -64,7 +65,7 @@
       background: rgba(124, 58, 237, .18);
       border: 1px solid rgba(124, 58, 237, .4);
       color: var(--purple-l);
-      font-family: 'Syne', sans-serif;
+      font-family: 'Outfit', sans-serif;
       font-size: 12px;
       font-weight: 700;
       letter-spacing: .07em;
@@ -86,7 +87,7 @@
 
     /* ── TITLES ─────────────────────────────────────── */
     h1 {
-      font-family: 'Syne', sans-serif;
+      font-family: 'Outfit', sans-serif;
       font-size: clamp(26px, 6vw, 40px);
       font-weight: 800;
       line-height: 1.15;
@@ -113,7 +114,7 @@
     }
     .progress-bar {
       height: 6px;
-      background: #222;
+      background: #2e2550;
       border-radius: 999px;
       overflow: hidden;
     }
@@ -127,10 +128,11 @@
     /* ── CARDS ──────────────────────────────────────── */
     .card {
       background: var(--bg2);
-      border: 1px solid #2a2a40;
+      border: 1px solid #2e2550;
       border-radius: var(--radius);
       padding: 24px;
       margin-bottom: 20px;
+      box-shadow: 0 2px 16px rgba(124,58,237,.08);
     }
     .card-label {
       font-size: 11px;
@@ -155,7 +157,7 @@
 
     /* ── SECTION HEADINGS ───────────────────────────── */
     .section-title {
-      font-family: 'Syne', sans-serif;
+      font-family: 'Outfit', sans-serif;
       font-size: 19px;
       font-weight: 800;
       margin-bottom: 6px;
@@ -165,14 +167,14 @@
 
     /* ── PATTERN PHRASE ─────────────────────────────── */
     .pattern-phrase {
-      background: #111;
+      background: var(--bg3);
       border-left: 3px solid var(--purple);
-      border-radius: 0 8px 8px 0;
+      border-radius: 0 10px 10px 0;
       padding: 14px 18px;
       margin-bottom: 20px;
     }
     .pattern-phrase .en {
-      font-family: 'Syne', sans-serif;
+      font-family: 'Outfit', sans-serif;
       font-size: 16px;
       font-weight: 700;
       color: var(--text);
@@ -198,11 +200,11 @@
     }
     textarea {
       width: 100%;
-      background: #111;
-      border: 1px solid #2a2a40;
+      background: var(--bg3);
+      border: 1px solid #2e2550;
       border-radius: 8px;
       color: var(--text);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       font-size: 15px;
       padding: 12px 14px;
       resize: vertical;
@@ -229,11 +231,11 @@
     }
     input[type="text"], input[type="email"] {
       width: 100%;
-      background: #111;
-      border: 1px solid #2a2a40;
+      background: var(--bg3);
+      border: 1px solid #2e2550;
       border-radius: 8px;
       color: var(--text);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       font-size: 15px;
       padding: 12px 14px;
       transition: border-color .2s;
@@ -243,7 +245,7 @@
     /* ── DIVIDER ─────────────────────────────────────── */
     .divider {
       height: 1px;
-      background: #222;
+      background: #2e2550;
       margin: 32px 0;
     }
 
@@ -254,7 +256,7 @@
       padding: 16px;
       background: var(--purple);
       color: #fff;
-      font-family: 'Syne', sans-serif;
+      font-family: 'Outfit', sans-serif;
       font-size: 16px;
       font-weight: 800;
       border: none;
@@ -276,7 +278,7 @@
     }
     #success-msg .check { font-size: 48px; margin-bottom: 12px; }
     #success-msg h2 {
-      font-family: 'Syne', sans-serif;
+      font-family: 'Outfit', sans-serif;
       font-size: 24px;
       font-weight: 800;
       margin-bottom: 10px;
@@ -286,15 +288,15 @@
     /* ── LION CARD ──────────────────────────────────── */
     .lion-card {
       background: var(--bg2);
-      border: 1px solid #2a2a40;
+      border: 1px solid #2e2550;
       border-radius: var(--radius);
       padding: 24px;
       margin-top: 32px;
       text-align: center;
     }
-    .lion-card .lion-icon { font-size: 36px; margin-bottom: 12px; }
+    .lion-card .lion-icon { width: 100px; margin: 0 auto 16px; display: block; }
     .lion-card h3 {
-      font-family: 'Syne', sans-serif;
+      font-family: 'Outfit', sans-serif;
       font-size: 18px;
       font-weight: 800;
       margin-bottom: 8px;
@@ -306,7 +308,7 @@
       background: transparent;
       border: 2px solid var(--purple);
       color: var(--purple-l);
-      font-family: 'Syne', sans-serif;
+      font-family: 'Outfit', sans-serif;
       font-size: 14px;
       font-weight: 800;
       border-radius: var(--radius);
@@ -318,8 +320,8 @@
 
     /* ── INSTAGRAM CARD ─────────────────────────────── */
     .insta-card {
-      background: #111;
-      border: 1px solid #2a2a40;
+      background: var(--bg3);
+      border: 1px solid #2e2550;
       border-radius: var(--radius);
       padding: 20px 24px;
       margin-top: 16px;
@@ -344,13 +346,14 @@
     }
     .count-unit {
       background: var(--bg2);
-      border: 1px solid #2a2a40;
+      border: 1px solid #2e2550;
       border-radius: var(--radius);
       padding: 20px 24px;
       min-width: 88px;
+      box-shadow: 0 2px 16px rgba(124,58,237,.12);
     }
     .count-num {
-      font-family: 'Syne', sans-serif;
+      font-family: 'Outfit', sans-serif;
       font-size: 44px;
       font-weight: 800;
       color: var(--purple-l);
@@ -390,7 +393,7 @@
 
   <!-- HEADER -->
   <header class="site-header">
-    <span class="lion">🦁</span>
+    <img class="lion" src="lion.png" alt="Leão do Inglês" />
     <div>
       <div class="brand">Leão do Inglês</div>
       <div class="challenge-name">D100 – Desafio 100</div>
@@ -499,7 +502,7 @@
 
     <!-- Mecânico Lion -->
     <div class="lion-card">
-      <div class="lion-icon">🦁</div>
+      <img class="lion-icon" src="lion.png" alt="Mecânico Lion" />
       <h3>Mecânico Lion</h3>
       <p>Abra o GPT personalizado, cole suas frases e receba correção e feedback na hora.</p>
       <a id="lion-link" href="#" target="_blank" rel="noopener" class="btn-lion">Abrir o Mecânico Lion →</a>
@@ -520,7 +523,7 @@
    CONFIGURAÇÃO — edite aqui antes de publicar
 ───────────────────────────────────────────────────── */
 const CONFIG = {
-  dataInicio: '2026-06-10',
+  dataInicio: '2026-06-09',
   formspreeEndpoint: 'https://formspree.io/f/mdavzoez',
   linkMecanicoLion: 'https://chatgpt.com/g/g-6816a8bfd21881919f0327d722e7435d-lion-o-seu-mecanico',
 };
