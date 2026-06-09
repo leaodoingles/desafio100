@@ -313,7 +313,16 @@
       text-align: center;
       padding: 32px 24px;
     }
-    #success-msg .check { font-size: 48px; margin-bottom: 12px; }
+    #success-msg .success-lion {
+      width: 150px; height: auto;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 12px 30px rgba(124,58,237,.5));
+      animation: launchIn .7s cubic-bezier(.2,.9,.3,1.3) both, floaty 3.2s ease-in-out .8s infinite;
+    }
+    @keyframes launchIn {
+      from { opacity: 0; transform: translateY(50px) scale(.7); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
     #success-msg h2 {
       font-family: 'Outfit', sans-serif;
       font-size: 24px;
@@ -557,6 +566,68 @@
     }
     .admin-banner a { color: #fbbf24; font-weight: 700; }
 
+    /* ── WELCOME (boas-vindas) ──────────────────────── */
+    #welcome-view { text-align: center; padding: 24px 0 70px; }
+    .welcome-inner { max-width: 560px; margin: 0 auto; }
+    .welcome-lion {
+      width: 175px; height: auto;
+      opacity: 0;
+      animation: fadeUp .6s ease forwards, floaty 3.2s ease-in-out 1s infinite;
+      filter: drop-shadow(0 12px 32px rgba(124,58,237,.5));
+    }
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-12px); }
+    }
+    .welcome-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: clamp(26px, 6vw, 38px);
+      line-height: 1.22;
+      margin: 26px 0 14px;
+      opacity: 0;
+      animation: fadeUp .6s ease .28s forwards;
+    }
+    .welcome-title span { color: var(--purple-l); }
+    .welcome-sub {
+      font-size: 17px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 34px;
+      opacity: 0;
+      animation: fadeUp .6s ease .56s forwards;
+    }
+    .welcome-btn {
+      font-family: 'Outfit', sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: .02em;
+      color: #fff;
+      background: linear-gradient(135deg, #7c3aed, #5b21b6);
+      border: none;
+      border-radius: 14px;
+      padding: 16px 34px;
+      cursor: pointer;
+      box-shadow: 0 8px 28px rgba(124,58,237,.4);
+      opacity: 0;
+      animation: fadeUp .6s ease .84s forwards;
+      transition: transform .12s, box-shadow .2s;
+    }
+    .welcome-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 12px 34px rgba(124,58,237,.55); }
+    .welcome-btn:active { transform: scale(.98); }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Transição circular do centro para as bordas ao entrar no painel */
+    @keyframes d100CircleReveal {
+      from { clip-path: circle(0% at 50% 50%); }
+      to   { clip-path: circle(150% at 50% 50%); }
+    }
+    ::view-transition-old(root) { animation: none; }
+    ::view-transition-new(root) { animation: d100CircleReveal .7s ease-out; }
+
     /* ── ERROR MSG ──────────────────────────────────── */
     #error-msg {
       display: none;
@@ -593,6 +664,16 @@
       <div class="count-unit"><span class="count-num" id="cd-secs">00</span><span class="count-label">seg</span></div>
     </div>
     <p style="color:var(--muted);font-size:14px;">Você receberá todas as instruções pelo grupo de WhatsApp.</p>
+  </div>
+
+  <!-- WELCOME VIEW -->
+  <div id="welcome-view" style="display:none;">
+    <div class="welcome-inner">
+      <img class="welcome-lion" src="lion-foguete.png" alt="Leão do Inglês no foguete" />
+      <h1 class="welcome-title">Seja bem-vindo a mais um dia fazendo o inglês <span>útil</span> no seu dia a dia!</h1>
+      <p class="welcome-sub">Vamos começar mais um dia? É rápido, leve e do seu jeito. 🦁</p>
+      <button id="welcome-btn" class="welcome-btn">Bora fazer acontecer 🚀</button>
+    </div>
   </div>
 
   <!-- BOARD VIEW -->
@@ -706,8 +787,8 @@
 
     <!-- SUCCESS -->
     <div id="success-msg">
-      <div class="check">🎉</div>
-      <h2>Oficina enviada!</h2>
+      <img class="success-lion" src="lion-foguete.png" alt="Leão comemorando no foguete" />
+      <h2>Oficina enviada! 🎉</h2>
       <p>Suas frases foram registradas com sucesso. Agora é hora de passar pelo <strong>Mecânico Lion</strong> pra receber seu feedback personalizado!</p>
     </div>
 
@@ -1653,7 +1734,7 @@ function renderBoard() {
    ROTEADOR — troca de telas via #hash
 ───────────────────────────────────────────────────── */
 function showView(id) {
-  ['countdown-view', 'board-view', 'day-view'].forEach(v => {
+  ['countdown-view', 'welcome-view', 'board-view', 'day-view'].forEach(v => {
     document.getElementById(v).style.display = (v === id) ? 'block' : 'none';
   });
   window.scrollTo({ top: 0 });
@@ -1681,6 +1762,7 @@ function route() {
     const dayNum = parseInt(match[1], 10);
     // Só abre se for um dia válido e já liberado
     if (dayNum >= 1 && dayNum <= unlockedCount()) {
+      sessionStorage.setItem('d100_welcomed', '1'); // já entrou: não repete boas-vindas
       renderDay(dayNum - 1);
       showView('day-view');
       return;
@@ -1690,10 +1772,28 @@ function route() {
     return;
   }
 
+  // Painel — mostra a tela de boas-vindas uma vez por acesso (some ao clicar no botão)
+  if (!adminOn() && sessionStorage.getItem('d100_welcomed') !== '1') {
+    showView('welcome-view');
+    return;
+  }
+
   // Qualquer outro caso → painel
   renderBoard();
   showView('board-view');
 }
+
+// Botão de boas-vindas → entra no painel com transição circular (do centro pras bordas)
+function goToBoard() {
+  sessionStorage.setItem('d100_welcomed', '1');
+  const swap = () => { renderBoard(); showView('board-view'); };
+  if (document.startViewTransition) {
+    document.startViewTransition(swap);
+  } else {
+    swap();
+  }
+}
+document.getElementById('welcome-btn').addEventListener('click', goToBoard);
 
 window.addEventListener('hashchange', route);
 route();
