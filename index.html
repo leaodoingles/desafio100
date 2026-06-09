@@ -163,7 +163,18 @@
       margin-bottom: 6px;
       margin-top: 36px;
     }
-    .section-desc { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
+    .section-desc {
+      display: inline-block;
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--purple-l);
+      background: rgba(124,58,237,.14);
+      border: 1px solid rgba(124,58,237,.35);
+      padding: 7px 16px;
+      border-radius: 999px;
+      margin-bottom: 22px;
+    }
 
     /* ── PATTERN PHRASE ─────────────────────────────── */
     .pattern-phrase {
@@ -193,11 +204,37 @@
       margin-bottom: 4px;
     }
     .scaffold {
+      margin-bottom: 8px;
+      line-height: 1.7;
+    }
+    .scaffold .en {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .scaffold .pt {
       font-size: 13px;
       color: var(--muted);
-      margin-bottom: 6px;
-      line-height: 1.5;
     }
+    /* Linha contínua reta para completar (substitui os underscores) */
+    .blank {
+      display: inline-block;
+      min-width: 75px;
+      height: 1em;
+      border-bottom: 2px solid var(--purple-l);
+      margin: 0 3px;
+      vertical-align: -3px;
+    }
+    /* Tradução do exemplo, abaixo do campo */
+    .example-pt {
+      margin-top: 5px;
+      font-size: 13px;
+      color: var(--muted);
+      font-style: italic;
+      padding-left: 2px;
+    }
+    /* Tradução da estrutura, dentro do chip */
+    .struct-pt { font-weight: 600; color: #d7c9ff; }
     textarea {
       width: 100%;
       background: var(--bg3);
@@ -215,7 +252,7 @@
       outline: none;
       border-color: var(--purple);
     }
-    textarea::placeholder { color: #444; }
+    textarea::placeholder { color: #c4bce0; opacity: .85; font-style: italic; }
 
     /* ── NAME / EMAIL ───────────────────────────────── */
     .id-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px; }
@@ -369,11 +406,156 @@
       display: block;
     }
 
-    /* ── DONE VIEW ──────────────────────────────────── */
-    #done-view { text-align: center; padding: 40px 0; }
-    #done-view .trophy { font-size: 64px; margin-bottom: 20px; }
-    #done-view h1 { font-size: clamp(26px, 6vw, 38px); margin-bottom: 14px; }
-    #done-view p { font-size: 16px; color: #d1d5db; line-height: 1.7; max-width: 500px; margin: 0 auto 20px; }
+    /* ── BOARD VIEW ─────────────────────────────────── */
+    .board-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(26px, 6vw, 38px);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 10px;
+    }
+    .board-title span { color: var(--purple-l); }
+    .board-section {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      margin: 36px 0 18px;
+    }
+    .congrats-banner {
+      background: rgba(124,58,237,.14);
+      border: 1px solid rgba(124,58,237,.4);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      font-size: 15px;
+      color: var(--purple-l);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .congrats-banner strong { color: var(--text); }
+
+    /* Current-day CTA */
+    .current-cta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: linear-gradient(135deg, #7c3aed, #5b21b6);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      text-decoration: none;
+      color: #fff;
+      margin-top: 8px;
+      box-shadow: 0 6px 24px rgba(124,58,237,.35);
+      transition: transform .12s;
+    }
+    .current-cta:hover { transform: translateY(-2px); }
+    .cta-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      background: rgba(255,255,255,.18);
+      width: 56px; height: 56px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .cta-label { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; opacity: .85; }
+    .cta-title { font-family: 'Outfit', sans-serif; font-size: 17px; font-weight: 800; margin: 2px 0; }
+    .cta-sub { font-size: 13px; opacity: .9; }
+
+    /* Day grid */
+    .day-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 14px;
+    }
+    .day-card {
+      background: var(--bg2);
+      border: 1px solid #2e2550;
+      border-radius: var(--radius);
+      padding: 16px;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 110px;
+      transition: transform .12s, border-color .2s;
+    }
+    .day-card.available:hover, .day-card.done:hover {
+      transform: translateY(-2px);
+      border-color: var(--purple);
+    }
+    .day-card.locked { opacity: .45; cursor: not-allowed; }
+    .day-card.current { border-color: var(--purple); box-shadow: 0 0 0 1px var(--purple); }
+    .day-card-top { display: flex; justify-content: space-between; align-items: center; }
+    .day-card-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--purple-l);
+    }
+    .day-card-status { font-size: 18px; }
+    .day-card.done .day-card-status {
+      background: #22c55e; color: #06210f;
+      width: 24px; height: 24px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 800;
+    }
+    .day-card-title { font-size: 13px; color: var(--muted); line-height: 1.45; }
+    .day-card.available .day-card-title,
+    .day-card.done .day-card-title { color: #d8cff0; }
+
+    /* Back button */
+    .back-btn {
+      display: inline-block;
+      color: var(--purple-l);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .back-btn:hover { text-decoration: underline; }
+
+    /* Badge: dia passado (sem "ao vivo") */
+    .badge.past { background: rgba(148,130,200,.12); border-color: #3a2f5e; color: var(--muted); }
+    .badge.past .dot { display: none; }
+
+    /* Link voltar ao painel (após sucesso) */
+    .back-to-board {
+      display: inline-block;
+      margin-top: 18px;
+      color: var(--purple-l);
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .back-to-board:hover { text-decoration: underline; }
+
+    /* Aviso: progresso salvo no aparelho */
+    .device-note {
+      margin-top: 32px;
+      background: var(--bg3);
+      border: 1px solid #2e2550;
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .device-note strong { color: var(--purple-l); }
+
+    /* Banner do modo administrador */
+    .admin-banner {
+      background: rgba(245,158,11,.12);
+      border: 1px solid rgba(245,158,11,.4);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #fbbf24;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+    .admin-banner a { color: #fbbf24; font-weight: 700; }
 
     /* ── ERROR MSG ──────────────────────────────────── */
     #error-msg {
@@ -413,30 +595,59 @@
     <p style="color:var(--muted);font-size:14px;">Você receberá todas as instruções pelo grupo de WhatsApp.</p>
   </div>
 
-  <!-- DONE VIEW -->
-  <div id="done-view" style="display:none;">
-    <div class="trophy">🏆</div>
-    <h1>Você <span style="color:var(--purple-l)">completou</span> o D100!</h1>
-    <p>Parabéns! Você chegou ao fim do Desafio 100 com consistência e comprometimento. Seu inglês nunca mais vai ser o mesmo.</p>
-    <p style="color:var(--muted);font-size:14px;">Fique atento às próximas novidades do <strong style="color:var(--purple-l)">@leaodoingles</strong> no Instagram.</p>
-  </div>
+  <!-- BOARD VIEW -->
+  <div id="board-view" style="display:none;">
 
-  <!-- ACTIVE VIEW -->
-  <div id="active-view" style="display:none;">
+    <div id="admin-banner" class="admin-banner" style="display:none;">
+      🔧 <strong>Modo administrador ativo</strong> — todos os 14 dias estão liberados para você conferir. <a href="?adm=0">Sair do modo admin</a>
+    </div>
 
-    <div class="badge"><span class="dot"></span> <span id="badge-text">Dia 1 de 14 · Ao vivo</span></div>
+    <div class="badge" id="board-badge" style="display:none;"><span class="dot"></span> <span id="board-badge-text"></span></div>
 
-    <h1 id="oficina-title">Oficina 01</h1>
-    <p class="subtitle" id="oficina-subtitle">Subtítulo</p>
+    <div id="board-congrats" class="congrats-banner" style="display:none;">
+      🏆 <strong>Você completou o D100!</strong> Parabéns pela consistência. Todas as Oficinas ficam liberadas pra você revisar quando quiser.
+    </div>
+
+    <h1 class="board-title">Seu <span>Desafio 100</span></h1>
+    <p class="subtitle">Monte 100 frases reais em inglês — uma Oficina por dia, no seu ritmo. Se faltar um dia, é só voltar aqui: nada fica trancado pra trás.</p>
 
     <!-- Progress -->
     <div class="progress-wrap">
       <div class="progress-label">
-        <span>Progresso do desafio</span>
-        <span id="progress-pct">0%</span>
+        <span>Seu progresso</span>
+        <span id="board-pct">0 de 14 dias concluídos</span>
       </div>
-      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-bar"><div class="progress-fill" id="board-fill" style="width:0%"></div></div>
     </div>
+
+    <!-- Current day CTA -->
+    <a id="board-cta" class="current-cta" href="#/dia/1">
+      <div class="cta-num" id="cta-num">1</div>
+      <div class="cta-text">
+        <div class="cta-label" id="cta-label">Dia de hoje</div>
+        <div class="cta-title" id="cta-title">Oficina</div>
+        <div class="cta-sub">Toque para abrir a Oficina →</div>
+      </div>
+    </a>
+
+    <h2 class="board-section">As 14 Oficinas</h2>
+    <div class="day-grid" id="day-grid"></div>
+
+    <p class="device-note">
+      ℹ️ <strong>Sobre o seu progresso:</strong> os dias marcados como concluídos ficam salvos aqui <strong>neste aparelho/navegador</strong>. Se você trocar de celular ou computador, ou limpar os dados do navegador, os check-marks voltam ao zero — mas <strong>todo o conteúdo das Oficinas continua disponível normalmente</strong>, é só seguir pelo dia.
+    </p>
+
+  </div><!-- /board-view -->
+
+  <!-- DAY VIEW -->
+  <div id="day-view" style="display:none;">
+
+    <a href="#/" class="back-btn">← Voltar ao painel</a>
+
+    <div class="badge" id="day-badge"><span class="dot"></span> <span id="badge-text">Dia 1 de 14</span></div>
+
+    <h1 id="oficina-title">Oficina 01</h1>
+    <p class="subtitle" id="oficina-subtitle">Subtítulo</p>
 
     <!-- Opening message -->
     <div class="card">
@@ -503,8 +714,8 @@
     <!-- Mecânico Lion -->
     <div class="lion-card">
       <img class="lion-icon" src="lion.png" alt="Mecânico Lion" />
-      <h3>Mecânico Lion</h3>
-      <p>Abra o GPT personalizado, cole suas frases e receba correção e feedback na hora.</p>
+      <h3 id="lion-title">Mecânico Lion</h3>
+      <p id="lion-desc">Abra o GPT personalizado, cole suas frases e receba correção e feedback na hora.</p>
       <a id="lion-link" href="#" target="_blank" rel="noopener" class="btn-lion">Abrir o Mecânico Lion →</a>
     </div>
 
@@ -514,7 +725,11 @@
       <p>Depois de receber o feedback do Lion, <strong>manda um print da correção na DM</strong> do <strong>@leaodoingles</strong> no Instagram para registrar sua conclusão do dia!</p>
     </div>
 
-  </div><!-- /active-view -->
+    <div style="text-align:center;">
+      <a href="#/" class="back-to-board">← Voltar ao painel dos 14 dias</a>
+    </div>
+
+  </div><!-- /day-view -->
 
 </div><!-- /container -->
 
@@ -525,7 +740,10 @@
 const CONFIG = {
   dataInicio: '2026-06-09',
   formspreeEndpoint: 'https://formspree.io/f/mdavzoez',
+  // Link direto do Mecânico Lion (usado SÓ no Dia 1, para iniciar a conversa)
   linkMecanicoLion: 'https://chatgpt.com/g/g-6816a8bfd21881919f0327d722e7435d-lion-o-seu-mecanico',
+  // Link do ChatGPT normal (usado a partir do Dia 2, para o aluno voltar na MESMA conversa)
+  linkChatGPT: 'https://chatgpt.com/',
 };
 
 /* ─────────────────────────────────────────────────────
@@ -955,6 +1173,155 @@ const OFICINAS = [
 ];
 
 /* ─────────────────────────────────────────────────────
+   TRADUÇÕES (estrutura do dia + exemplos)
+   Usadas para mostrar a versão em português no chip de
+   estrutura e embaixo de cada exemplo.
+───────────────────────────────────────────────────── */
+const ESTRUTURA_PT = {
+  'Estrutura: I like…': 'Eu gosto de… (algo)',
+  'Estrutura: I have…': 'Eu tenho… (algo)',
+  'Estrutura: I need…': 'Eu preciso de… (algo)',
+  'Estrutura: I want…': 'Eu quero… (algo)',
+  'Estrutura: I can…': 'Eu posso / consigo…',
+  "Estrutura: I can't…": 'Eu não posso / não consigo…',
+  'Estrutura: I like to…': 'Eu gosto de… (fazer algo)',
+  "Estrutura: I don't like…": 'Eu não gosto de…',
+  'Estrutura: I went…': 'Eu fui… (a algum lugar)',
+  'Estrutura: I watched / I ate…': 'Eu assisti / Eu comi…',
+  'Estrutura: I wake up…': 'Eu acordo…',
+  'Estrutura: I take a shower…': 'Eu tomo banho…',
+  'Estrutura: I need to…': 'Eu preciso… (+ verbo)',
+  'Estrutura: I want to…': 'Eu quero… (+ verbo)',
+  'Estrutura: I drink…': 'Eu bebo…',
+  'Estrutura: I eat…': 'Eu como…',
+  'Estrutura: I had…': 'Eu tive…',
+  'Estrutura: I talked / I called…': 'Eu conversei / Eu liguei…',
+  'Estrutura: I love…': 'Eu amo…',
+  'Estrutura: I hate…': 'Eu odeio…',
+  'Estrutura: I go to…': 'Eu vou (a/para)…',
+  'Estrutura: I went to…': 'Eu fui (a/para)…',
+  'Estrutura: I bought…': 'Eu comprei…',
+  'Estrutura: I got…': 'Eu recebi / consegui…',
+  'Estrutura: I need to remember…': 'Eu preciso lembrar de…',
+  'Estrutura: I forgot to…': 'Eu esqueci de…',
+};
+
+const EX_PT = {
+  'Ex: I like coffee in the evening.': 'Ex: Eu gosto de café à noite.',
+  'Ex: I like coffee in silence.': 'Ex: Eu gosto de café em silêncio.',
+  'Ex: I like coffee with milk.': 'Ex: Eu gosto de café com leite.',
+  'Ex: I like music.': 'Ex: Eu gosto de música.',
+  'Ex: I have a busy day tomorrow.': 'Ex: Eu tenho um dia cheio amanhã.',
+  'Ex: I have a busy week.': 'Ex: Eu tenho uma semana cheia.',
+  'Ex: I have a meeting.': 'Ex: Eu tenho uma reunião.',
+  'Ex: I have two dogs.': 'Ex: Eu tenho dois cachorros.',
+  'Ex: I need more time to rest.': 'Ex: Eu preciso de mais tempo para descansar.',
+  'Ex: I need more sleep.': 'Ex: Eu preciso de mais sono.',
+  'Ex: I need a break.': 'Ex: Eu preciso de uma pausa.',
+  'Ex: I need to study.': 'Ex: Eu preciso estudar.',
+  'Ex: I want to learn something useful.': 'Ex: Eu quero aprender algo útil.',
+  'Ex: I want to learn English.': 'Ex: Eu quero aprender inglês.',
+  'Ex: I want to travel.': 'Ex: Eu quero viajar.',
+  'Ex: I want a new job.': 'Ex: Eu quero um novo emprego.',
+  'Ex: I can help you with the form.': 'Ex: Eu posso te ajudar com o formulário.',
+  'Ex: I can help my friend.': 'Ex: Eu posso ajudar meu amigo.',
+  'Ex: I can cook.': 'Ex: Eu sei cozinhar.',
+  "Ex: I can't go today.": 'Ex: Eu não posso ir hoje.',
+  "Ex: I can't do this right now.": 'Ex: Eu não consigo fazer isso agora.',
+  "Ex: I can't do everything alone.": 'Ex: Eu não consigo fazer tudo sozinho(a).',
+  "Ex: I can't sleep.": 'Ex: Eu não consigo dormir.',
+  'Ex: I can try.': 'Ex: Eu posso tentar.',
+  'Ex: I like to watch movies at home.': 'Ex: Eu gosto de assistir filmes em casa.',
+  'Ex: I like to watch series.': 'Ex: Eu gosto de assistir séries.',
+  'Ex: I like to run.': 'Ex: Eu gosto de correr.',
+  'Ex: I like weekends.': 'Ex: Eu gosto de fins de semana.',
+  "Ex: I don't like waking up at 5am.": 'Ex: Eu não gosto de acordar às 5h.',
+  "Ex: I don't like waking anyone up.": 'Ex: Eu não gosto de acordar ninguém.',
+  "Ex: I don't like traffic.": 'Ex: Eu não gosto de trânsito.',
+  "Ex: I don't eat fast food.": 'Ex: Eu não como fast food.',
+  'Ex: I went to the market today.': 'Ex: Eu fui ao mercado hoje.',
+  'Ex: I went to the pharmacy.': 'Ex: Eu fui à farmácia.',
+  'Ex: I went for a walk.': 'Ex: Eu fui dar uma caminhada.',
+  'Ex: I worked yesterday.': 'Ex: Eu trabalhei ontem.',
+  'Ex: I watched a good series yesterday.': 'Ex: Eu assisti uma boa série ontem.',
+  'Ex: I watched a good movie.': 'Ex: Eu assisti um bom filme.',
+  'Ex: I watched the news.': 'Ex: Eu assisti ao jornal.',
+  'Ex: I ate pizza last night.': 'Ex: Eu comi pizza ontem à noite.',
+  'Ex: I wake up early every morning.': 'Ex: Eu acordo cedo toda manhã.',
+  'Ex: I wake up early on weekdays.': 'Ex: Eu acordo cedo nos dias de semana.',
+  'Ex: I wake up tired.': 'Ex: Eu acordo cansado(a).',
+  'Ex: I walk every day.': 'Ex: Eu caminho todo dia.',
+  'Ex: I take a shower in the evening.': 'Ex: Eu tomo banho à noite.',
+  'Ex: I take a shower every day.': 'Ex: Eu tomo banho todo dia.',
+  'Ex: I take a break.': 'Ex: Eu faço uma pausa.',
+  'Ex: I eat in the morning.': 'Ex: Eu como de manhã.',
+  'Ex: I need to finish this tonight.': 'Ex: Eu preciso terminar isso hoje à noite.',
+  'Ex: I need to finish my work.': 'Ex: Eu preciso terminar meu trabalho.',
+  'Ex: I need to sleep.': 'Ex: Eu preciso dormir.',
+  'Ex: I need more time.': 'Ex: Eu preciso de mais tempo.',
+  'Ex: I want to travel to Europe.': 'Ex: Eu quero viajar para a Europa.',
+  'Ex: I want to study next year.': 'Ex: Eu quero estudar no ano que vem.',
+  'Ex: I want to change my life.': 'Ex: Eu quero mudar minha vida.',
+  'Ex: I want a better routine.': 'Ex: Eu quero uma rotina melhor.',
+  'Ex: I drink coffee every afternoon.': 'Ex: Eu bebo café toda tarde.',
+  'Ex: I drink coffee at work.': 'Ex: Eu bebo café no trabalho.',
+  'Ex: I drink water.': 'Ex: Eu bebo água.',
+  'Ex: I exercise every morning.': 'Ex: Eu me exercito toda manhã.',
+  'Ex: I eat rice and beans every day.': 'Ex: Eu como arroz e feijão todo dia.',
+  'Ex: I eat rice and chicken.': 'Ex: Eu como arroz e frango.',
+  'Ex: I eat fruit.': 'Ex: Eu como fruta.',
+  'Ex: I cook for lunch.': 'Ex: Eu cozinho no almoço.',
+  'Ex: I had a great day last Sunday.': 'Ex: Eu tive um ótimo dia no último domingo.',
+  'Ex: I had a great meeting.': 'Ex: Eu tive uma ótima reunião.',
+  'Ex: I had a long day.': 'Ex: Eu tive um dia longo.',
+  'Ex: I had good news.': 'Ex: Eu tive boas notícias.',
+  'Ex: I talked to my friend this morning.': 'Ex: Eu conversei com meu amigo hoje de manhã.',
+  'Ex: I talked to my boss.': 'Ex: Eu conversei com meu chefe.',
+  'Ex: I talked for a long time.': 'Ex: Eu conversei por um bom tempo.',
+  'Ex: I called my mom last night.': 'Ex: Eu liguei pra minha mãe ontem à noite.',
+  'Ex: I love spending time with my friends.': 'Ex: Eu amo passar tempo com meus amigos.',
+  'Ex: I love spending time at home.': 'Ex: Eu amo passar tempo em casa.',
+  'Ex: I love spending the weekend outside.': 'Ex: Eu amo passar o fim de semana ao ar livre.',
+  'Ex: I love music.': 'Ex: Eu amo música.',
+  'Ex: I hate waiting in long queues.': 'Ex: Eu odeio esperar em filas longas.',
+  'Ex: I hate waiting in traffic.': 'Ex: Eu odeio esperar no trânsito.',
+  'Ex: I hate waiting all day.': 'Ex: Eu odeio esperar o dia todo.',
+  'Ex: I hate Mondays.': 'Ex: Eu odeio segundas-feiras.',
+  'Ex: I go to the gym on weekdays.': 'Ex: Eu vou à academia nos dias de semana.',
+  'Ex: I go to the bakery.': 'Ex: Eu vou à padaria.',
+  'Ex: I go home early.': 'Ex: Eu vou pra casa cedo.',
+  'Ex: I exercise three times a week.': 'Ex: Eu me exercito três vezes por semana.',
+  'Ex: I went to the park last Saturday.': 'Ex: Eu fui ao parque no último sábado.',
+  'Ex: I went to the hospital.': 'Ex: Eu fui ao hospital.',
+  'Ex: I went downtown.': 'Ex: Eu fui ao centro.',
+  'Ex: I rested last Sunday.': 'Ex: Eu descansei no último domingo.',
+  'Ex: I bought a new shirt yesterday.': 'Ex: Eu comprei uma camisa nova ontem.',
+  'Ex: I bought a new book.': 'Ex: Eu comprei um livro novo.',
+  'Ex: I bought a gift.': 'Ex: Eu comprei um presente.',
+  'Ex: I bought food.': 'Ex: Eu comprei comida.',
+  'Ex: I got a message from my boss.': 'Ex: Eu recebi uma mensagem do meu chefe.',
+  'Ex: I got a message this morning.': 'Ex: Eu recebi uma mensagem hoje de manhã.',
+  'Ex: I got a gift.': 'Ex: Eu ganhei um presente.',
+  'Ex: I got good news.': 'Ex: Eu recebi boas notícias.',
+  'Ex: I need to remember to pay the bill.': 'Ex: Eu preciso lembrar de pagar a conta.',
+  'Ex: I need to remember that.': 'Ex: Eu preciso lembrar disso.',
+  'Ex: I need to finish this.': 'Ex: Eu preciso terminar isso.',
+  'Ex: I need a reminder.': 'Ex: Eu preciso de um lembrete.',
+  'Ex: I forgot to send the file.': 'Ex: Eu esqueci de mandar o arquivo.',
+  'Ex: I forgot to send the email.': 'Ex: Eu esqueci de mandar o e-mail.',
+  'Ex: I forgot to call.': 'Ex: Eu esqueci de ligar.',
+  'Ex: I forgot my password.': 'Ex: Eu esqueci minha senha.',
+  'Ex: My name is Maria.': 'Ex: Meu nome é Maria.',
+  'Ex: I live in São Paulo.': 'Ex: Eu moro em São Paulo.',
+  'Ex: I work as a teacher.': 'Ex: Eu trabalho como professor(a).',
+  'Ex: I like to read in my free time.': 'Ex: Eu gosto de ler no meu tempo livre.',
+  'Ex: I love my family.': 'Ex: Eu amo minha família.',
+  'Ex: I hate traffic.': 'Ex: Eu odeio trânsito.',
+  'Ex: In the future, I want to travel.': 'Ex: No futuro, eu quero viajar.',
+  'Ex: This challenge helped me to be more confident.': 'Ex: Esse desafio me ajudou a ser mais confiante.',
+};
+
+/* ─────────────────────────────────────────────────────
    HELPERS
 ───────────────────────────────────────────────────── */
 function parseDate(str) {
@@ -976,6 +1343,16 @@ function pad(n) { return String(n).padStart(2, '0'); }
 /* ─────────────────────────────────────────────────────
    BUILD SENTENCE FIELDS
 ───────────────────────────────────────────────────── */
+// Troca os underscores (_____) por uma linha reta contínua
+function toBlank(str) {
+  return str.replace(/_+/g, '<span class="blank"></span>');
+}
+
+// Monta o chip de estrutura (somente em inglês)
+function setStruct(elId, estrutura) {
+  document.getElementById(elId).textContent = estrutura;
+}
+
 function buildFields(containerEl, frases, prefix) {
   containerEl.innerHTML = '';
   frases.forEach((f, i) => {
@@ -988,16 +1365,29 @@ function buildFields(containerEl, frases, prefix) {
 
     const scaf = document.createElement('div');
     scaf.className = 'scaffold';
-    scaf.textContent = `${f.scaffold_en}  •  ${f.scaffold_pt}`;
+
+    const enLine = document.createElement('div');
+    enLine.className = 'en';
+    enLine.innerHTML = toBlank(f.scaffold_en);
+
+    const ptLine = document.createElement('div');
+    ptLine.className = 'pt';
+    ptLine.innerHTML = toBlank(f.scaffold_pt);
+
+    scaf.appendChild(enLine);
+    scaf.appendChild(ptLine);
 
     const ta = document.createElement('textarea');
     ta.name = `${prefix}_frase_${i + 1}`;
-    ta.placeholder = f.placeholder;
-    ta.rows = 2;
+    // Exemplo em inglês + tradução DENTRO da caixa (some junto quando o aluno digita)
+    const exPt = EX_PT[f.placeholder];
+    ta.placeholder = exPt ? `${f.placeholder}\n${exPt}` : f.placeholder;
+    ta.rows = 3;
 
     wrap.appendChild(num);
     wrap.appendChild(scaf);
     wrap.appendChild(ta);
+
     containerEl.appendChild(wrap);
   });
 }
@@ -1008,9 +1398,17 @@ function buildFields(containerEl, frases, prefix) {
 function renderDay(dayIndex) {
   const o = OFICINAS[dayIndex];
   const dayNum = dayIndex + 1;
-  const pct = Math.round((dayNum / 14) * 100);
+  const todayIdx = getDayIndex();
 
-  document.getElementById('badge-text').textContent = `Dia ${dayNum} de 14 · Ao vivo`;
+  // Badge: "Ao vivo" só no dia de hoje; dias passados ficam neutros
+  const badge = document.getElementById('day-badge');
+  if (dayIndex === todayIdx) {
+    badge.classList.remove('past');
+    document.getElementById('badge-text').textContent = `Dia ${dayNum} de 14 · Ao vivo`;
+  } else {
+    badge.classList.add('past');
+    document.getElementById('badge-text').textContent = `Dia ${dayNum} de 14`;
+  }
 
   document.getElementById('oficina-title').innerHTML =
     `<span style="color:var(--purple-l)">Dia ${dayNum}</span> — ${o.titulo.replace(/^Oficina \d+ – /, '')}`;
@@ -1018,8 +1416,20 @@ function renderDay(dayIndex) {
   document.getElementById('oficina-msg').textContent = o.msg;
   document.getElementById('oficina-tip').textContent = o.dica;
 
-  document.getElementById('progress-pct').textContent = pct + '%';
-  document.getElementById('progress-fill').style.width = pct + '%';
+  // Reseta o estado do formulário ao abrir o dia
+  const form = document.getElementById('oficina-form');
+  form.reset();
+  form.style.display = 'block';
+  document.getElementById('success-msg').style.display = 'none';
+  document.getElementById('error-msg').style.display = 'none';
+  const sBtn = document.getElementById('submit-btn');
+  sBtn.disabled = false;
+  sBtn.textContent = 'Enviar Oficina do Dia 🚀';
+
+  // Pré-preenche nome/e-mail já salvos no navegador
+  const prof = loadProfile();
+  if (prof.nome)  document.getElementById('nome').value  = prof.nome;
+  if (prof.email) document.getElementById('email').value = prof.email;
 
   // Hidden fields
   document.getElementById('field-dia').value = dayNum;
@@ -1027,20 +1437,30 @@ function renderDay(dayIndex) {
 
   // Part 1
   document.getElementById('p1-title').textContent = 'Parte 1';
-  document.getElementById('p1-struct').textContent = o.p1.estrutura;
+  setStruct('p1-struct', o.p1.estrutura);
   document.getElementById('p1-en').textContent = o.p1.frase_en;
   document.getElementById('p1-pt').textContent = o.p1.frase_pt;
   buildFields(document.getElementById('p1-fields'), o.p1.frases, 'p1');
 
   // Part 2
   document.getElementById('p2-title').textContent = 'Parte 2';
-  document.getElementById('p2-struct').textContent = o.p2.estrutura;
+  setStruct('p2-struct', o.p2.estrutura);
   document.getElementById('p2-en').textContent = o.p2.frase_en;
   document.getElementById('p2-pt').textContent = o.p2.frase_pt;
   buildFields(document.getElementById('p2-fields'), o.p2.frases, 'p2');
 
-  // Lion link
-  document.getElementById('lion-link').href = CONFIG.linkMecanicoLion;
+  // Lion link — Dia 1 inicia a conversa; Dia 2+ continua a MESMA conversa
+  const lionDesc = document.getElementById('lion-desc');
+  const lionLink = document.getElementById('lion-link');
+  if (dayNum === 1) {
+    lionDesc.textContent = 'Abra o Mecânico Lion, cole suas frases e receba correção e feedback na hora. ⚠️ Importante: guarde essa conversa — a partir de amanhã você vai voltar nela todos os dias, pra ele acompanhar a sua evolução!';
+    lionLink.href = CONFIG.linkMecanicoLion;
+    lionLink.textContent = 'Abrir o Mecânico Lion →';
+  } else {
+    lionDesc.innerHTML = 'Abra o ChatGPT e <strong>volte na MESMA conversa</strong> com o Mecânico Lion que você começou no Dia 1 (ela fica na lista de conversas, à esquerda). Assim ele lembra do seu histórico e acompanha sua evolução. É só colar as frases de hoje lá.';
+    lionLink.href = CONFIG.linkChatGPT;
+    lionLink.textContent = 'Abrir o ChatGPT (continuar conversa) →';
+  }
 }
 
 /* ─────────────────────────────────────────────────────
@@ -1095,6 +1515,9 @@ document.getElementById('oficina-form').addEventListener('submit', async functio
     });
 
     if (res.ok) {
+      saveProfile(nome, email);
+      const dia = parseInt(document.getElementById('field-dia').value, 10);
+      if (dia) addCompleted(dia);
       this.style.display = 'none';
       document.getElementById('success-msg').style.display = 'block';
       window.scrollTo({ top: document.getElementById('success-msg').offsetTop - 20, behavior: 'smooth' });
@@ -1109,24 +1532,171 @@ document.getElementById('oficina-form').addEventListener('submit', async functio
 });
 
 /* ─────────────────────────────────────────────────────
-   INIT
+   PROGRESSO DO ALUNO (salvo no navegador do próprio aluno)
 ───────────────────────────────────────────────────── */
-(function init() {
+const LS_DONE = 'd100_concluidos';
+const LS_PROF = 'd100_perfil';
+
+function getCompleted() {
+  try { return JSON.parse(localStorage.getItem(LS_DONE)) || []; }
+  catch { return []; }
+}
+function addCompleted(dia) {
+  const arr = getCompleted();
+  if (!arr.includes(dia)) {
+    arr.push(dia);
+    localStorage.setItem(LS_DONE, JSON.stringify(arr));
+  }
+}
+function loadProfile() {
+  try { return JSON.parse(localStorage.getItem(LS_PROF)) || {}; }
+  catch { return {}; }
+}
+function saveProfile(nome, email) {
+  localStorage.setItem(LS_PROF, JSON.stringify({ nome, email }));
+}
+
+// Modo administrador: libera todos os dias para o Augusto conferir.
+// Ativa visitando o site com ?adm=1 ; desativa com ?adm=0 (fica salvo no navegador).
+function adminOn() {
+  return localStorage.getItem('d100_admin') === '1';
+}
+
+// Quantos dias estão liberados: do Dia 1 até o dia de hoje (no máximo 14)
+function unlockedCount() {
+  if (adminOn()) return 14;       // admin vê tudo
+  const idx = getDayIndex();      // 0 = Dia 1
+  if (idx < 0) return 0;
+  return Math.min(idx + 1, 14);
+}
+
+/* ─────────────────────────────────────────────────────
+   BOARD — painel dos 14 dias
+───────────────────────────────────────────────────── */
+function renderBoard() {
+  const unlocked = unlockedCount();
+  const done = getCompleted();
+  const todayIdx = getDayIndex();
+
+  // Banner do modo administrador
+  document.getElementById('admin-banner').style.display = adminOn() ? 'block' : 'none';
+
+  // Badge "ao vivo" mostrando o dia OFICIAL de hoje (mesmo se o aluno estiver atrasado)
+  const bBadge = document.getElementById('board-badge');
+  const bText = document.getElementById('board-badge-text');
+  if (todayIdx >= 0 && todayIdx < 14) {
+    bBadge.style.display = 'inline-flex';
+    bBadge.classList.remove('past');
+    bText.textContent = `Hoje é o Dia ${todayIdx + 1} de 14 · Ao vivo`;
+  } else if (todayIdx >= 14) {
+    bBadge.style.display = 'inline-flex';
+    bBadge.classList.add('past');
+    bText.textContent = `Desafio encerrado · 14 dias concluídos`;
+  } else {
+    bBadge.style.display = 'none';   // antes do início (preview admin)
+  }
+
+  // Barra de progresso = dias concluídos / 14
+  const pct = Math.round((done.length / 14) * 100);
+  document.getElementById('board-fill').style.width = pct + '%';
+  document.getElementById('board-pct').textContent = `${done.length} de 14 dias concluídos`;
+
+  // Banner de parabéns quando o desafio terminou
+  document.getElementById('board-congrats').style.display = (todayIdx >= 14) ? 'block' : 'none';
+
+  // CTA do dia atual
+  const cta = document.getElementById('board-cta');
+  if (todayIdx >= 0 && todayIdx < 14) {
+    const o = OFICINAS[todayIdx];
+    cta.style.display = 'flex';
+    cta.href = `#/dia/${todayIdx + 1}`;
+    document.getElementById('cta-num').textContent = todayIdx + 1;
+    document.getElementById('cta-label').textContent =
+      done.includes(todayIdx + 1) ? 'Dia de hoje · concluído ✓' : 'Dia de hoje';
+    document.getElementById('cta-title').textContent = o.titulo.replace(/^Oficina \d+ – /, '');
+  } else {
+    cta.style.display = 'none';
+  }
+
+  // Grade dos 14 dias
+  const grid = document.getElementById('day-grid');
+  grid.innerHTML = '';
+  OFICINAS.forEach((o, i) => {
+    const dayNum = i + 1;
+    const isUnlocked = i < unlocked;
+    const isDone = done.includes(dayNum);
+    const isToday = i === todayIdx;
+    const titulo = o.titulo.replace(/^Oficina \d+ – /, '');
+
+    let el;
+    if (isUnlocked) {
+      el = document.createElement('a');
+      el.href = `#/dia/${dayNum}`;
+      el.className = 'day-card ' + (isDone ? 'done' : 'available') + (isToday ? ' current' : '');
+    } else {
+      el = document.createElement('div');
+      el.className = 'day-card locked';
+    }
+
+    const status = isDone ? '✓' : (isUnlocked ? '' : '🔒');
+    el.innerHTML =
+      `<div class="day-card-top">
+         <span class="day-card-num">${dayNum}</span>
+         <span class="day-card-status">${status}</span>
+       </div>
+       <div class="day-card-title">${titulo}</div>`;
+    grid.appendChild(el);
+  });
+}
+
+/* ─────────────────────────────────────────────────────
+   ROTEADOR — troca de telas via #hash
+───────────────────────────────────────────────────── */
+function showView(id) {
+  ['countdown-view', 'board-view', 'day-view'].forEach(v => {
+    document.getElementById(v).style.display = (v === id) ? 'block' : 'none';
+  });
+  window.scrollTo({ top: 0 });
+}
+
+let countdownStarted = false;
+
+function route() {
+  // Liga/desliga o modo administrador pela URL (?adm=1 ou ?adm=0)
+  const params = new URLSearchParams(location.search);
+  if (params.get('adm') === '1') localStorage.setItem('d100_admin', '1');
+  if (params.get('adm') === '0') localStorage.removeItem('d100_admin');
+
   const idx = getDayIndex();
 
-  if (idx < 0) {
-    // Before start
-    document.getElementById('countdown-view').style.display = 'block';
-    startCountdown();
-  } else if (idx >= 14) {
-    // After challenge
-    document.getElementById('done-view').style.display = 'block';
-  } else {
-    // Active day
-    document.getElementById('active-view').style.display = 'block';
-    renderDay(idx);
+  // Antes do início → contagem regressiva (admin pula essa tela e vê o painel)
+  if (idx < 0 && !adminOn()) {
+    showView('countdown-view');
+    if (!countdownStarted) { startCountdown(); countdownStarted = true; }
+    return;
   }
-})();
+
+  const match = location.hash.match(/^#\/dia\/(\d+)$/);
+  if (match) {
+    const dayNum = parseInt(match[1], 10);
+    // Só abre se for um dia válido e já liberado
+    if (dayNum >= 1 && dayNum <= unlockedCount()) {
+      renderDay(dayNum - 1);
+      showView('day-view');
+      return;
+    }
+    // Dia inválido ou ainda bloqueado → volta pro painel
+    location.hash = '#/';
+    return;
+  }
+
+  // Qualquer outro caso → painel
+  renderBoard();
+  showView('board-view');
+}
+
+window.addEventListener('hashchange', route);
+route();
 </script>
 </body>
 </html>
