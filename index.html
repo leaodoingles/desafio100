@@ -144,6 +144,16 @@
     }
     .card p { font-size: 15px; line-height: 1.7; color: #d1d5db; }
 
+    /* Blocos de instrução (Como usar / Instruções importantes) */
+    .info-card p { font-size: 15px; line-height: 1.7; color: #d1d5db; margin-bottom: 12px; }
+    .info-card p:last-child { margin-bottom: 0; }
+    .info-card ol { margin: 6px 0 0; padding-left: 22px; }
+    .info-card li { font-size: 15px; line-height: 1.7; color: #d1d5db; margin-bottom: 10px; }
+    .info-card li:last-child { margin-bottom: 0; }
+    .info-card li::marker { color: var(--purple-l); font-weight: 800; }
+    .info-card strong { color: var(--text); }
+    .info-card em { color: var(--purple-l); font-style: normal; }
+
     /* ── TIP CARD ───────────────────────────────────── */
     .tip-card {
       background: rgba(124, 58, 237, .08);
@@ -736,6 +746,9 @@
       <p id="oficina-msg"></p>
     </div>
 
+    <!-- Instruções extras (aparecem só em alguns dias, ex.: Dia 1) -->
+    <div id="day-extras"></div>
+
     <!-- Tip -->
     <div class="tip-card">
       <div class="tip-icon">💡</div>
@@ -819,7 +832,7 @@
    CONFIGURAÇÃO — edite aqui antes de publicar
 ───────────────────────────────────────────────────── */
 const CONFIG = {
-  dataInicio: '2026-06-11',
+  dataInicio: '2026-06-09',
   formspreeEndpoint: 'https://formspree.io/f/mdavzoez',
   // Link direto do Mecânico Lion (usado SÓ no Dia 1, para iniciar a conversa)
   linkMecanicoLion: 'https://chatgpt.com/g/g-6816a8bfd21881919f0327d722e7435d-lion-o-seu-mecanico',
@@ -835,7 +848,24 @@ const OFICINAS = [
     titulo: 'Oficina 01 – Falando do que eu gosto e do que eu tenho',
     subtitulo: 'Estruturas: I like… / I have…',
     msg: 'Hey hey hey! Chegamos ao nosso primeiro dia de Oficina! Se você tá aqui, já tá fazendo mais do que muita gente que só pensa em aprender. Aqui é prática leve, com método e com frases que fazem sentido na sua rotina. Bora montar suas primeiras frases com clareza, criatividade e confiança!',
-    dica: 'Não precisa tentar ser perfeito(a). O mais importante é tornar a frase sua. Use coisas do seu mundo real — algo que você viveu, pensou ou ouviu.',
+    dica: 'Não precisa tentar ser perfeito(a). O mais importante é tornar a frase sua. Use coisas do seu mundo real — algo que você viveu, pensou ou ouviu.\nFrases simples ou mais elaboradas — as duas são valiosas. Quem se expõe com leveza e constância, vai mais longe e aprende mais rápido. Mesmo a frase mais básica, quando vem de você, tem poder.',
+    extras: [
+      {
+        icon: '📘',
+        title: 'Como usar a Oficina todos os dias',
+        html: `<p>Pra que o desafio funcione <strong>DE VERDADE</strong>, siga essa rotina simples:</p>
+<ol>
+<li>Leia as instruções e entenda as estruturas</li>
+<li>Crie suas <strong>5 frases (completas) da Parte 1</strong> e suas <strong>5 frases (completas) da Parte 2</strong></li>
+<li>Marque no seu PDF de acompanhamento (opcional)</li>
+<li>Envie as frases pro <strong>Mecânico Lion</strong> (vale digitar ou mandar print!)</li>
+<li>Se tiver dúvidas, diga o que queria dizer que ele te ajuda</li>
+<li>Tente reutilizar palavras dos dias anteriores</li>
+<li>Mande pra mim na DM do Instagram (<strong>@leaodoingles</strong>) a Oficina do dia feita + o feedback do Mecânico Lion — assim eu posso fazer comentários e tirar dúvidas (caso necessário)</li>
+<li>Siga até o fim — são só <strong>14 dias</strong> pra transformar seu inglês</li>
+</ol>`,
+      },
+    ],
     p1: {
       estrutura: 'Estrutura: I like…',
       frase_en: 'I like coffee in the morning.',
@@ -1402,6 +1432,18 @@ const EX_PT = {
   'Ex: This challenge helped me to be more confident.': 'Ex: Esse desafio me ajudou a ser mais confiante.',
 };
 
+// Bloco "Instruções importantes" — aparece em TODOS os dias
+const INSTRUCOES_IMPORTANTES = {
+  icon: '📌',
+  title: 'Instruções importantes',
+  html: `<p><strong>• Não repita palavras dentro da mesma parte.</strong><br>
+Exemplo: se usou <em>"coffee"</em> em alguma frase da Parte 1, <strong>não use "coffee" de novo na mesma parte</strong>. No máximo, na Parte 2.<br>
+👉 Cada frase deve usar um vocabulário diferente — isso força sua criatividade e te ajuda a expandir suas ideias.</p>
+<p><strong>• Pode (e deve!) reciclar palavras ao longo dos dias.</strong><br>
+A repetição em contextos diferentes é o que faz você <strong>fixar e consolidar</strong>.<br>
+O segredo da fluência não é só aprender palavra nova — é <strong>voltar nelas com confiança</strong>.</p>`,
+};
+
 /* ─────────────────────────────────────────────────────
    HELPERS
 ───────────────────────────────────────────────────── */
@@ -1495,7 +1537,19 @@ function renderDay(dayIndex) {
     `<span style="color:var(--purple-l)">Dia ${dayNum}</span> — ${o.titulo.replace(/^Oficina \d+ – /, '')}`;
   document.getElementById('oficina-subtitle').textContent = o.subtitulo;
   document.getElementById('oficina-msg').textContent = o.msg;
-  document.getElementById('oficina-tip').textContent = o.dica;
+  document.getElementById('oficina-tip').innerHTML = o.dica.replace(/\n/g, '<br><br>');
+
+  // Blocos extras de instrução (aparecem só nos dias que têm, ex.: Dia 1)
+  const extrasEl = document.getElementById('day-extras');
+  extrasEl.innerHTML = '';
+  // Blocos do dia (ex.: "Como usar" só no Dia 1) + "Instruções importantes" em todos os dias
+  const blocks = (o.extras || []).concat([INSTRUCOES_IMPORTANTES]);
+  blocks.forEach(block => {
+    const card = document.createElement('div');
+    card.className = 'card info-card';
+    card.innerHTML = `<div class="card-label">${block.icon} ${block.title}</div>${block.html}`;
+    extrasEl.appendChild(card);
+  });
 
   // Reseta o estado do formulário ao abrir o dia
   const form = document.getElementById('oficina-form');
