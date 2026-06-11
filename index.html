@@ -264,6 +264,12 @@
     }
     textarea::placeholder { color: #c4bce0; opacity: .85; font-style: italic; }
 
+    /* Campo obrigatório não preenchido */
+    input.invalid, textarea.invalid {
+      border-color: #ef4444 !important;
+      box-shadow: 0 0 0 2px rgba(239,68,68,.25);
+    }
+
     /* Seta neon vazada e animada apontando para o primeiro campo */
     .write-arrow {
       display: flex;
@@ -1873,18 +1879,52 @@ function startCountdown() {
 document.getElementById('oficina-form').addEventListener('submit', async function(e) {
   e.preventDefault();
 
-  const nome  = document.getElementById('nome').value.trim();
-  const email = document.getElementById('email').value.trim();
-  if (!nome || !email) {
-    alert('Por favor, preencha seu nome e e-mail antes de enviar.');
+  const btn = document.getElementById('submit-btn');
+  const errEl = document.getElementById('error-msg');
+
+  // Limpa marcações de erro anteriores
+  this.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+  errEl.style.display = 'none';
+
+  const nomeEl = document.getElementById('nome');
+  const emailEl = document.getElementById('email');
+  const nome = nomeEl.value.trim();
+  const email = emailEl.value.trim();
+  const emailOk = /^\S+@\S+\.\S+$/.test(email);
+
+  let firstInvalid = null;
+  const markInvalid = (el) => { el.classList.add('invalid'); if (!firstInvalid) firstInvalid = el; };
+
+  if (!nome) markInvalid(nomeEl);
+  if (!emailOk) markInvalid(emailEl);
+
+  // Todas as 10 frases precisam estar preenchidas
+  let emptySentences = 0;
+  ['p1', 'p2'].forEach(prefix => {
+    for (let i = 1; i <= 5; i++) {
+      const ta = document.querySelector(`[name="${prefix}_frase_${i}"]`);
+      if (ta && !ta.value.trim()) { markInvalid(ta); emptySentences++; }
+    }
+  });
+
+  if (firstInvalid) {
+    let msg;
+    if (!nome || !emailOk) {
+      msg = emptySentences > 0
+        ? 'Preencha seu nome, um e-mail válido e todas as 10 frases antes de enviar. 👇'
+        : 'Confira seu nome e um e-mail válido antes de enviar. 👇';
+    } else {
+      msg = `Faltou preencher ${emptySentences === 1 ? '1 frase' : emptySentences + ' frases'}. Complete todas as 10 antes de enviar. 👇`;
+    }
+    errEl.textContent = msg;
+    errEl.style.display = 'block';
+    firstInvalid.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    setTimeout(() => firstInvalid.focus({ preventScroll: true }), 250);
     return;
   }
 
-  const btn = document.getElementById('submit-btn');
-  const errEl = document.getElementById('error-msg');
   btn.disabled = true;
   btn.textContent = 'Enviando...';
-  errEl.style.display = 'none';
 
   const data = new FormData(this);
 
@@ -1909,7 +1949,15 @@ document.getElementById('oficina-form').addEventListener('submit', async functio
   } catch {
     btn.disabled = false;
     btn.textContent = 'Enviar Oficina do Dia 🚀';
+    errEl.textContent = 'Ops! Algo deu errado. Tente novamente em alguns instantes.';
     errEl.style.display = 'block';
+  }
+});
+
+// Tira o destaque vermelho assim que o aluno começa a corrigir o campo
+document.getElementById('oficina-form').addEventListener('input', function(e) {
+  if (e.target.classList && e.target.classList.contains('invalid')) {
+    e.target.classList.remove('invalid');
   }
 });
 
