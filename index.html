@@ -299,6 +299,39 @@
       50%      { transform: translateY(7px); }
     }
 
+    /* Botões do guia (OK → Próxima) */
+    .field-controls { display: flex; gap: 10px; margin-top: 8px; }
+    .btn-ok, .btn-next {
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .02em;
+      border-radius: 9px;
+      padding: 9px 18px;
+      cursor: pointer;
+      border: none;
+      transition: background .2s, transform .1s, border-color .2s;
+    }
+    .btn-ok {
+      background: transparent;
+      border: 1.5px solid #2e2550;
+      color: var(--purple-l);
+    }
+    .btn-ok:hover { border-color: var(--purple); }
+    .btn-ok:active { transform: scale(.96); }
+    .btn-next {
+      background: var(--purple);
+      color: #fff;
+    }
+    .btn-next:hover { background: #6d28d9; }
+    .btn-next:active { transform: scale(.96); }
+    .sentence-field.done .sentence-num::after {
+      content: ' ✓';
+      color: #22c55e;
+      font-weight: 800;
+    }
+    .sentence-field.done textarea { border-color: rgba(34,197,94,.5); }
+
     /* Pop-up de lembrete */
     .modal-overlay {
       display: none;
@@ -938,10 +971,10 @@
       <a id="lion-link" href="#" target="_blank" rel="noopener" class="btn-lion">Abrir o Mecânico Lion →</a>
     </div>
 
-    <!-- Instagram -->
+    <!-- Enviar pro professor -->
     <div class="insta-card">
-      <span class="insta-icon">📸</span>
-      <p>Depois de receber o feedback do Lion, <strong>manda um print da correção na DM</strong> do <strong>@leaodoingles</strong> no Instagram para registrar sua conclusão do dia!</p>
+      <span class="insta-icon">📲</span>
+      <p>Depois de receber o feedback do Lion, <strong>me manda no privado</strong> um print da correção pra registrar sua conclusão do dia!</p>
     </div>
 
     <div style="text-align:center;">
@@ -998,7 +1031,7 @@ const OFICINAS = [
 <li>Envie as frases pro <strong>Mecânico Lion</strong> (vale digitar ou mandar print!)</li>
 <li>Se tiver dúvidas, diga o que queria dizer que ele te ajuda</li>
 <li>Tente reutilizar palavras dos dias anteriores</li>
-<li>Mande pra mim na DM do Instagram (<strong>@leaodoingles</strong>) a Oficina do dia feita + o feedback do Mecânico Lion — assim eu posso fazer comentários e tirar dúvidas (caso necessário)</li>
+<li>Me manda no privado a Oficina do dia feita + o feedback do Mecânico Lion — assim eu posso fazer comentários e tirar dúvidas (caso necessário)</li>
 <li>Siga até o fim — são só <strong>14 dias</strong> pra transformar seu inglês</li>
 </ol>`,
       },
@@ -1613,11 +1646,50 @@ function setStruct(elId, estrutura) {
   document.getElementById(elId).textContent = estrutura;
 }
 
+/* ── GUIA: a seta acompanha o campo atual (fluxo OK → Próxima) ── */
+let arrowEl = null;
+let currentStep = 0;
+
+function ensureArrow() {
+  if (!arrowEl) {
+    arrowEl = document.createElement('div');
+    arrowEl.className = 'write-arrow';
+    arrowEl.setAttribute('aria-hidden', 'true');
+    arrowEl.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 3 V17.5 M6 12 L12 19 L18 12"/></svg><span class="arrow-label">Escreva aqui</span>';
+  }
+  return arrowEl;
+}
+
+// Localiza o campo (wrap) de um passo: 0–4 = Parte 1, 5–9 = Parte 2
+function fieldWrapForStep(step) {
+  const prefix = step < 5 ? 'p1' : 'p2';
+  const n = (step % 5) + 1;
+  const ta = document.querySelector(`[name="${prefix}_frase_${n}"]`);
+  return ta ? ta.closest('.sentence-field') : null;
+}
+
+// Move a seta (e opcionalmente o foco) para o campo do passo indicado
+function goToStep(step, doFocus) {
+  currentStep = step;
+  const wrap = fieldWrapForStep(step);
+  if (!wrap) return;
+  const ta = wrap.querySelector('textarea');
+  const arrow = ensureArrow();
+  arrow.style.display = 'flex';
+  wrap.insertBefore(arrow, ta); // seta logo acima da caixa atual
+  if (doFocus) {
+    wrap.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    setTimeout(() => ta.focus({ preventScroll: true }), 250);
+  }
+}
+
 function buildFields(containerEl, frases, prefix) {
   containerEl.innerHTML = '';
   frases.forEach((f, i) => {
+    const step = (prefix === 'p1' ? 0 : 5) + i;
     const wrap = document.createElement('div');
     wrap.className = 'sentence-field';
+    wrap.dataset.step = step;
 
     const num = document.createElement('div');
     num.className = 'sentence-num';
@@ -1643,23 +1715,43 @@ function buildFields(containerEl, frases, prefix) {
     const exPt = EX_PT[f.placeholder];
     ta.placeholder = exPt ? `${f.placeholder}\n${exPt}` : f.placeholder;
     ta.rows = 3;
+    // Pop-up de lembrete na primeira vez que o aluno for escrever
+    ta.addEventListener('focus', openReminder);
+
+    // Controles do guia: OK → Próxima
+    const controls = document.createElement('div');
+    controls.className = 'field-controls';
+    const okBtn = document.createElement('button');
+    okBtn.type = 'button';
+    okBtn.className = 'btn-ok';
+    okBtn.textContent = 'OK ✓';
+    const nextBtn = document.createElement('button');
+    nextBtn.type = 'button';
+    nextBtn.className = 'btn-next';
+    nextBtn.style.display = 'none';
+    nextBtn.textContent = step === 9 ? 'Revisar e enviar ↓' : 'Próxima →';
+    controls.appendChild(okBtn);
+    controls.appendChild(nextBtn);
+
+    okBtn.addEventListener('click', () => {
+      wrap.classList.add('done');
+      okBtn.style.display = 'none';
+      nextBtn.style.display = 'inline-flex';
+      if (step === 9 && arrowEl) arrowEl.style.display = 'none'; // último: seta sai
+    });
+    nextBtn.addEventListener('click', () => {
+      nextBtn.style.display = 'none';
+      if (step === 9) {
+        document.getElementById('submit-btn').scrollIntoView({ block: 'center', behavior: 'smooth' });
+      } else {
+        goToStep(step + 1, true);
+      }
+    });
 
     wrap.appendChild(num);
     wrap.appendChild(scaf);
-
-    // Seta neon apontando para o primeiro campo (Frase 1 da Parte 1)
-    if (prefix === 'p1' && i === 0) {
-      const arrow = document.createElement('div');
-      arrow.className = 'write-arrow';
-      arrow.setAttribute('aria-hidden', 'true');
-      arrow.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 3 V17.5 M6 12 L12 19 L18 12"/></svg><span class="arrow-label">Escreva aqui</span>';
-      wrap.appendChild(arrow);
-    }
-
     wrap.appendChild(ta);
-
-    // Pop-up de lembrete na primeira vez que o aluno for escrever
-    ta.addEventListener('focus', openReminder);
+    wrap.appendChild(controls);
 
     containerEl.appendChild(wrap);
   });
@@ -1734,6 +1826,9 @@ function renderDay(dayIndex) {
   document.getElementById('p2-en').textContent = o.p2.frase_en;
   document.getElementById('p2-pt').textContent = o.p2.frase_pt;
   buildFields(document.getElementById('p2-fields'), o.p2.frases, 'p2');
+
+  // Posiciona a seta-guia no primeiro campo (sem focar, pra não pular teclado/lembrete)
+  goToStep(0, false);
 
   // Lion link — Dia 1 inicia a conversa; Dia 2+ continua a MESMA conversa
   const lionDesc = document.getElementById('lion-desc');
