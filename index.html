@@ -707,6 +707,26 @@
     }
     .btn-lion:hover { background: var(--purple); color: #fff; }
 
+    /* Botão de download do PDF */
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: var(--purple);
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: .03em;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: background .2s, transform .1s;
+      box-shadow: 0 4px 14px rgba(124,58,237,.3);
+    }
+    .btn-download:hover { background: #6d28d9; transform: translateY(-1px); }
+    .btn-download:active { transform: scale(.97); }
+
     /* ── INSTAGRAM CARD ─────────────────────────────── */
     .insta-card {
       background: var(--bg3);
@@ -1215,7 +1235,7 @@
    CONFIGURAÇÃO — edite aqui antes de publicar
 ───────────────────────────────────────────────────── */
 const CONFIG = {
-  dataInicio: '2026-06-11',
+  dataInicio: '2026-06-09',
   formspreeEndpoint: 'https://formspree.io/f/mdavzoez',
   // Link direto do Mecânico Lion (usado SÓ no Dia 1, para iniciar a conversa)
   linkMecanicoLion: 'https://chatgpt.com/g/g-6816a8bfd21881919f0327d722e7435d-lion-o-seu-mecanico',
@@ -1232,23 +1252,6 @@ const OFICINAS = [
     subtitulo: 'Estruturas: I like… / I have…',
     msg: 'Hey hey hey! Chegamos ao nosso primeiro dia de Oficina! Se você tá aqui, já tá fazendo mais do que muita gente que só pensa em aprender. Aqui é prática leve, com método e com frases que fazem sentido na sua rotina. Bora montar suas primeiras frases com clareza, criatividade e confiança!',
     dica: 'Não precisa tentar ser perfeito(a). O mais importante é tornar a frase sua. Use coisas do seu mundo real — algo que você viveu, pensou ou ouviu.\nFrases simples ou mais elaboradas — as duas são valiosas. Quem se expõe com leveza e constância, vai mais longe e aprende mais rápido. Mesmo a frase mais básica, quando vem de você, tem poder.',
-    extras: [
-      {
-        icon: '📘',
-        title: 'Como usar a Oficina todos os dias',
-        html: `<p>Pra que o desafio funcione <strong>DE VERDADE</strong>, siga essa rotina simples:</p>
-<ol>
-<li>Leia as instruções e entenda as estruturas</li>
-<li>Crie suas <strong>5 frases (completas) da Parte 1</strong> e suas <strong>5 frases (completas) da Parte 2</strong></li>
-<li>Marque no seu PDF de acompanhamento (opcional)</li>
-<li>Envie as frases pro <strong>Mecânico Lion</strong> (vale digitar ou mandar print!)</li>
-<li>Se tiver dúvidas, diga o que queria dizer que ele te ajuda</li>
-<li>Tente reutilizar palavras dos dias anteriores</li>
-<li>Me manda no privado a Oficina do dia feita + o feedback do Mecânico Lion — assim eu posso fazer comentários e tirar dúvidas (caso necessário)</li>
-<li>Siga até o fim — são só <strong>14 dias</strong> pra transformar seu inglês</li>
-</ol>`,
-      },
-    ],
     p1: {
       estrutura: 'Estrutura: I like…',
       frase_en: 'I like coffee in the morning.',
@@ -1820,6 +1823,31 @@ const EX_PT = {
   'Ex: This challenge helped me to be more confident.': 'Ex: Esse desafio me ajudou a ser mais confiante.',
 };
 
+// Bloco "Como usar a Oficina todos os dias" — aparece em TODOS os dias.
+const COMO_USAR = {
+  icon: '📘',
+  title: 'Como usar a Oficina todos os dias',
+  html: `<p>Pra que o desafio funcione <strong>DE VERDADE</strong>, siga essa rotina simples:</p>
+<ol>
+<li>Leia as instruções e entenda as estruturas</li>
+<li>Crie suas <strong>5 frases (completas) da Parte 1</strong> e suas <strong>5 frases (completas) da Parte 2</strong></li>
+<li>Marque no seu PDF de acompanhamento (opcional)</li>
+<li>Envie as frases pro <strong>Mecânico Lion</strong> (vale digitar ou mandar print!)</li>
+<li>Se tiver dúvidas, diga o que queria dizer que ele te ajuda</li>
+<li>Tente reutilizar palavras dos dias anteriores</li>
+<li>Me manda no privado a Oficina do dia feita + o feedback do Mecânico Lion — assim eu posso fazer comentários e tirar dúvidas (caso necessário)</li>
+<li>Siga até o fim — são só <strong>14 dias</strong> pra transformar seu inglês</li>
+</ol>`,
+};
+
+// Bloco "Material de apoio (PDF)" — aparece em TODOS os dias.
+const PDF_DOWNLOAD = {
+  icon: '📄',
+  title: 'Material de apoio (PDF)',
+  html: `<p>Quer ter o conteúdo completo das 14 Oficinas pra acompanhar offline, marcar anotações ou imprimir? Baixe o PDF do Desafio.</p>
+<p style="text-align:center;margin-top:14px;"><a href="desafio-100.pdf" download class="btn-download">⬇ Baixar o PDF do Desafio</a></p>`,
+};
+
 // Bloco "Instruções importantes" — aparece em TODOS os dias.
 // Cada Oficina pode personalizar a palavra-exemplo via o.instrucoesExemplo.
 function getInstrucoesImportantes(exemplo) {
@@ -2036,11 +2064,14 @@ function renderDay(dayIndex) {
     .map(p => '<p>' + p + '</p>')
     .join('');
 
-  // Blocos extras de instrução (aparecem só nos dias que têm, ex.: Dia 1)
+  // Blocos extras de instrução — aparecem em TODOS os dias
   const extrasEl = document.getElementById('day-extras');
   extrasEl.innerHTML = '';
-  // Blocos do dia (ex.: "Como usar" só no Dia 1) + "Instruções importantes" em todos os dias
-  const blocks = (o.extras || []).concat([getInstrucoesImportantes(o.instrucoesExemplo)]);
+  const blocks = [
+    COMO_USAR,
+    getInstrucoesImportantes(o.instrucoesExemplo),
+    PDF_DOWNLOAD,
+  ].concat(o.extras || []);
   blocks.forEach(block => {
     const card = document.createElement('div');
     card.className = 'card info-card';
