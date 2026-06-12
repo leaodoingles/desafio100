@@ -163,7 +163,8 @@
       margin-bottom: 32px;
     }
     .tip-card .tip-icon { font-size: 18px; margin-bottom: 8px; }
-    .tip-card p { font-size: 14px; line-height: 1.7; color: #c4b5fd; }
+    .tip-card p { font-size: 14px; line-height: 1.7; color: #c4b5fd; margin-bottom: 12px; }
+    .tip-card p:last-child { margin-bottom: 0; }
 
     /* ── SECTION HEADINGS ───────────────────────────── */
     .section-title {
@@ -386,6 +387,8 @@
     .modal-card li { font-size: 15px; line-height: 1.7; color: #d1d5db; margin-bottom: 12px; }
     .modal-card li:last-child { margin-bottom: 0; }
     .modal-card li::marker { color: var(--purple-l); font-weight: 800; }
+    .modal-card p { font-size: 15px; line-height: 1.7; color: #d1d5db; margin-bottom: 14px; }
+    .modal-card p:last-of-type { margin-bottom: 22px; }
     .modal-card strong { color: var(--text); }
     .modal-card .btn-submit { margin-top: 0; }
 
@@ -924,7 +927,7 @@
     <!-- Tip -->
     <div class="tip-card">
       <div class="tip-icon">💡</div>
-      <p id="oficina-tip"></p>
+      <div id="oficina-tip"></div>
     </div>
 
     <!-- FORM -->
@@ -1013,6 +1016,16 @@
       <li><strong>Não fique travado(a)!</strong> Se sentir que empacou, peça ajuda ao <strong>Mecânico Lion</strong> 🦁 — ele tá aí pra isso.</li>
     </ol>
     <button type="button" id="reminder-close" class="btn-submit">Entendi! Bora começar 🚀</button>
+  </div>
+</div>
+
+<!-- Pop-up entre Parte 1 e Parte 2 -->
+<div id="bridge-modal" class="modal-overlay">
+  <div class="modal-card">
+    <h3>🦁 Antes de seguir pra Parte 2</h3>
+    <p>Travou em alguma palavra ou expressão? Quer dizer algo em inglês mas ainda não sabe como? <strong>Manda pro Mecânico Lion!</strong></p>
+    <p>Ele tá aí pra te ajudar a expandir seu vocabulário e ganhar mais confiança nas frases. Não precisa empacar — pede ajuda e segue firme. 💪</p>
+    <button type="button" id="bridge-close" class="btn-submit">Bora pra Parte 2 🚀</button>
   </div>
 </div>
 
@@ -1786,14 +1799,21 @@ function buildFields(containerEl, frases, prefix) {
       nextBtn.style.display = 'none';
       if (step === 9) {
         document.getElementById('submit-btn').scrollIntoView({ block: 'center', behavior: 'smooth' });
-      } else {
-        // Libera a próxima caixa e move a seta
+        return;
+      }
+      const advance = () => {
         const nextWrap = fieldWrapForStep(step + 1);
         if (nextWrap) {
           const nextTa = nextWrap.querySelector('textarea');
           if (nextTa) nextTa.disabled = false;
         }
         goToStep(step + 1, true);
+      };
+      // Ao passar da Parte 1 pra Parte 2 (passo 4 → 5): abre o pop-up do Lion
+      if (step === 4) {
+        openPartBridge(advance);
+      } else {
+        advance();
       }
     });
 
@@ -1828,7 +1848,12 @@ function renderDay(dayIndex) {
     `<span style="color:var(--purple-l)">Dia ${dayNum}</span> — ${o.titulo.replace(/^Oficina \d+ – /, '')}`;
   document.getElementById('oficina-subtitle').textContent = o.subtitulo;
   document.getElementById('oficina-msg').textContent = o.msg;
-  document.getElementById('oficina-tip').innerHTML = o.dica.replace(/\n/g, '<br><br>');
+  document.getElementById('oficina-tip').innerHTML = o.dica
+    .split(/\n+/)
+    .map(p => p.trim())
+    .filter(Boolean)
+    .map(p => '<p>' + p + '</p>')
+    .join('');
 
   // Blocos extras de instrução (aparecem só nos dias que têm, ex.: Dia 1)
   const extrasEl = document.getElementById('day-extras');
@@ -1918,6 +1943,89 @@ function startCountdown() {
 }
 
 /* ─────────────────────────────────────────────────────
+   ÁUDIO DE FOGUETE (3-2-1 + turbinas + fade out)
+───────────────────────────────────────────────────── */
+let _audioCtx = null;
+function primeAudio() {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    if (!_audioCtx) _audioCtx = new AC();
+    if (_audioCtx.state === 'suspended') _audioCtx.resume();
+  } catch (e) { /* silencioso */ }
+}
+
+function playRocketLaunch() {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    if (!_audioCtx) _audioCtx = new AC();
+    const ctx = _audioCtx;
+    if (ctx.state === 'suspended') ctx.resume();
+    const t0 = ctx.currentTime + 0.05;
+
+    // ── Contagem regressiva 3 · 2 · 1 (beeps com pitch decrescente) ──
+    const beeps = [
+      { offset: 0.0, freq: 660 }, // 3
+      { offset: 0.7, freq: 560 }, // 2
+      { offset: 1.4, freq: 470 }, // 1
+    ];
+    beeps.forEach(b => {
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = b.freq;
+      g.gain.setValueAtTime(0.0001, t0 + b.offset);
+      g.gain.exponentialRampToValueAtTime(0.45, t0 + b.offset + 0.05);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + b.offset + 0.35);
+      osc.connect(g).connect(ctx.destination);
+      osc.start(t0 + b.offset);
+      osc.stop(t0 + b.offset + 0.4);
+    });
+
+    // ── Turbinas: pink-noise filtrado com sweep ──
+    const launchAt = t0 + 2.0;
+    const duration = 4.5;
+    const len = Math.floor(ctx.sampleRate * duration);
+    const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
+    for (let i = 0; i < len; i++) {
+      const w = Math.random() * 2 - 1;
+      b0 = 0.99886 * b0 + w * 0.0555179;
+      b1 = 0.99332 * b1 + w * 0.0750759;
+      b2 = 0.96900 * b2 + w * 0.1538520;
+      b3 = 0.86650 * b3 + w * 0.3104856;
+      b4 = 0.55000 * b4 + w * 0.5329522;
+      b5 = -0.7616 * b5 - w * 0.0168980;
+      data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * 0.5362) * 0.11;
+      b6 = w * 0.115926;
+    }
+    const noise = ctx.createBufferSource();
+    noise.buffer = buf;
+
+    // Filtro: vai do grave pra um pico (decolagem) e depois cai (afastando)
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.Q.value = 0.9;
+    filter.frequency.setValueAtTime(140, launchAt);
+    filter.frequency.exponentialRampToValueAtTime(2000, launchAt + 0.9);
+    filter.frequency.exponentialRampToValueAtTime(700, launchAt + duration);
+
+    // Volume: build-up → sustain → fade out
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, launchAt);
+    gain.gain.exponentialRampToValueAtTime(0.75, launchAt + 0.5);
+    gain.gain.setValueAtTime(0.75, launchAt + duration * 0.4);
+    gain.gain.exponentialRampToValueAtTime(0.0001, launchAt + duration);
+
+    noise.connect(filter).connect(gain).connect(ctx.destination);
+    noise.start(launchAt);
+    noise.stop(launchAt + duration + 0.1);
+  } catch (e) { /* silencioso */ }
+}
+
+/* ─────────────────────────────────────────────────────
    FORM SUBMISSION
 ───────────────────────────────────────────────────── */
 document.getElementById('oficina-form').addEventListener('submit', async function(e) {
@@ -1970,6 +2078,10 @@ document.getElementById('oficina-form').addEventListener('submit', async functio
   btn.disabled = true;
   btn.textContent = 'Enviando...';
 
+  // Abençoa um AudioContext durante o gesto do usuário (Safari/iOS exige isso).
+  // O som do foguete será tocado depois, quando o envio for confirmado.
+  primeAudio();
+
   const data = new FormData(this);
 
   try {
@@ -1987,6 +2099,7 @@ document.getElementById('oficina-form').addEventListener('submit', async functio
       this.style.display = 'none';
       document.getElementById('success-msg').style.display = 'block';
       window.scrollTo({ top: document.getElementById('success-msg').offsetTop - 20, behavior: 'smooth' });
+      playRocketLaunch(); // 🚀 contagem regressiva + barulho das turbinas + fade out
     } else {
       throw new Error('server error');
     }
@@ -2017,6 +2130,17 @@ function openReminder() {
 }
 document.getElementById('reminder-close').addEventListener('click', function() {
   document.getElementById('reminder-modal').classList.remove('open');
+});
+
+// Pop-up entre Parte 1 e Parte 2: lembra o aluno de pedir ajuda ao Lion
+let onBridgeClose = null;
+function openPartBridge(cb) {
+  onBridgeClose = cb;
+  document.getElementById('bridge-modal').classList.add('open');
+}
+document.getElementById('bridge-close').addEventListener('click', function() {
+  document.getElementById('bridge-modal').classList.remove('open');
+  if (onBridgeClose) { const fn = onBridgeClose; onBridgeClose = null; fn(); }
 });
 
 // Monta o texto com todas as frases do dia, pronto pra colar no Lion
