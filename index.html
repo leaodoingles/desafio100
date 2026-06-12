@@ -1235,7 +1235,7 @@
    CONFIGURAÇÃO — edite aqui antes de publicar
 ───────────────────────────────────────────────────── */
 const CONFIG = {
-  dataInicio: '2026-06-11',
+  dataInicio: '2026-06-09',
   formspreeEndpoint: 'https://formspree.io/f/mdavzoez',
   // Link direto do Mecânico Lion (usado SÓ no Dia 1, para iniciar a conversa)
   linkMecanicoLion: 'https://chatgpt.com/g/g-6816a8bfd21881919f0327d722e7435d-lion-o-seu-mecanico',
@@ -1290,8 +1290,7 @@ const OFICINAS = [
       frases: [
         { scaffold_en: 'I need to buy a new _____.', scaffold_pt: 'Eu preciso comprar um/uma _____ novo(a).', placeholder: 'Ex: I need to buy a new shirt.' },
         { scaffold_en: 'I need to buy a _____.', scaffold_pt: 'Eu preciso comprar um/uma _____.', placeholder: 'Ex: I need to buy a gift.' },
-        { scaffold_en: 'I need to _____.', scaffold_pt: 'Eu preciso _____.', placeholder: 'Ex: I need to study.' },
-        { scaffold_en: 'I need _____.', scaffold_pt: 'Eu preciso de _____.', placeholder: 'Ex: I need a break.' },
+        { scaffold_en: 'I need (to) _____.', scaffold_pt: 'Eu preciso _____.', placeholder: 'Ex: I need to study.' },
         { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
       ],
     },
@@ -1302,8 +1301,7 @@ const OFICINAS = [
       frases: [
         { scaffold_en: 'I want to travel this _____.', scaffold_pt: 'Eu quero viajar este/esta _____.', placeholder: 'Ex: I want to travel this summer.' },
         { scaffold_en: 'I want to travel _____.', scaffold_pt: 'Eu quero viajar _____.', placeholder: 'Ex: I want to travel abroad.' },
-        { scaffold_en: 'I want to _____.', scaffold_pt: 'Eu quero _____.', placeholder: 'Ex: I want to learn English.' },
-        { scaffold_en: 'I want _____.', scaffold_pt: 'Eu quero _____.', placeholder: 'Ex: I want a new job.' },
+        { scaffold_en: 'I want (to) _____.', scaffold_pt: 'Eu quero _____.', placeholder: 'Ex: I want to learn English.' },
         { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
       ],
     },
@@ -1319,28 +1317,28 @@ const OFICINAS = [
       frase_pt: 'Eu posso te ajudar com isso.',
       frases: [
         { scaffold_en: 'I can help you with _____.', scaffold_pt: 'Eu posso te ajudar com _____.', placeholder: 'Ex: I can help you with the form.' },
-        { scaffold_en: 'I can help _____.', scaffold_pt: 'Eu posso ajudar _____.', placeholder: 'Ex: I can help my friend.' },
+        { scaffold_en: 'I can help you _____.', scaffold_pt: 'Eu posso te ajudar a _____.', placeholder: 'Ex: I can help you find it.' },
+        { scaffold_en: 'I can _____ you.', scaffold_pt: 'Eu posso _____ você.', placeholder: 'Ex: I can teach you.' },
         { scaffold_en: 'I can _____.', scaffold_pt: 'Eu posso _____.', placeholder: 'Ex: I can cook.' },
-        { scaffold_en: 'I can\'t _____.', scaffold_pt: 'Eu não posso _____.', placeholder: 'Ex: I can\'t go today.' },
         { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
       ],
     },
     p2: {
       estrutura: 'Estrutura: I can\'t…',
-      frase_en: 'I can\'t do this right now.',
-      frase_pt: 'Eu não consigo fazer isso agora.',
+      frase_en: 'I can\'t go out now.',
+      frase_pt: 'Eu não posso sair agora.',
       frases: [
-        { scaffold_en: 'I can\'t do this right _____.', scaffold_pt: 'Eu não consigo fazer isso _____.', placeholder: 'Ex: I can\'t do this right now.' },
-        { scaffold_en: 'I can\'t do _____.', scaffold_pt: 'Eu não consigo fazer _____.', placeholder: 'Ex: I can\'t do everything alone.' },
-        { scaffold_en: 'I can\'t _____.', scaffold_pt: 'Eu não consigo _____.', placeholder: 'Ex: I can\'t sleep.' },
-        { scaffold_en: 'I can _____.', scaffold_pt: 'Eu consigo _____.', placeholder: 'Ex: I can try.' },
+        { scaffold_en: 'I can\'t go out _____.', scaffold_pt: 'Eu não posso sair _____.', placeholder: 'Ex: I can\'t go out tonight.' },
+        { scaffold_en: 'I can\'t go _____.', scaffold_pt: 'Eu não posso ir _____.', placeholder: 'Ex: I can\'t go to the party.' },
+        { scaffold_en: 'I can\'t _____ now.', scaffold_pt: 'Eu não posso _____ agora.', placeholder: 'Ex: I can\'t talk now.' },
+        { scaffold_en: 'I can\'t _____.', scaffold_pt: 'Eu não posso _____.', placeholder: 'Ex: I can\'t sleep.' },
         { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
       ],
     },
   },
   {
     titulo: 'Oficina 04 – Falando sobre o que eu gosto de fazer',
-    subtitulo: 'Estruturas: I like to… / I don\'t like…',
+    subtitulo: 'Estruturas: I like to… / I love to…',
     msg: 'Hey hey hey! Olha você aqui mais uma vez — firme no seu compromisso com o inglês! Hoje a gente vai falar de algo que tem tudo a ver com leveza: o que você gosta de fazer. É com esse tipo de frase que você vai aprendendo a criar conversas mais pessoais e naturais.',
     dica: 'Essa é uma das estruturas que mais aparece em conversas do dia a dia. Não tente montar frases aleatórias. Pense: o que eu gosto MESMO de fazer? É aí que a mágica da fluência começa a acontecer.',
     p1: {
@@ -1348,82 +1346,79 @@ const OFICINAS = [
       frase_en: 'I like to watch movies at night.',
       frase_pt: 'Eu gosto de assistir filmes à noite.',
       frases: [
-        { scaffold_en: 'I like to watch movies at _____.', scaffold_pt: 'Eu gosto de assistir filmes _____.', placeholder: 'Ex: I like to watch movies at home.' },
+        { scaffold_en: 'I like to watch movies _____.', scaffold_pt: 'Eu gosto de assistir filmes _____.', placeholder: 'Ex: I like to watch movies at home.' },
         { scaffold_en: 'I like to watch _____.', scaffold_pt: 'Eu gosto de assistir _____.', placeholder: 'Ex: I like to watch series.' },
-        { scaffold_en: 'I like to _____.', scaffold_pt: 'Eu gosto de _____.', placeholder: 'Ex: I like to run.' },
-        { scaffold_en: 'I like _____.', scaffold_pt: 'Eu gosto de _____.', placeholder: 'Ex: I like weekends.' },
+        { scaffold_en: 'I like (to) _____.', scaffold_pt: 'Eu gosto _____.', placeholder: 'Ex: I like to run.' },
         { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
       ],
     },
     p2: {
-      estrutura: 'Estrutura: I don\'t like…',
-      frase_en: 'I don\'t like waking up early.',
-      frase_pt: 'Eu não gosto de acordar cedo.',
+      estrutura: 'Estrutura: I love to…',
+      frase_en: 'I love to listen to music while I work.',
+      frase_pt: 'Eu amo ouvir música enquanto trabalho.',
       frases: [
-        { scaffold_en: 'I don\'t like waking up _____.', scaffold_pt: 'Eu não gosto de acordar _____.', placeholder: 'Ex: I don\'t like waking up at 5am.' },
-        { scaffold_en: 'I don\'t like waking _____.', scaffold_pt: 'Eu não gosto de _____.', placeholder: 'Ex: I don\'t like waking anyone up.' },
-        { scaffold_en: 'I don\'t like _____.', scaffold_pt: 'Eu não gosto de _____.', placeholder: 'Ex: I don\'t like traffic.' },
-        { scaffold_en: 'I don\'t _____.', scaffold_pt: 'Eu não _____.', placeholder: 'Ex: I don\'t eat fast food.' },
+        { scaffold_en: 'I love to listen to music while I _____.', scaffold_pt: 'Eu amo ouvir música enquanto eu _____.', placeholder: 'Ex: I love to listen to music while I cook.' },
+        { scaffold_en: 'I love to listen to music _____.', scaffold_pt: 'Eu amo ouvir música _____.', placeholder: 'Ex: I love to listen to music at night.' },
+        { scaffold_en: 'I love to listen _____.', scaffold_pt: 'Eu amo ouvir _____.', placeholder: 'Ex: I love to listen to podcasts.' },
+        { scaffold_en: 'I love (to) _____.', scaffold_pt: 'Eu amo _____.', placeholder: 'Ex: I love to dance.' },
         { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
       ],
     },
   },
   {
     titulo: 'Oficina 05 – Falando do que você fez ou viveu',
-    subtitulo: 'Estruturas: I went… / I watched…',
+    subtitulo: 'Estruturas: I went… / I had…',
     msg: 'Hey hey hey! Já são 5 dias na ativa — isso é mais do que a metade da primeira semana! Se você chegou até aqui, é porque tá comprometido de verdade com o seu inglês. Você tá criando uma base forte com frases reais, com estrutura, clareza e leveza. Hoje é dia de relembrar momentos vividos.',
     dica: 'Use algo que realmente aconteceu: um atraso, uma mensagem, uma série, uma conversa com alguém, um perrengue. Quanto mais conectado com a sua realidade, mais poder essa frase tem.',
     p1: {
       estrutura: 'Estrutura: I went…',
-      frase_en: 'I went to the market yesterday.',
-      frase_pt: 'Eu fui ao mercado ontem.',
+      frase_en: 'I went to a nice restaurant last night.',
+      frase_pt: 'Eu fui a um restaurante legal ontem à noite.',
       frases: [
-        { scaffold_en: 'I went to the market _____.', scaffold_pt: 'Eu fui ao mercado _____.', placeholder: 'Ex: I went to the market today.' },
-        { scaffold_en: 'I went to the _____.', scaffold_pt: 'Eu fui ao/à _____.', placeholder: 'Ex: I went to the pharmacy.' },
-        { scaffold_en: 'I went _____.', scaffold_pt: 'Eu fui _____.', placeholder: 'Ex: I went for a walk.' },
-        { scaffold_en: 'I _____ yesterday.', scaffold_pt: 'Eu _____ ontem.', placeholder: 'Ex: I worked yesterday.' },
+        { scaffold_en: 'I went to a nice restaurant _____.', scaffold_pt: 'Eu fui a um restaurante legal _____.', placeholder: 'Ex: I went to a nice restaurant on Friday.' },
+        { scaffold_en: 'I went to a nice _____.', scaffold_pt: 'Eu fui a um(a) _____ legal.', placeholder: 'Ex: I went to a nice park.' },
+        { scaffold_en: 'I went to a _____.', scaffold_pt: 'Eu fui a um(a) _____.', placeholder: 'Ex: I went to a party.' },
+        { scaffold_en: 'I went (to) _____.', scaffold_pt: 'Eu fui _____.', placeholder: 'Ex: I went home early.' },
         { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
       ],
     },
     p2: {
-      estrutura: 'Estrutura: I watched / I ate…',
-      frase_en: 'I watched a good series last night.',
-      frase_pt: 'Eu assisti uma boa série ontem à noite.',
+      estrutura: 'Estrutura: I had…',
+      frase_en: 'I had a great time with my friends.',
+      frase_pt: 'Eu me diverti muito com meus amigos.',
       frases: [
-        { scaffold_en: 'I watched a good series _____.', scaffold_pt: 'Eu assisti uma boa série _____.', placeholder: 'Ex: I watched a good series yesterday.' },
-        { scaffold_en: 'I watched a good _____.', scaffold_pt: 'Eu assisti um(a) bom/boa _____.', placeholder: 'Ex: I watched a good movie.' },
-        { scaffold_en: 'I watched _____.', scaffold_pt: 'Eu assisti _____.', placeholder: 'Ex: I watched the news.' },
-        { scaffold_en: 'I _____ last night.', scaffold_pt: 'Eu _____ ontem à noite.', placeholder: 'Ex: I ate pizza last night.' },
+        { scaffold_en: 'I had a great time with _____.', scaffold_pt: 'Eu me diverti muito com _____.', placeholder: 'Ex: I had a great time with my family.' },
+        { scaffold_en: 'I had a great _____.', scaffold_pt: 'Eu tive um(a) _____ ótimo(a).', placeholder: 'Ex: I had a great meeting.' },
+        { scaffold_en: 'I had a _____.', scaffold_pt: 'Eu tive um(a) _____.', placeholder: 'Ex: I had a long day.' },
+        { scaffold_en: 'I had _____.', scaffold_pt: 'Eu tive _____.', placeholder: 'Ex: I had good news.' },
         { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
       ],
     },
   },
   {
     titulo: 'Oficina 06 – Falando de rotina e pequenas ações',
-    subtitulo: 'Estruturas: I wake up… / I take a shower…',
+    subtitulo: 'Estruturas: I wake up… / I brush…',
     msg: 'Hey hey hey! Metade do caminho já foi! E se você chegou até aqui, é porque já tá fazendo do inglês um hábito real — com consistência e leveza. Hoje a gente vai treinar ações simples do seu dia a dia, aquelas que parecem pequenas e bobas, mas que quando viram frases, são essenciais pra comunicação fluente.',
     dica: 'A rotina é o melhor lugar pra praticar inglês, porque é onde o vocabulário mora. Fale do que você já faz todos os dias — e comece a fazer isso em inglês. Mesmo que pareça simples, falar sobre o que você faz no banho, na cozinha, no ônibus ou no trabalho é muito mais poderoso do que parece.',
     p1: {
       estrutura: 'Estrutura: I wake up…',
-      frase_en: 'I wake up early every day.',
-      frase_pt: 'Eu acordo cedo todo dia.',
+      frase_en: 'I wake up early because I like it.',
+      frase_pt: 'Eu acordo cedo porque eu gosto.',
       frases: [
-        { scaffold_en: 'I wake up early every _____.', scaffold_pt: 'Eu acordo cedo todo(a) _____.', placeholder: 'Ex: I wake up early every morning.' },
-        { scaffold_en: 'I wake up early _____.', scaffold_pt: 'Eu acordo cedo _____.', placeholder: 'Ex: I wake up early on weekdays.' },
+        { scaffold_en: 'I wake up early because I _____.', scaffold_pt: 'Eu acordo cedo porque eu _____.', placeholder: 'Ex: I wake up early because I work.' },
+        { scaffold_en: 'I wake up because _____.', scaffold_pt: 'Eu acordo porque _____.', placeholder: 'Ex: I wake up because of the alarm.' },
         { scaffold_en: 'I wake up _____.', scaffold_pt: 'Eu acordo _____.', placeholder: 'Ex: I wake up tired.' },
-        { scaffold_en: 'I _____ every day.', scaffold_pt: 'Eu _____ todo dia.', placeholder: 'Ex: I walk every day.' },
         { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
       ],
     },
     p2: {
-      estrutura: 'Estrutura: I take a shower…',
-      frase_en: 'I take a shower in the morning.',
-      frase_pt: 'Eu tomo banho de manhã.',
+      estrutura: 'Estrutura: I brush…',
+      frase_en: 'I brush my teeth after breakfast.',
+      frase_pt: 'Eu escovo os dentes depois do café da manhã.',
       frases: [
-        { scaffold_en: 'I take a shower in the _____.', scaffold_pt: 'Eu tomo banho de _____.', placeholder: 'Ex: I take a shower in the evening.' },
-        { scaffold_en: 'I take a shower _____.', scaffold_pt: 'Eu tomo banho _____.', placeholder: 'Ex: I take a shower every day.' },
-        { scaffold_en: 'I take a _____.', scaffold_pt: 'Eu tomo _____.', placeholder: 'Ex: I take a break.' },
-        { scaffold_en: 'I _____ in the morning.', scaffold_pt: 'Eu _____ de manhã.', placeholder: 'Ex: I eat in the morning.' },
+        { scaffold_en: 'I brush my teeth after _____.', scaffold_pt: 'Eu escovo os dentes depois de/do/da _____.', placeholder: 'Ex: I brush my teeth after lunch.' },
+        { scaffold_en: 'I brush my teeth _____.', scaffold_pt: 'Eu escovo os dentes _____.', placeholder: 'Ex: I brush my teeth every morning.' },
+        { scaffold_en: 'I brush my _____.', scaffold_pt: 'Eu escovo meu/minha _____.', placeholder: 'Ex: I brush my hair.' },
         { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
       ],
     },
@@ -1899,6 +1894,9 @@ function setStruct(elId, estrutura) {
 /* ── GUIA: a seta acompanha o campo atual (fluxo OK → Próxima) ── */
 let arrowEl = null;
 let currentStep = 0;
+// Contagens dinâmicas (cada Oficina pode ter número diferente de frases por parte)
+let _p1Count = 5;
+let _totalCount = 10;
 
 function ensureArrow() {
   if (!arrowEl) {
@@ -1910,10 +1908,10 @@ function ensureArrow() {
   return arrowEl;
 }
 
-// Localiza o campo (wrap) de um passo: 0–4 = Parte 1, 5–9 = Parte 2
+// Localiza o campo (wrap) de um passo: 0..(p1-1) = Parte 1, p1..(total-1) = Parte 2
 function fieldWrapForStep(step) {
-  const prefix = step < 5 ? 'p1' : 'p2';
-  const n = (step % 5) + 1;
+  const prefix = step < _p1Count ? 'p1' : 'p2';
+  const n = (step < _p1Count ? step : step - _p1Count) + 1;
   const ta = document.querySelector(`[name="${prefix}_frase_${n}"]`);
   return ta ? ta.closest('.sentence-field') : null;
 }
@@ -1935,8 +1933,10 @@ function goToStep(step, doFocus) {
 
 function buildFields(containerEl, frases, prefix) {
   containerEl.innerHTML = '';
+  const lastStep = _totalCount - 1;
+  const lastP1Step = _p1Count - 1;
   frases.forEach((f, i) => {
-    const step = (prefix === 'p1' ? 0 : 5) + i;
+    const step = (prefix === 'p1' ? 0 : _p1Count) + i;
     const wrap = document.createElement('div');
     wrap.className = 'sentence-field';
     wrap.dataset.step = step;
@@ -1981,7 +1981,7 @@ function buildFields(containerEl, frases, prefix) {
     nextBtn.type = 'button';
     nextBtn.className = 'btn-next';
     nextBtn.style.display = 'none';
-    nextBtn.textContent = step === 9 ? 'Revisar e enviar ↓' : 'Próxima →';
+    nextBtn.textContent = step === lastStep ? 'Revisar e enviar ↓' : 'Próxima →';
     controls.appendChild(okBtn);
     controls.appendChild(nextBtn);
 
@@ -1997,7 +1997,7 @@ function buildFields(containerEl, frases, prefix) {
       okBtn.style.display = 'none';
       nextBtn.style.display = 'inline-flex';
       // No último campo: some a seta e libera o botão de envio
-      if (step === 9) {
+      if (step === lastStep) {
         if (arrowEl) arrowEl.style.display = 'none';
         const submitBtn = document.getElementById('submit-btn');
         submitBtn.disabled = false;
@@ -2006,7 +2006,7 @@ function buildFields(containerEl, frases, prefix) {
     });
     nextBtn.addEventListener('click', () => {
       nextBtn.style.display = 'none';
-      if (step === 9) {
+      if (step === lastStep) {
         document.getElementById('submit-btn').scrollIntoView({ block: 'center', behavior: 'smooth' });
         return;
       }
@@ -2018,8 +2018,8 @@ function buildFields(containerEl, frases, prefix) {
         }
         goToStep(step + 1, true);
       };
-      // Ao passar da Parte 1 pra Parte 2 (passo 4 → 5): abre o pop-up do Lion
-      if (step === 4) {
+      // Ao passar da Parte 1 pra Parte 2: abre o pop-up do Lion
+      if (step === lastP1Step) {
         openPartBridge(advance);
       } else {
         advance();
@@ -2099,6 +2099,10 @@ function renderDay(dayIndex) {
   // Hidden fields
   document.getElementById('field-dia').value = dayNum;
   document.getElementById('field-oficina').value = o.titulo;
+
+  // Configura contagens dinâmicas — cada Oficina pode ter número diferente de frases
+  _p1Count = o.p1.frases.length;
+  _totalCount = o.p1.frases.length + o.p2.frases.length;
 
   // Part 1
   document.getElementById('p1-title').textContent = 'Parte 1';
@@ -2275,23 +2279,20 @@ document.getElementById('oficina-form').addEventListener('submit', async functio
   if (!nome) markInvalid(nomeEl);
   if (!emailOk) markInvalid(emailEl);
 
-  // Todas as 10 frases precisam estar preenchidas
+  // Toda frase montada precisa estar preenchida (número total varia por Oficina)
   let emptySentences = 0;
-  ['p1', 'p2'].forEach(prefix => {
-    for (let i = 1; i <= 5; i++) {
-      const ta = document.querySelector(`[name="${prefix}_frase_${i}"]`);
-      if (ta && !ta.value.trim()) { markInvalid(ta); emptySentences++; }
-    }
+  document.querySelectorAll('#p1-fields textarea, #p2-fields textarea').forEach(ta => {
+    if (!ta.value.trim()) { markInvalid(ta); emptySentences++; }
   });
 
   if (firstInvalid) {
     let msg;
     if (!nome || !emailOk) {
       msg = emptySentences > 0
-        ? 'Preencha seu nome, um e-mail válido e todas as 10 frases antes de enviar. 👇'
+        ? `Preencha seu nome, um e-mail válido e todas as ${_totalCount} frases antes de enviar. 👇`
         : 'Confira seu nome e um e-mail válido antes de enviar. 👇';
     } else {
-      msg = `Faltou preencher ${emptySentences === 1 ? '1 frase' : emptySentences + ' frases'}. Complete todas as 10 antes de enviar. 👇`;
+      msg = `Faltou preencher ${emptySentences === 1 ? '1 frase' : emptySentences + ' frases'}. Complete todas as ${_totalCount} antes de enviar. 👇`;
     }
     errEl.textContent = msg;
     errEl.style.display = 'block';
