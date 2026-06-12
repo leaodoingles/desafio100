@@ -270,6 +270,19 @@
       box-shadow: 0 0 0 2px rgba(239,68,68,.25);
     }
 
+    /* Caixa trancada (até o aluno dar OK na anterior) */
+    textarea:disabled {
+      opacity: .42;
+      cursor: not-allowed;
+      background: #1a1530;
+    }
+    /* Botão de enviar bloqueado até concluir todas as frases */
+    .btn-submit:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+      background: #5b21b6;
+    }
+
     /* Seta neon vazada e animada apontando para o primeiro campo */
     .write-arrow {
       display: flex;
@@ -951,7 +964,7 @@
       </div>
       <div class="sentence-group" id="p2-fields"></div>
 
-      <button type="submit" class="btn-submit" id="submit-btn">
+      <button type="submit" class="btn-submit" id="submit-btn" disabled title="Confirme cada frase com OK ✓ para liberar o envio">
         Enviar Oficina do Dia 🚀
       </button>
       <div id="error-msg">Ops! Algo deu errado. Tente novamente em alguns instantes.</div>
@@ -1008,7 +1021,7 @@
    CONFIGURAÇÃO — edite aqui antes de publicar
 ───────────────────────────────────────────────────── */
 const CONFIG = {
-  dataInicio: '2026-06-11',
+  dataInicio: '2026-06-09',
   formspreeEndpoint: 'https://formspree.io/f/mdavzoez',
   // Link direto do Mecânico Lion (usado SÓ no Dia 1, para iniciar a conversa)
   linkMecanicoLion: 'https://chatgpt.com/g/g-6816a8bfd21881919f0327d722e7435d-lion-o-seu-mecanico',
@@ -1071,27 +1084,28 @@ const OFICINAS = [
     titulo: 'Oficina 02 – Falando do que eu preciso e do que eu quero',
     subtitulo: 'Estruturas: I need… / I want…',
     msg: 'Hey hey hey! Chegamos ao nosso segundo dia de Oficina! Você tá criando o hábito certo: praticar inglês com leveza, todos os dias, com estrutura e intenção. Hoje é dia de expressar suas vontades e necessidades com frases que você realmente pode usar.',
-    dica: 'Você não precisa impressionar ninguém. O que você precisa é se expressar. Transforme a frase em algo que tem a ver com você. Você não tá só estudando. Tá criando o seu inglês.',
+    dica: 'Você não precisa impressionar ninguém. O que você precisa é se expressar.\nTransforme a frase em algo que tem a ver com você.\nPense: o que você realmente quer ou precisa hoje? Use isso nas frases!\n\nAs frases podem ser simples ou mais elaboradas — as duas funcionam.\nQuando você pratica com consistência, seu cérebro entende que o inglês faz parte da sua rotina.\n\nVocê não tá só estudando. Tá criando o seu inglês.',
+    instrucoesExemplo: 'money',
     p1: {
       estrutura: 'Estrutura: I need…',
-      frase_en: 'I need more time to finish.',
-      frase_pt: 'Eu preciso de mais tempo para terminar.',
+      frase_en: 'I need to buy a new phone.',
+      frase_pt: 'Eu preciso comprar um celular novo.',
       frases: [
-        { scaffold_en: 'I need more time to _____.', scaffold_pt: 'Eu preciso de mais tempo para _____.', placeholder: 'Ex: I need more time to rest.' },
-        { scaffold_en: 'I need more _____.', scaffold_pt: 'Eu preciso de mais _____.', placeholder: 'Ex: I need more sleep.' },
-        { scaffold_en: 'I need _____.', scaffold_pt: 'Eu preciso de _____.', placeholder: 'Ex: I need a break.' },
+        { scaffold_en: 'I need to buy a new _____.', scaffold_pt: 'Eu preciso comprar um/uma _____ novo(a).', placeholder: 'Ex: I need to buy a new shirt.' },
+        { scaffold_en: 'I need to buy a _____.', scaffold_pt: 'Eu preciso comprar um/uma _____.', placeholder: 'Ex: I need to buy a gift.' },
         { scaffold_en: 'I need to _____.', scaffold_pt: 'Eu preciso _____.', placeholder: 'Ex: I need to study.' },
+        { scaffold_en: 'I need _____.', scaffold_pt: 'Eu preciso de _____.', placeholder: 'Ex: I need a break.' },
         { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
       ],
     },
     p2: {
       estrutura: 'Estrutura: I want…',
-      frase_en: 'I want to learn something new.',
-      frase_pt: 'Eu quero aprender algo novo.',
+      frase_en: 'I want to travel this year.',
+      frase_pt: 'Eu quero viajar este ano.',
       frases: [
-        { scaffold_en: 'I want to learn something _____.', scaffold_pt: 'Eu quero aprender algo _____.', placeholder: 'Ex: I want to learn something useful.' },
-        { scaffold_en: 'I want to learn _____.', scaffold_pt: 'Eu quero aprender _____.', placeholder: 'Ex: I want to learn English.' },
-        { scaffold_en: 'I want to _____.', scaffold_pt: 'Eu quero _____.', placeholder: 'Ex: I want to travel.' },
+        { scaffold_en: 'I want to travel this _____.', scaffold_pt: 'Eu quero viajar este/esta _____.', placeholder: 'Ex: I want to travel this summer.' },
+        { scaffold_en: 'I want to travel _____.', scaffold_pt: 'Eu quero viajar _____.', placeholder: 'Ex: I want to travel abroad.' },
+        { scaffold_en: 'I want to _____.', scaffold_pt: 'Eu quero _____.', placeholder: 'Ex: I want to learn English.' },
         { scaffold_en: 'I want _____.', scaffold_pt: 'Eu quero _____.', placeholder: 'Ex: I want a new job.' },
         { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
       ],
@@ -1502,6 +1516,10 @@ const EX_PT = {
   'Ex: I have a busy week.': 'Ex: Eu tenho uma semana cheia.',
   'Ex: I have a meeting.': 'Ex: Eu tenho uma reunião.',
   'Ex: I have two dogs.': 'Ex: Eu tenho dois cachorros.',
+  'Ex: I need to buy a new shirt.': 'Ex: Eu preciso comprar uma camisa nova.',
+  'Ex: I need to buy a gift.': 'Ex: Eu preciso comprar um presente.',
+  'Ex: I want to travel this summer.': 'Ex: Eu quero viajar neste verão.',
+  'Ex: I want to travel abroad.': 'Ex: Eu quero viajar para o exterior.',
   'Ex: I need more time to rest.': 'Ex: Eu preciso de mais tempo para descansar.',
   'Ex: I need more sleep.': 'Ex: Eu preciso de mais sono.',
   'Ex: I need a break.': 'Ex: Eu preciso de uma pausa.',
@@ -1608,17 +1626,21 @@ const EX_PT = {
   'Ex: This challenge helped me to be more confident.': 'Ex: Esse desafio me ajudou a ser mais confiante.',
 };
 
-// Bloco "Instruções importantes" — aparece em TODOS os dias
-const INSTRUCOES_IMPORTANTES = {
-  icon: '📌',
-  title: 'Instruções importantes',
-  html: `<p><strong>• Não repita palavras dentro da mesma parte.</strong><br>
-Exemplo: se usou <em>"coffee"</em> em alguma frase da Parte 1, <strong>não use "coffee" de novo na mesma parte</strong>. No máximo, na Parte 2.<br>
+// Bloco "Instruções importantes" — aparece em TODOS os dias.
+// Cada Oficina pode personalizar a palavra-exemplo via o.instrucoesExemplo.
+function getInstrucoesImportantes(exemplo) {
+  const palavra = exemplo || 'coffee';
+  return {
+    icon: '📌',
+    title: 'Instruções importantes',
+    html: `<p><strong>• Não repita palavras dentro da mesma parte.</strong><br>
+Exemplo: se usou <em>"${palavra}"</em> em alguma frase da Parte 1, <strong>não use "${palavra}" de novo na mesma parte</strong>. No máximo, na Parte 2.<br>
 👉 Cada frase deve usar um vocabulário diferente — isso força sua criatividade e te ajuda a expandir suas ideias.</p>
 <p><strong>• Pode (e deve!) reciclar palavras ao longo dos dias.</strong><br>
 A repetição em contextos diferentes é o que faz você <strong>fixar e consolidar</strong>.<br>
 O segredo da fluência não é só aprender palavra nova — é <strong>voltar nelas com confiança</strong>.</p>`,
-};
+  };
+}
 
 /* ─────────────────────────────────────────────────────
    HELPERS
@@ -1721,6 +1743,8 @@ function buildFields(containerEl, frases, prefix) {
     const exPt = EX_PT[f.placeholder];
     ta.placeholder = exPt ? `${f.placeholder}\n${exPt}` : f.placeholder;
     ta.rows = 3;
+    // Trava: só o primeiro campo abre no início; os demais abrem depois do OK anterior
+    if (step > 0) ta.disabled = true;
     // Pop-up de lembrete na primeira vez que o aluno for escrever
     ta.addEventListener('focus', openReminder);
 
@@ -1740,16 +1764,35 @@ function buildFields(containerEl, frases, prefix) {
     controls.appendChild(nextBtn);
 
     okBtn.addEventListener('click', () => {
+      // Não permite confirmar caixa vazia: destaca em vermelho e foca
+      if (!ta.value.trim()) {
+        ta.classList.add('invalid');
+        ta.focus();
+        return;
+      }
+      ta.classList.remove('invalid');
       wrap.classList.add('done');
       okBtn.style.display = 'none';
       nextBtn.style.display = 'inline-flex';
-      if (step === 9 && arrowEl) arrowEl.style.display = 'none'; // último: seta sai
+      // No último campo: some a seta e libera o botão de envio
+      if (step === 9) {
+        if (arrowEl) arrowEl.style.display = 'none';
+        const submitBtn = document.getElementById('submit-btn');
+        submitBtn.disabled = false;
+        submitBtn.removeAttribute('title');
+      }
     });
     nextBtn.addEventListener('click', () => {
       nextBtn.style.display = 'none';
       if (step === 9) {
         document.getElementById('submit-btn').scrollIntoView({ block: 'center', behavior: 'smooth' });
       } else {
+        // Libera a próxima caixa e move a seta
+        const nextWrap = fieldWrapForStep(step + 1);
+        if (nextWrap) {
+          const nextTa = nextWrap.querySelector('textarea');
+          if (nextTa) nextTa.disabled = false;
+        }
         goToStep(step + 1, true);
       }
     });
@@ -1791,7 +1834,7 @@ function renderDay(dayIndex) {
   const extrasEl = document.getElementById('day-extras');
   extrasEl.innerHTML = '';
   // Blocos do dia (ex.: "Como usar" só no Dia 1) + "Instruções importantes" em todos os dias
-  const blocks = (o.extras || []).concat([INSTRUCOES_IMPORTANTES]);
+  const blocks = (o.extras || []).concat([getInstrucoesImportantes(o.instrucoesExemplo)]);
   blocks.forEach(block => {
     const card = document.createElement('div');
     card.className = 'card info-card';
@@ -1807,7 +1850,8 @@ function renderDay(dayIndex) {
   document.getElementById('success-msg').style.display = 'none';
   document.getElementById('error-msg').style.display = 'none';
   const sBtn = document.getElementById('submit-btn');
-  sBtn.disabled = false;
+  sBtn.disabled = true; // só libera depois do OK na última frase
+  sBtn.setAttribute('title', 'Confirme cada frase com OK ✓ para liberar o envio');
   sBtn.textContent = 'Enviar Oficina do Dia 🚀';
 
   // Pré-preenche nome/e-mail já salvos no navegador
