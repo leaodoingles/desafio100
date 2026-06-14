@@ -179,10 +179,11 @@
 
     /* ── PATTERN PHRASE ─────────────────────────────── */
     .pattern-phrase {
+      position: relative;
       background: var(--bg3);
       border-left: 3px solid var(--purple);
       border-radius: 0 10px 10px 0;
-      padding: 14px 18px;
+      padding: 14px 56px 14px 18px;
       margin-bottom: 20px;
     }
     .pattern-phrase .en {
@@ -192,6 +193,36 @@
       color: var(--text);
     }
     .pattern-phrase .pt { font-size: 13px; color: var(--muted); margin-top: 4px; }
+    /* Botão de áudio (listening) na frase-padrão */
+    .audio-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid rgba(124,58,237,.4);
+      background: rgba(124,58,237,.15);
+      color: #fff;
+      font-size: 17px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s, transform .1s, box-shadow .2s;
+    }
+    .audio-btn:hover { background: rgba(124,58,237,.35); }
+    .audio-btn:active { transform: scale(.92); }
+    .audio-btn.playing {
+      background: var(--purple);
+      box-shadow: 0 0 0 4px rgba(124,58,237,.25);
+      animation: audioPulse 1s ease-in-out infinite;
+    }
+    @keyframes audioPulse {
+      0%, 100% { box-shadow: 0 0 0 3px rgba(124,58,237,.25); }
+      50%      { box-shadow: 0 0 0 7px rgba(124,58,237,.1); }
+    }
 
     /* ── SENTENCE FIELDS ─────────────────────────────── */
     .sentence-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 8px; }
@@ -727,6 +758,57 @@
     .btn-download:hover { background: #6d28d9; transform: translateY(-1px); }
     .btn-download:active { transform: scale(.97); }
 
+    /* ── BOTÃO FLUTUANTE DO LION ─────────────────────── */
+    .lion-fab {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 90;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 8px 8px 16px;
+      background: linear-gradient(135deg, #7c3aed, #5b21b6);
+      border-radius: 999px;
+      text-decoration: none;
+      box-shadow: 0 8px 28px rgba(124,58,237,.45);
+      animation: fabIn .4s ease, fabWiggle 3.5s ease-in-out 1.5s infinite;
+      transition: transform .15s, box-shadow .2s;
+    }
+    .lion-fab:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 12px 34px rgba(124,58,237,.6); }
+    .lion-fab:active { transform: scale(.97); }
+    .lion-fab-bubble {
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+      white-space: nowrap;
+    }
+    .lion-fab-img {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #fff;
+      border: 2px solid rgba(255,255,255,.85);
+      flex-shrink: 0;
+    }
+    @keyframes fabIn {
+      from { opacity: 0; transform: translateY(20px) scale(.8); }
+      to   { opacity: 1; transform: none; }
+    }
+    @keyframes fabWiggle {
+      0%, 92%, 100% { transform: rotate(0); }
+      94%  { transform: rotate(-5deg); }
+      96%  { transform: rotate(5deg); }
+      98%  { transform: rotate(-3deg); }
+    }
+    @media (max-width: 480px) {
+      .lion-fab { right: 12px; bottom: 12px; padding: 7px 7px 7px 14px; }
+      .lion-fab-bubble { font-size: 13px; }
+      .lion-fab-img { width: 40px; height: 40px; }
+    }
+
     /* ── INSTAGRAM CARD ─────────────────────────────── */
     .insta-card {
       background: var(--bg3);
@@ -1129,6 +1211,7 @@
       <div class="section-title" id="p1-title">Parte 1</div>
       <p class="section-desc" id="p1-struct"></p>
       <div class="pattern-phrase">
+        <button type="button" class="audio-btn" id="p1-audio" title="Ouvir em inglês" aria-label="Ouvir a frase em inglês">🔊</button>
         <div class="en" id="p1-en"></div>
         <div class="pt" id="p1-pt"></div>
       </div>
@@ -1140,6 +1223,7 @@
       <div class="section-title" id="p2-title">Parte 2</div>
       <p class="section-desc" id="p2-struct"></p>
       <div class="pattern-phrase">
+        <button type="button" class="audio-btn" id="p2-audio" title="Ouvir em inglês" aria-label="Ouvir a frase em inglês">🔊</button>
         <div class="en" id="p2-en"></div>
         <div class="pt" id="p2-pt"></div>
       </div>
@@ -1184,6 +1268,12 @@
   </div><!-- /day-view -->
 
 </div><!-- /container -->
+
+<!-- Botão flutuante do Mecânico Lion (só aparece na tela da Oficina) -->
+<a id="lion-fab" class="lion-fab" href="#" target="_blank" rel="noopener" style="display:none;">
+  <span class="lion-fab-bubble">Quer ajuda?</span>
+  <img class="lion-fab-img" src="lion.png" alt="Mecânico Lion" />
+</a>
 
 <!-- Pop-up de lembrete (primeira vez que vai escrever) -->
 <div id="reminder-modal" class="modal-overlay">
@@ -1241,6 +1331,10 @@ const CONFIG = {
   linkMecanicoLion: 'https://chatgpt.com/g/g-6816a8bfd21881919f0327d722e7435d-lion-o-seu-mecanico',
   // Link do ChatGPT normal (usado a partir do Dia 2, para o aluno voltar na MESMA conversa)
   linkChatGPT: 'https://chatgpt.com/',
+  // Áudio de listening das frases-padrão. Deixe false enquanto não houver os MP3.
+  // Quando subir os arquivos (pasta "audio/", nomes "dia-01-p1.mp3", "dia-01-p2.mp3"...),
+  // mude para true e os botões 🔊 voltam, tocando os áudios reais.
+  audioFrases: false,
 };
 
 /* ─────────────────────────────────────────────────────
@@ -2123,6 +2217,7 @@ function renderDay(dayIndex) {
   setStruct('p1-struct', o.p1.estrutura);
   document.getElementById('p1-en').textContent = o.p1.frase_en;
   document.getElementById('p1-pt').textContent = o.p1.frase_pt;
+  bindAudio('p1-audio', dayNum, 1);
   buildFields(document.getElementById('p1-fields'), o.p1.frases, 'p1');
 
   // Part 2
@@ -2130,6 +2225,7 @@ function renderDay(dayIndex) {
   setStruct('p2-struct', o.p2.estrutura);
   document.getElementById('p2-en').textContent = o.p2.frase_en;
   document.getElementById('p2-pt').textContent = o.p2.frase_pt;
+  bindAudio('p2-audio', dayNum, 2);
   buildFields(document.getElementById('p2-fields'), o.p2.frases, 'p2');
 
   // Posiciona a seta-guia no primeiro campo (sem focar, pra não pular teclado/lembrete)
@@ -2147,6 +2243,9 @@ function renderDay(dayIndex) {
     lionLink.href = CONFIG.linkChatGPT;
     lionLink.textContent = 'Abrir o ChatGPT (continuar conversa) →';
   }
+
+  // Botão flutuante do Lion segue o mesmo destino do card
+  document.getElementById('lion-fab').href = lionLink.href;
 }
 
 /* ─────────────────────────────────────────────────────
@@ -2542,7 +2641,36 @@ function showView(id) {
   ['countdown-view', 'welcome-view', 'board-view', 'day-view'].forEach(v => {
     document.getElementById(v).style.display = (v === id) ? 'block' : 'none';
   });
+  // O botão flutuante do Lion só aparece na tela da Oficina
+  document.getElementById('lion-fab').style.display = (id === 'day-view') ? 'flex' : 'none';
   window.scrollTo({ top: 0 });
+}
+
+/* ─────────────────────────────────────────────────────
+   ÁUDIO DE LISTENING (arquivos MP3 reais — ver CONFIG.audioFrases)
+   Convenção dos arquivos: audio/dia-01-p1.mp3, audio/dia-01-p2.mp3, etc.
+───────────────────────────────────────────────────── */
+let _currentAudio = null;
+
+function playAudioFile(src, btn) {
+  if (_currentAudio) { _currentAudio.pause(); _currentAudio = null; }
+  const a = new Audio(src);
+  _currentAudio = a;
+  btn.classList.add('playing');
+  a.onended = () => btn.classList.remove('playing');
+  a.onerror = () => btn.classList.remove('playing');
+  a.play().catch(() => btn.classList.remove('playing'));
+}
+
+// Liga (ou esconde) o botão de áudio de uma parte
+function bindAudio(btnId, dayNum, parte) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  btn.classList.remove('playing');
+  if (!CONFIG.audioFrases) { btn.style.display = 'none'; return; }
+  btn.style.display = 'flex';
+  const src = `audio/dia-${pad(dayNum)}-p${parte}.mp3`;
+  btn.onclick = () => playAudioFile(src, btn);
 }
 
 let countdownStarted = false;
