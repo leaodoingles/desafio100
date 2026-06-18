@@ -1326,7 +1326,7 @@
 ───────────────────────────────────────────────────── */
 const CONFIG = {
   dataInicio: '2026-06-11',
-  formspreeEndpoint: 'https://formspree.io/f/mdavzoez',
+  web3formsKey: '567328cd-e9b7-4a50-99f3-cc0c3238d8af',
   // Link direto do Mecânico Lion (usado SÓ no Dia 1, para iniciar a conversa)
   linkMecanicoLion: 'https://chatgpt.com/g/g-6816a8bfd21881919f0327d722e7435d-lion-o-seu-mecanico',
   // Link do ChatGPT normal (usado a partir do Dia 2, para o aluno voltar na MESMA conversa)
@@ -2422,9 +2422,10 @@ document.getElementById('oficina-form').addEventListener('submit', async functio
   primeAudio();
 
   const data = new FormData(this);
+  data.append('access_key', CONFIG.web3formsKey);
 
   try {
-    const res = await fetch(CONFIG.formspreeEndpoint, {
+    const res = await fetch('https://api.web3forms.com/submit', {
       method: 'POST',
       body: data,
       headers: { 'Accept': 'application/json' },
