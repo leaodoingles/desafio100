@@ -223,6 +223,36 @@
       0%, 100% { box-shadow: 0 0 0 3px rgba(124,58,237,.25); }
       50%      { box-shadow: 0 0 0 7px rgba(124,58,237,.1); }
     }
+    /* Botão de áudio largo (intro / final / pós-envio) */
+    .audio-day-btn {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(124,58,237,.4);
+      background: rgba(124,58,237,.12);
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s, transform .1s;
+      margin-bottom: 12px;
+      box-sizing: border-box;
+    }
+    .audio-day-btn:hover { background: rgba(124,58,237,.25); }
+    .audio-day-btn:active { transform: scale(.98); }
+    .audio-day-btn.playing { background: var(--purple); animation: audioPulse 1s ease-in-out infinite; }
+    /* Botão 🔊 inline por frase (sobrescreve position: absolute do .audio-btn) */
+    .phrase-audio-btn {
+      position: static;
+      width: 28px;
+      height: 28px;
+      font-size: 13px;
+      margin: 4px 0 8px 0;
+      display: none;
+    }
 
     /* ── SENTENCE FIELDS ─────────────────────────────── */
     .sentence-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 8px; }
@@ -1010,6 +1040,13 @@
       margin-bottom: 20px;
     }
     .admin-banner a { color: #fbbf24; font-weight: 700; }
+    #adm-preview-success {
+      width: 100%; margin-top: 12px; padding: 10px;
+      background: rgba(245,158,11,.12); border: 1px dashed rgba(245,158,11,.5);
+      border-radius: var(--radius); color: #fbbf24; font-size: 13px;
+      font-weight: 600; cursor: pointer;
+    }
+    #adm-preview-success:hover { background: rgba(245,158,11,.22); }
 
     /* ── WELCOME (boas-vindas) ──────────────────────── */
     #welcome-view { text-align: center; padding: 24px 0 70px; }
@@ -1175,6 +1212,8 @@
     <h1 id="oficina-title">Oficina 01</h1>
     <p class="subtitle" id="oficina-subtitle">Subtítulo</p>
 
+    <button type="button" class="audio-day-btn" id="intro-audio">🔊 Ouvir a introdução do dia</button>
+
     <!-- Opening message -->
     <div class="card">
       <div class="card-label">✉️ Mensagem de hoje</div>
@@ -1233,12 +1272,14 @@
         Enviar Oficina do Dia 🚀
       </button>
       <div id="error-msg">Ops! Algo deu errado. Tente novamente em alguns instantes.</div>
+      <button type="button" id="adm-preview-success" style="display:none;">👁 Ver tela de confirmação (adm)</button>
     </form>
 
     <!-- SUCCESS -->
     <div id="success-msg">
       <img class="success-lion" src="lion-foguete.png" alt="Leão comemorando no foguete" />
       <h2>Oficina enviada! 🎉</h2>
+      <button type="button" class="audio-day-btn" id="sucesso-audio">🔊 Ouvir o que fazer agora</button>
       <p>Mandou bem! Agora <strong>copie suas frases abaixo</strong> e cole no <strong>Mecânico Lion</strong> pra ele comentar, ajustar e corrigir.</p>
       <div class="copy-box">
         <div class="copy-box-label">📋 Suas frases prontas pra colar no Lion:</div>
@@ -2004,6 +2045,7 @@ let currentStep = 0;
 // Contagens dinâmicas (cada Oficina pode ter número diferente de frases por parte)
 let _p1Count = 5;
 let _totalCount = 10;
+let _currentDayNum = 1;
 
 function ensureArrow() {
   if (!arrowEl) {
@@ -2051,6 +2093,20 @@ function buildFields(containerEl, frases, prefix) {
     const num = document.createElement('div');
     num.className = 'sentence-num';
     num.textContent = `Frase ${i + 1}`;
+
+    const phraseAudioBtn = document.createElement('button');
+    phraseAudioBtn.type = 'button';
+    phraseAudioBtn.className = 'audio-btn phrase-audio-btn';
+    phraseAudioBtn.title = 'Ouvir a frase';
+    phraseAudioBtn.setAttribute('aria-label', 'Ouvir a frase');
+    phraseAudioBtn.textContent = '🔊';
+    if (!CONFIG.audioFrases) {
+      phraseAudioBtn.style.display = 'none';
+    } else {
+      phraseAudioBtn.style.display = 'flex';
+      const pSrc = `audio/dia-${pad(_currentDayNum)}-${prefix}-f${i + 1}.mp3`;
+      phraseAudioBtn.onclick = () => playAudioFile(pSrc, phraseAudioBtn);
+    }
 
     const scaf = document.createElement('div');
     scaf.className = 'scaffold';
@@ -2134,6 +2190,7 @@ function buildFields(containerEl, frases, prefix) {
     });
 
     wrap.appendChild(num);
+    wrap.appendChild(phraseAudioBtn);
     wrap.appendChild(scaf);
     wrap.appendChild(ta);
     wrap.appendChild(controls);
@@ -2209,6 +2266,7 @@ function renderDay(dayIndex) {
   document.getElementById('field-oficina').value = o.titulo;
 
   // Configura contagens dinâmicas — cada Oficina pode ter número diferente de frases
+  _currentDayNum = dayNum;
   _p1Count = o.p1.frases.length;
   _totalCount = o.p1.frases.length + o.p2.frases.length;
 
@@ -2227,6 +2285,11 @@ function renderDay(dayIndex) {
   document.getElementById('p2-pt').textContent = o.p2.frase_pt;
   bindAudio('p2-audio', dayNum, 2);
   buildFields(document.getElementById('p2-fields'), o.p2.frases, 'p2');
+
+  bindDayAudio('intro-audio',   `audio/dia-${pad(dayNum)}-intro.mp3`);
+  bindDayAudio('sucesso-audio', `audio/dia-${pad(dayNum)}-sucesso.mp3`);
+
+  document.getElementById('adm-preview-success').style.display = adminOn() ? 'block' : 'none';
 
   // Posiciona a seta-guia no primeiro campo (sem focar, pra não pular teclado/lembrete)
   goToStep(0, false);
@@ -2501,6 +2564,15 @@ function buildCopyText(dayNum) {
   return txt.trim();
 }
 
+// Prévia da tela de confirmação (modo adm)
+document.getElementById('adm-preview-success').addEventListener('click', function() {
+  document.getElementById('copy-text').value = buildCopyText(_currentDayNum);
+  document.getElementById('oficina-form').style.display = 'none';
+  const s = document.getElementById('success-msg');
+  s.style.display = 'block';
+  window.scrollTo({ top: s.offsetTop - 20, behavior: 'smooth' });
+});
+
 // Botão de copiar
 document.getElementById('copy-btn').addEventListener('click', function() {
   const ta = document.getElementById('copy-text');
@@ -2671,6 +2743,16 @@ function bindAudio(btnId, dayNum, parte) {
   if (!CONFIG.audioFrases) { btn.style.display = 'none'; return; }
   btn.style.display = 'flex';
   const src = `audio/dia-${pad(dayNum)}-p${parte}.mp3`;
+  btn.onclick = () => playAudioFile(src, btn);
+}
+
+// Liga (ou esconde) os botões largos de áudio (intro / final / pós-envio)
+function bindDayAudio(btnId, src) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  btn.classList.remove('playing');
+  if (!CONFIG.audioFrases) { btn.style.display = 'none'; return; }
+  btn.style.display = 'flex';
   btn.onclick = () => playAudioFile(src, btn);
 }
 
