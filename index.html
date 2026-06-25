@@ -1048,6 +1048,53 @@
     }
     #adm-preview-success:hover { background: rgba(245,158,11,.22); }
 
+    /* ── MINI-PLAYER DE ÁUDIO ─────────────────────────── */
+    #audio-player {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: #1a1628;
+      border-top: 1px solid rgba(124,58,237,.4);
+      padding: 10px 16px 14px;
+      display: none; flex-direction: column; gap: 8px;
+      z-index: 999;
+      box-shadow: 0 -4px 20px rgba(0,0,0,.4);
+    }
+    .audio-player-top { display: flex; align-items: center; gap: 10px; }
+    #audio-play-pause {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--purple); border: none; color: #fff;
+      font-size: 15px; cursor: pointer; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+    #audio-play-pause:hover { background: #6d28d9; }
+    .audio-progress-wrap { flex: 1; display: flex; align-items: center; gap: 6px; }
+    .audio-time { font-size: 11px; color: var(--muted); min-width: 28px; }
+    #audio-seekbar {
+      flex: 1; -webkit-appearance: none; appearance: none;
+      height: 4px; border-radius: 2px;
+      background: rgba(255,255,255,.18); outline: none; cursor: pointer;
+    }
+    #audio-seekbar::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 14px; height: 14px;
+      border-radius: 50%; background: var(--purple); cursor: pointer;
+    }
+    #audio-seekbar::-moz-range-thumb {
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--purple); border: none; cursor: pointer;
+    }
+    .audio-player-bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    #audio-player-label { font-size: 11px; color: var(--muted); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .audio-speed-btns { display: flex; gap: 4px; flex-shrink: 0; }
+    .speed-btn {
+      padding: 3px 8px; border-radius: 20px;
+      border: 1px solid rgba(124,58,237,.4);
+      background: transparent; color: var(--muted);
+      font-size: 11px; font-weight: 700; cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+    .speed-btn.active { background: var(--purple); color: #fff; border-color: var(--purple); }
+    .speed-btn:hover:not(.active) { background: rgba(124,58,237,.2); color: var(--text); }
+
     /* ── WELCOME (boas-vindas) ──────────────────────── */
     #welcome-view { text-align: center; padding: 24px 0 70px; }
     .welcome-inner { max-width: 560px; margin: 0 auto; }
@@ -1309,6 +1356,27 @@
   </div><!-- /day-view -->
 
 </div><!-- /container -->
+
+<!-- Mini-player de áudio fixo na base da tela -->
+<div id="audio-player">
+  <div class="audio-player-top">
+    <button id="audio-play-pause" type="button" aria-label="Play/Pause">⏸</button>
+    <div class="audio-progress-wrap">
+      <span class="audio-time" id="audio-time-current">0:00</span>
+      <input type="range" id="audio-seekbar" min="0" max="100" value="0" step="0.1">
+      <span class="audio-time" id="audio-time-total">0:00</span>
+    </div>
+  </div>
+  <div class="audio-player-bottom">
+    <span id="audio-player-label">Áudio</span>
+    <div class="audio-speed-btns">
+      <button class="speed-btn" type="button" data-speed="0.5">0.5×</button>
+      <button class="speed-btn active" type="button" data-speed="1">1×</button>
+      <button class="speed-btn" type="button" data-speed="1.5">1.5×</button>
+      <button class="speed-btn" type="button" data-speed="2">2×</button>
+    </div>
+  </div>
+</div>
 
 <!-- Botão flutuante do Mecânico Lion (só aparece na tela da Oficina) -->
 <a id="lion-fab" class="lion-fab" href="#" target="_blank" rel="noopener" style="display:none;">
@@ -2724,16 +2792,86 @@ function showView(id) {
    Convenção dos arquivos: audio/dia-01-p1.mp3, audio/dia-01-p2.mp3, etc.
 ───────────────────────────────────────────────────── */
 let _currentAudio = null;
+let _currentAudioBtn = null;
+let _currentSpeed = 1;
+let _onTimeUpdate = null;
 
-function playAudioFile(src, btn) {
-  if (_currentAudio) { _currentAudio.pause(); _currentAudio = null; }
+function fmtTime(s) {
+  if (!s || isNaN(s)) return '0:00';
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return `${m}:${sec.toString().padStart(2, '0')}`;
+}
+
+function playAudioFile(src, btn, label) {
+  if (_currentAudio) {
+    _currentAudio.pause();
+    if (_onTimeUpdate) _currentAudio.removeEventListener('timeupdate', _onTimeUpdate);
+    _currentAudio = null;
+  }
+  if (_currentAudioBtn && _currentAudioBtn !== btn) _currentAudioBtn.classList.remove('playing');
+  _currentAudioBtn = btn;
+
   const a = new Audio(src);
   _currentAudio = a;
+  a.playbackRate = _currentSpeed;
   btn.classList.add('playing');
-  a.onended = () => btn.classList.remove('playing');
-  a.onerror = () => btn.classList.remove('playing');
-  a.play().catch(() => btn.classList.remove('playing'));
+
+  const player   = document.getElementById('audio-player');
+  const seekbar  = document.getElementById('audio-seekbar');
+  const timeCur  = document.getElementById('audio-time-current');
+  const timeTot  = document.getElementById('audio-time-total');
+  const ppBtn    = document.getElementById('audio-play-pause');
+  const labelEl  = document.getElementById('audio-player-label');
+
+  labelEl.textContent = label || 'Áudio';
+  seekbar.value = 0;
+  timeCur.textContent = '0:00';
+  timeTot.textContent = '0:00';
+  ppBtn.textContent = '⏸';
+  player.style.display = 'flex';
+
+  a.addEventListener('loadedmetadata', () => { timeTot.textContent = fmtTime(a.duration); });
+
+  _onTimeUpdate = () => {
+    if (!a.duration) return;
+    seekbar.value = (a.currentTime / a.duration) * 100;
+    timeCur.textContent = fmtTime(a.currentTime);
+  };
+  a.addEventListener('timeupdate', _onTimeUpdate);
+
+  a.onended = () => { btn.classList.remove('playing'); ppBtn.textContent = '▶'; seekbar.value = 0; timeCur.textContent = '0:00'; };
+  a.onerror = () => { btn.classList.remove('playing'); ppBtn.textContent = '▶'; };
+  a.play().catch(() => { btn.classList.remove('playing'); ppBtn.textContent = '▶'; });
 }
+
+// Controles do mini-player
+document.getElementById('audio-play-pause').addEventListener('click', function() {
+  if (!_currentAudio) return;
+  if (_currentAudio.paused) {
+    _currentAudio.play();
+    this.textContent = '⏸';
+    if (_currentAudioBtn) _currentAudioBtn.classList.add('playing');
+  } else {
+    _currentAudio.pause();
+    this.textContent = '▶';
+    if (_currentAudioBtn) _currentAudioBtn.classList.remove('playing');
+  }
+});
+
+document.getElementById('audio-seekbar').addEventListener('input', function() {
+  if (!_currentAudio || !_currentAudio.duration) return;
+  _currentAudio.currentTime = (_currentAudio.duration * this.value) / 100;
+});
+
+document.querySelectorAll('.speed-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    _currentSpeed = parseFloat(this.dataset.speed);
+    if (_currentAudio) _currentAudio.playbackRate = _currentSpeed;
+    document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
 
 // Liga (ou esconde) o botão de áudio de uma parte
 function bindAudio(btnId, dayNum, parte) {
