@@ -1375,7 +1375,7 @@ const CONFIG = {
   // Áudio de listening das frases-padrão. Deixe false enquanto não houver os MP3.
   // Quando subir os arquivos (pasta "audio/", nomes "dia-01-p1.mp3", "dia-01-p2.mp3"...),
   // mude para true e os botões 🔊 voltam, tocando os áudios reais.
-  audioFrases: false,
+  audioFrases: true,
 };
 
 /* ─────────────────────────────────────────────────────
@@ -2104,7 +2104,7 @@ function buildFields(containerEl, frases, prefix) {
       phraseAudioBtn.style.display = 'none';
     } else {
       phraseAudioBtn.style.display = 'flex';
-      const pSrc = `audio/dia-${pad(_currentDayNum)}-${prefix}-f${i + 1}.mp3`;
+      const pSrc = `audio/audio-dia-${pad(_currentDayNum)}-${prefix}-f${i + 1}.m4a`;
       phraseAudioBtn.onclick = () => playAudioFile(pSrc, phraseAudioBtn);
     }
 
@@ -2286,8 +2286,8 @@ function renderDay(dayIndex) {
   bindAudio('p2-audio', dayNum, 2);
   buildFields(document.getElementById('p2-fields'), o.p2.frases, 'p2');
 
-  bindDayAudio('intro-audio',   `audio/dia-${pad(dayNum)}-intro.mp3`);
-  bindDayAudio('sucesso-audio', `audio/dia-${pad(dayNum)}-sucesso.mp3`);
+  bindDayAudio('intro-audio',   `audio/audio-dia-${pad(dayNum)}-intro.m4a`);
+  bindDayAudio('sucesso-audio', `audio/audio-dia-${pad(dayNum)}-sucesso.m4a`);
 
   document.getElementById('adm-preview-success').style.display = adminOn() ? 'block' : 'none';
 
@@ -2742,7 +2742,7 @@ function bindAudio(btnId, dayNum, parte) {
   btn.classList.remove('playing');
   if (!CONFIG.audioFrases) { btn.style.display = 'none'; return; }
   btn.style.display = 'flex';
-  const src = `audio/dia-${pad(dayNum)}-p${parte}.mp3`;
+  const src = `audio/audio-dia-${pad(dayNum)}-p${parte}.m4a`;
   btn.onclick = () => playAudioFile(src, btn);
 }
 
