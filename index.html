@@ -1168,6 +1168,208 @@
       color: #fca5a5;
       margin-top: 14px;
     }
+
+    /* ═══════════════════════════════════════════════════
+       TELA DE ENCERRAMENTO — "Missão concluída" (D100)
+       Cena animada: foguete orbita a Terra, pousa, o leão
+       sai e abre um balão de fala. Tudo em CSS/SVG, leve.
+       Base de design 360×640, escalada p/ caber na tela.
+    ═══════════════════════════════════════════════════ */
+    #ended-view {
+      display: none;
+      position: fixed; inset: 0; z-index: 3000; overflow: hidden;
+      background:
+        radial-gradient(130% 100% at 50% 8%, #2a1e57 0%, #170f36 42%, #0a0718 100%);
+    }
+    #ended-view.show { display: block; }
+
+    /* Estrelas (2 camadas em tiles repetidos) */
+    .me-stars { position: absolute; inset: 0; background-repeat: repeat; }
+    .me-stars.l1 {
+      background-image:
+        radial-gradient(1.6px 1.6px at 20px 30px, #fff, transparent),
+        radial-gradient(1.4px 1.4px at 130px 90px, #d7e0ff, transparent),
+        radial-gradient(1px 1px at 210px 160px, #fff, transparent),
+        radial-gradient(1.3px 1.3px at 300px 50px, #ecdcff, transparent),
+        radial-gradient(1px 1px at 90px 230px, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 260px 280px, #c8d6ff, transparent);
+      background-size: 340px 320px; opacity: .9;
+      animation: meTwinkle 5s ease-in-out infinite;
+    }
+    .me-stars.l2 {
+      background-image:
+        radial-gradient(1px 1px at 60px 60px, #fff, transparent),
+        radial-gradient(1.2px 1.2px at 180px 20px, #bcd0ff, transparent),
+        radial-gradient(1px 1px at 240px 140px, #fff, transparent),
+        radial-gradient(1px 1px at 40px 180px, #e6d6ff, transparent);
+      background-size: 260px 240px; opacity: .6;
+      animation: meTwinkle 3.5s ease-in-out infinite reverse;
+    }
+    @keyframes meTwinkle { 0%,100%{opacity:.45} 50%{opacity:1} }
+
+    /* Nebulosas suaves */
+    .me-neb { position: absolute; border-radius: 50%; filter: blur(70px); pointer-events: none; }
+    .me-neb.a { width: 360px; height: 360px; left: -90px; top: -70px;
+      background: radial-gradient(circle, rgba(124,58,237,.6), transparent 70%); }
+    .me-neb.b { width: 320px; height: 320px; right: -80px; bottom: -60px;
+      background: radial-gradient(circle, rgba(37,99,235,.5), transparent 70%); }
+
+    /* Partículas flutuantes */
+    .me-dust { position: absolute; width: 3px; height: 3px; border-radius: 50%;
+      background: #fff; opacity: .5; filter: blur(.4px);
+      animation: meFloat 6s ease-in-out infinite; }
+    @keyframes meFloat { 0%,100%{ transform: translateY(0); opacity:.5 } 50%{ transform: translateY(-18px); opacity:1 } }
+
+    /* Palco de design fixo, escalado p/ caber */
+    .me-stage {
+      position: absolute; top: 50%; left: 50%;
+      width: 360px; height: 640px;
+      transform: translate(-50%, -50%) scale(var(--me-scale, 1));
+      transform-origin: center center;
+    }
+
+    /* ── TERRA ──────────────────────────────────── */
+    .me-earth {
+      position: absolute; left: 180px; top: 288px;
+      width: 250px; height: 250px; margin: -125px 0 0 -125px;
+      opacity: 0; transform: scale(.4);
+      transition: transform 1.2s cubic-bezier(.25,.9,.3,1), opacity .9s ease;
+    }
+    #ended-view.stage-intro .me-earth { opacity: 1; transform: scale(1); }
+    #ended-view.stage-land  .me-earth { transform: translateY(-146px) scale(.54); }
+    .me-earth-globe {
+      position: absolute; inset: 0; border-radius: 50%; overflow: hidden;
+      background: radial-gradient(circle at 34% 27%, #5fb4ff 0%, #2a6fd6 46%, #114089 76%, #0a2456 100%);
+      box-shadow: inset -22px -26px 62px rgba(4,6,26,.62),
+                  inset 14px 12px 34px rgba(170,215,255,.22);
+    }
+    .me-atmo {
+      position: absolute; inset: -12px; border-radius: 50%; pointer-events: none;
+      box-shadow: 0 0 55px 6px rgba(95,165,255,.5), 0 0 120px 26px rgba(95,120,255,.22);
+    }
+    .me-continents { position: absolute; inset: 0; animation: meSpin 44s linear infinite; }
+    .me-continents span {
+      position: absolute; display: block;
+      background: linear-gradient(155deg, #55c580, #2f9159);
+      opacity: .92; box-shadow: inset -3px -4px 8px rgba(0,40,20,.35);
+    }
+    .me-continents .c1 { left: 24%; top: 20%; width: 78px; height: 58px;
+      border-radius: 52% 42% 55% 48% / 58% 52% 46% 50%; transform: rotate(12deg); }
+    .me-continents .c2 { left: 54%; top: 44%; width: 64px; height: 76px;
+      border-radius: 46% 54% 40% 60% / 50% 44% 56% 50%; transform: rotate(-8deg); }
+    .me-continents .c3 { left: 16%; top: 58%; width: 52px; height: 44px;
+      border-radius: 55% 45% 60% 40% / 55% 55% 45% 45%; }
+    .me-continents .c4 { left: 62%; top: 14%; width: 40px; height: 34px;
+      border-radius: 50%; }
+    @keyframes meSpin { to { transform: rotate(360deg); } }
+
+    /* ── MONUMENTOS (pivô no centro da Terra, radiais) ── */
+    .me-mon { position: absolute; left: 125px; top: 125px; width: 0; height: 0; }
+    .me-mon > .in {
+      position: absolute; left: 50%; bottom: 116px; transform: translateX(-50%) scale(0);
+      transform-origin: bottom center;
+    }
+    .me-mon > .in svg { display: block; filter: drop-shadow(0 0 6px rgba(255,205,120,.55)); }
+    .me-mon > .in svg path, .me-mon > .in svg rect, .me-mon > .in svg circle { fill: #ffd489; }
+    #ended-view.stage-intro .me-mon > .in { animation: mePop .55s cubic-bezier(.34,1.6,.5,1) forwards; }
+    .me-mon.m1 { transform: rotate(-80deg); } .me-mon.m1 > .in { animation-delay: .35s; }
+    .me-mon.m2 { transform: rotate(-48deg); } .me-mon.m2 > .in { animation-delay: .5s; }
+    .me-mon.m3 { transform: rotate(-18deg); } .me-mon.m3 > .in { animation-delay: .65s; }
+    .me-mon.m4 { transform: rotate(12deg);  } .me-mon.m4 > .in { animation-delay: .8s; }
+    .me-mon.m5 { transform: rotate(44deg);  } .me-mon.m5 > .in { animation-delay: .95s; }
+    .me-mon.m6 { transform: rotate(78deg);  } .me-mon.m6 > .in { animation-delay: 1.1s; }
+    @keyframes mePop { 0%{transform:translateX(-50%) scale(0)} 70%{transform:translateX(-50%) scale(1.18)} 100%{transform:translateX(-50%) scale(1)} }
+
+    /* ── FOGUETE EM ÓRBITA ──────────────────────── */
+    .me-rocket-fly {
+      position: absolute; left: 0; top: 0; width: 78px; height: auto;
+      offset-path: path("M -40 150 C 60 20, 300 30, 336 190 C 364 330, 250 470, 150 452 C 60 436, 22 330, 70 250 C 112 180, 220 168, 268 250 C 300 306, 260 388, 200 430 C 190 460, 184 500, 180 528");
+      offset-rotate: auto 90deg; offset-distance: 0%;
+      filter: drop-shadow(0 5px 12px rgba(0,0,0,.5)) drop-shadow(0 0 14px rgba(124,58,237,.35));
+    }
+    #ended-view.stage-orbit .me-rocket-fly { animation: meFly 6.4s cubic-bezier(.45,.02,.5,1) forwards; }
+    #ended-view.stage-land  .me-rocket-fly { opacity: 0; transition: opacity .5s ease; }
+    @keyframes meFly { to { offset-distance: 100%; } }
+
+    /* ── PLATAFORMA + FOGUETE POUSADO ───────────── */
+    .me-pad {
+      position: absolute; left: 180px; top: 556px; width: 156px; height: 42px; margin-left: -78px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at 50% 32%, #4a3c86 0%, #241b48 62%, #170f30 100%);
+      box-shadow: 0 0 34px rgba(124,58,237,.55), inset 0 4px 10px rgba(180,150,255,.25);
+      opacity: 0; transform: scale(.5);
+      transition: opacity .5s ease, transform .6s cubic-bezier(.34,1.4,.5,1);
+    }
+    #ended-view.stage-land .me-pad { opacity: 1; transform: scale(1); }
+    .me-parked {
+      position: absolute; left: 220px; top: 432px; width: 90px; margin-left: -45px;
+      opacity: 0; transform: translateY(-34px) scale(.85);
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,.5));
+    }
+    #ended-view.stage-land .me-parked { animation: meLand .9s cubic-bezier(.3,1.3,.5,1) .15s forwards; }
+    @keyframes meLand {
+      0%{opacity:0;transform:translateY(-34px) scale(.85)}
+      60%{opacity:1;transform:translateY(4px) scale(1.02)}
+      80%{transform:translateY(-3px) scale(1)}
+      100%{opacity:1;transform:translateY(0) scale(1)}
+    }
+
+    /* ── LEÃO SAINDO ────────────────────────────── */
+    .me-lion {
+      position: absolute; left: 150px; top: 448px; width: 104px; margin-left: -52px;
+      opacity: 0; transform: translateY(26px) scale(.4);
+      transform-origin: bottom center;
+      filter: drop-shadow(0 8px 14px rgba(0,0,0,.45));
+    }
+    #ended-view.stage-lion .me-lion { animation: meLionOut .7s cubic-bezier(.34,1.56,.6,1) forwards; }
+    @keyframes meLionOut {
+      0%{opacity:0;transform:translateY(26px) scale(.4)}
+      70%{opacity:1;transform:translateY(-6px) scale(1.06)}
+      100%{opacity:1;transform:translateY(0) scale(1)}
+    }
+    #ended-view.stage-speech .me-lion { animation: meLionWave 2.4s ease-in-out .2s infinite; }
+    @keyframes meLionWave {
+      0%,100%{transform:rotate(0);opacity:1} 25%{transform:rotate(-4deg);opacity:1} 75%{transform:rotate(4deg);opacity:1}
+    }
+
+    /* ── BALÃO DE FALA ──────────────────────────── */
+    .me-speech {
+      position: absolute; left: 180px; top: 214px; width: 300px; margin-left: -150px;
+      background: linear-gradient(180deg, #ffffff, #f0ebff);
+      color: #221a48; border-radius: 24px; padding: 20px 22px 22px;
+      box-shadow: 0 22px 55px rgba(0,0,0,.5), 0 0 0 4px rgba(124,58,237,.28);
+      text-align: center; opacity: 0; transform: scale(.3);
+      transform-origin: 50% 130%;
+    }
+    .me-speech::after {
+      content: ''; position: absolute; left: 50%; bottom: -15px; transform: translateX(-50%);
+      border: 13px solid transparent; border-top-color: #f0ebff; border-bottom: 0;
+    }
+    #ended-view.stage-speech .me-speech { animation: mePopBubble .6s cubic-bezier(.34,1.56,.55,1) forwards; }
+    @keyframes mePopBubble { 0%{opacity:0;transform:scale(.3)} 65%{opacity:1;transform:scale(1.05)} 100%{opacity:1;transform:scale(1)} }
+    .me-speech .emoji { font-size: 30px; display: block; margin-bottom: 6px; }
+    .me-speech p {
+      font-family: 'Outfit', sans-serif; font-weight: 800;
+      font-size: 19px; line-height: 1.34; margin: 4px 0; opacity: 0;
+    }
+    .me-speech p.hi { color: #7c3aed; font-size: 21px; }
+    #ended-view.stage-speech .me-speech p { animation: meLineIn .5s ease forwards; }
+    #ended-view.stage-speech .me-speech p:nth-child(2) { animation-delay: .55s; }
+    #ended-view.stage-speech .me-speech p:nth-child(3) { animation-delay: .95s; }
+    #ended-view.stage-speech .me-speech p:nth-child(4) { animation-delay: 1.4s; }
+    @keyframes meLineIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+    /* Marca discreta no rodapé da cena */
+    .me-brand {
+      position: absolute; left: 0; right: 0; bottom: 18px; text-align: center;
+      font-family: 'Outfit', sans-serif; font-size: 12px; letter-spacing: .14em;
+      text-transform: uppercase; color: rgba(177,151,252,.6); z-index: 5;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #ended-view.stage-orbit .me-rocket-fly { animation-duration: .6s; }
+      .me-continents, .me-dust, .me-stars { animation: none; }
+    }
   </style>
 </head>
 <body>
@@ -1357,6 +1559,85 @@
 
 </div><!-- /container -->
 
+<!-- ═══ TELA DE ENCERRAMENTO: MISSÃO CONCLUÍDA ═══ -->
+<div id="ended-view">
+  <div class="me-stars l1"></div>
+  <div class="me-stars l2"></div>
+  <div class="me-neb a"></div>
+  <div class="me-neb b"></div>
+  <div class="me-dust" style="left:14%;top:22%"></div>
+  <div class="me-dust" style="left:82%;top:30%;animation-delay:1.2s"></div>
+  <div class="me-dust" style="left:26%;top:74%;animation-delay:2.1s"></div>
+  <div class="me-dust" style="left:70%;top:80%;animation-delay:.6s"></div>
+  <div class="me-dust" style="left:50%;top:12%;animation-delay:1.7s"></div>
+
+  <div class="me-stage">
+
+    <!-- Terra + monumentos -->
+    <div class="me-earth">
+      <div class="me-earth-globe">
+        <div class="me-continents">
+          <span class="c1"></span><span class="c2"></span><span class="c3"></span><span class="c4"></span>
+        </div>
+      </div>
+      <div class="me-atmo"></div>
+
+      <!-- Big Ben -->
+      <div class="me-mon m1"><div class="in"><svg width="26" height="52" viewBox="0 0 26 52">
+        <path d="M13 1 L18 12 L17 15 L9 15 L8 12 Z"/><rect x="9" y="15" width="8" height="33"/>
+        <rect x="6.5" y="48" width="13" height="4"/><circle cx="13" cy="24" r="3.2" fill="#170f30"/></svg></div></div>
+
+      <!-- Torre Eiffel -->
+      <div class="me-mon m2"><div class="in"><svg width="34" height="52" viewBox="0 0 34 52">
+        <path d="M17 2 L20 18 L26 50 L20 50 L18 36 L16 36 L14 50 L8 50 L14 18 Z"/>
+        <rect x="12" y="22" width="10" height="2.5"/><rect x="9" y="40" width="16" height="2.5"/></svg></div></div>
+
+      <!-- Cristo Redentor -->
+      <div class="me-mon m3"><div class="in"><svg width="46" height="52" viewBox="0 0 46 52">
+        <circle cx="23" cy="9" r="4"/><rect x="21.5" y="13" width="3" height="24"/>
+        <rect x="8" y="17" width="30" height="3"/>
+        <path d="M17 37 L29 37 L26 50 L20 50 Z"/></svg></div></div>
+
+      <!-- Pirâmides -->
+      <div class="me-mon m4"><div class="in"><svg width="52" height="40" viewBox="0 0 52 40">
+        <path d="M3 38 L17 10 L31 38 Z"/><path d="M25 38 L37 16 L49 38 Z"/></svg></div></div>
+
+      <!-- Estátua da Liberdade -->
+      <div class="me-mon m5"><div class="in"><svg width="40" height="54" viewBox="0 0 40 54">
+        <circle cx="17" cy="13" r="4"/><path d="M17 17 L14 40 L20 40 Z"/>
+        <rect x="24" y="6" width="2.6" height="15" transform="rotate(-10 25 14)"/>
+        <circle cx="27" cy="6" r="3"/><rect x="9" y="40" width="17" height="4"/>
+        <rect x="7" y="44" width="21" height="6"/></svg></div></div>
+
+      <!-- Coliseu -->
+      <div class="me-mon m6"><div class="in"><svg width="54" height="38" viewBox="0 0 54 38">
+        <path d="M4 36 L4 18 Q4 8 27 8 Q50 8 50 18 L50 36 Z"/>
+        <g fill="#170f30"><rect x="9" y="18" width="4" height="11" rx="2"/><rect x="17" y="16" width="4" height="13" rx="2"/>
+        <rect x="25" y="15" width="4" height="14" rx="2"/><rect x="33" y="16" width="4" height="13" rx="2"/>
+        <rect x="41" y="18" width="4" height="11" rx="2"/></g></svg></div></div>
+    </div>
+
+    <!-- Aviãozinho (ícone sutil de viagem) -->
+    <img class="me-rocket-fly" src="lion-foguete.png" alt="Foguete do Leão orbitando a Terra" />
+
+    <!-- Pouso -->
+    <div class="me-pad"></div>
+    <img class="me-parked" src="lion-foguete.png" alt="" />
+    <img class="me-lion" src="lion.png" alt="Leão do Inglês" />
+
+    <!-- Balão de fala -->
+    <div class="me-speech">
+      <span class="emoji">🚀</span>
+      <p>Essa missão já acabou.</p>
+      <p>Em breve, teremos informações da próxima.</p>
+      <p class="hi">Fique ligado! 🦁</p>
+    </div>
+
+  </div><!-- /me-stage -->
+
+  <div class="me-brand">D100 · Leão do Inglês</div>
+</div><!-- /ended-view -->
+
 <!-- Mini-player de áudio fixo na base da tela -->
 <div id="audio-player">
   <div class="audio-player-top">
@@ -1435,6 +1716,9 @@
 ───────────────────────────────────────────────────── */
 const CONFIG = {
   dataInicio: '2026-06-11',
+  // Desafio encerrado: quando true, o app mostra a tela animada de "missão concluída"
+  // no lugar do conteúdo. O modo admin (?adm=1) continua acessando o conteúdo normalmente.
+  desafioEncerrado: true,
   web3formsKey: '567328cd-e9b7-4a50-99f3-cc0c3238d8af',
   // Link direto do Mecânico Lion (usado SÓ no Dia 1, para iniciar a conversa)
   linkMecanicoLion: 'https://chatgpt.com/g/g-6816a8bfd21881919f0327d722e7435d-lion-o-seu-mecanico',
@@ -2896,11 +3180,52 @@ function bindDayAudio(btnId, src) {
 
 let countdownStarted = false;
 
+/* ─────────────────────────────────────────────────────
+   TELA DE ENCERRAMENTO — timeline da cena "missão concluída"
+───────────────────────────────────────────────────── */
+function meFitStage() {
+  const s = document.querySelector('.me-stage');
+  if (!s) return;
+  const scale = Math.min(window.innerWidth * 0.96 / 360, window.innerHeight * 0.94 / 640);
+  s.style.setProperty('--me-scale', Math.min(scale, 1.7).toFixed(3));
+}
+
+let _endedStarted = false;
+function showEndedScreen() {
+  const ev = document.getElementById('ended-view');
+  if (!ev) return;
+  const container = document.querySelector('.container');
+  if (container) container.style.display = 'none';
+  document.body.style.overflow = 'hidden';
+  document.body.style.padding = '0';
+  ev.classList.add('show');
+  meFitStage();
+  window.addEventListener('resize', meFitStage);
+
+  if (_endedStarted) return;
+  _endedStarted = true;
+
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Marcos da animação (ms). Em modo "reduzir movimento", tudo acelera pro final.
+  const t = reduce
+    ? { orbit: 60,  land: 700,  lion: 1000, speech: 1300 }
+    : { orbit: 250, land: 7000, lion: 8250, speech: 8950 };
+
+  ev.classList.add('stage-intro');
+  setTimeout(() => ev.classList.add('stage-orbit'),  t.orbit);
+  setTimeout(() => ev.classList.add('stage-land'),   t.land);
+  setTimeout(() => ev.classList.add('stage-lion'),   t.lion);
+  setTimeout(() => ev.classList.add('stage-speech'), t.speech);
+}
+
 function route() {
   // Liga/desliga o modo administrador pela URL (?adm=1 ou ?adm=0)
   const params = new URLSearchParams(location.search);
   if (params.get('adm') === '1') localStorage.setItem('d100_admin', '1');
   if (params.get('adm') === '0') localStorage.removeItem('d100_admin');
+
+  // Desafio encerrado → tela de "missão concluída" (admin continua acessando o conteúdo)
+  if (CONFIG.desafioEncerrado && !adminOn()) { showEndedScreen(); return; }
 
   const idx = getDayIndex();
 
