@@ -696,11 +696,17 @@
     #login-form .btn-submit { margin-top: 22px; }
     #login-form .btn-submit:disabled { opacity: .6; cursor: wait; }
     .show-pass { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); margin-top: 8px; cursor: pointer; }
-    #login-error {
+    #primeiro-form { text-align: left; }
+    #primeiro-form .field-wrap { margin-bottom: 16px; }
+    #primeiro-form .btn-submit { margin-top: 22px; }
+    #primeiro-form .btn-submit:disabled { opacity: .6; cursor: wait; }
+    #login-error, #pa-error {
       display: none; background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3);
       border-radius: 8px; padding: 12px 16px; font-size: 14px; color: #fca5a5; margin-top: 16px; line-height: 1.5;
     }
-    #login-error.info { background: rgba(124,58,237,.12); border-color: rgba(124,58,237,.4); color: var(--text); }
+    #login-error.info, #pa-error.info { background: rgba(124,58,237,.12); border-color: rgba(124,58,237,.4); color: var(--text); }
+    .login-switch { margin-top: 20px; font-size: 14.5px; color: var(--text); text-align: center; }
+    .login-switch a { color: var(--purple-l); font-weight: 800; text-decoration: underline; }
     .login-help { margin-top: 22px; font-size: 13.5px; color: var(--muted); line-height: 1.6; text-align: center; }
     .login-help a { color: var(--purple-l); font-weight: 700; }
 
@@ -1418,7 +1424,7 @@
   <div id="login-view" style="display:none;">
     <img class="login-lion" src="lion.png" alt="Leão do Inglês" />
     <h1>Entrar no <span>Desafio 100</span></h1>
-    <p class="login-sub">Use o e-mail e a senha que você me passou quando garantiu o seu acesso.</p>
+    <p class="login-sub" id="login-sub">Use o e-mail da sua compra e a senha que você criou.</p>
     <form id="login-form" novalidate>
       <div class="field-wrap">
         <label for="login-email">Seu e-mail</label>
@@ -1432,9 +1438,31 @@
       <button type="submit" class="btn-submit" id="login-btn">Entrar 🚀</button>
       <div id="login-error"></div>
     </form>
-    <p class="login-help">Ainda não tem acesso? Depois de garantir o seu lugar, <strong>fale comigo no Instagram</strong>
-      <a href="https://instagram.com/leaodoingles" target="_blank" rel="noopener">@leaodoingles</a>
-      e me passe seu nome completo, seu e-mail e a senha que quer usar.</p>
+
+    <!-- PRIMEIRO ACESSO: o aluno cria a própria senha (precisa já ter comprado) -->
+    <form id="primeiro-form" novalidate style="display:none;">
+      <div class="field-wrap">
+        <label for="pa-email">E-mail da sua compra</label>
+        <input type="email" id="pa-email" autocomplete="username" placeholder="o mesmo e-mail que você usou na compra" required />
+      </div>
+      <div class="field-wrap">
+        <label for="pa-senha">Crie sua senha</label>
+        <input type="password" id="pa-senha" autocomplete="new-password" placeholder="mínimo de 6 caracteres" required />
+      </div>
+      <div class="field-wrap">
+        <label for="pa-senha2">Repita a senha</label>
+        <input type="password" id="pa-senha2" autocomplete="new-password" placeholder="digite a mesma senha" required />
+        <label class="show-pass" for="pa-show"><input type="checkbox" id="pa-show" /> Mostrar senha</label>
+      </div>
+      <button type="submit" class="btn-submit" id="pa-btn">Criar minha senha e entrar 🚀</button>
+      <div id="pa-error"></div>
+    </form>
+
+    <p class="login-switch" id="switch-primeiro">Comprou e ainda não criou sua senha? <a href="#" id="go-primeiro">Primeiro acesso</a></p>
+    <p class="login-switch" id="switch-login" style="display:none;">Já criou sua senha? <a href="#" id="go-login">Entrar</a></p>
+
+    <p class="login-help">Não achou sua compra ou esqueceu a senha? <strong>Fale comigo no Instagram</strong>
+      <a href="https://instagram.com/leaodoingles" target="_blank" rel="noopener">@leaodoingles</a>.</p>
   </div>
 
   <!-- COUNTDOWN VIEW -->
@@ -1782,7 +1810,7 @@ const CONFIG = {
   dataInicio: '2026-06-11',
   // Desafio encerrado: quando true, o app mostra a tela animada de "missão concluída"
   // no lugar do conteúdo. O modo admin (?adm=1) continua acessando o conteúdo normalmente.
-  desafioEncerrado: true,
+  desafioEncerrado: false,
   // Envio principal: planilha do Google (Apps Script). Sem limite mensal prático.
   sheetsUrl: 'https://script.google.com/macros/s/AKfycbygDGGfdlJRhUdmBhbh97HopgW-XFNFRpfeOq_zwcH8DtFMinj_2ku6CBhFGnZ-1aPN/exec',
   // Login obrigatório: o aluno só entra com e-mail + senha cadastrados na aba "Alunos" da planilha.
@@ -2450,8 +2478,19 @@ function parseDate(str) {
   return new Date(y, m - 1, d);
 }
 
+// Data de início: com login, é o 1º acesso DO ALUNO (vem do servidor); sem login (modo adm), a do CONFIG.
+function startDateStr() {
+  const a = getAuth();
+  if (CONFIG.loginObrigatorio && a) {
+    if (a.inicio) return a.inicio;
+    const t = new Date();                         // sessão antiga sem data: o Dia 1 abre hoje
+    return `${t.getFullYear()}-${pad(t.getMonth() + 1)}-${pad(t.getDate())}`;
+  }
+  return CONFIG.dataInicio;
+}
+
 function getDayIndex() {
-  const start = parseDate(CONFIG.dataInicio);
+  const start = parseDate(startDateStr());
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   start.setHours(0, 0, 0, 0);
@@ -2646,7 +2685,7 @@ function renderDay(dayIndex) {
   const badge = document.getElementById('day-badge');
   if (dayIndex === todayIdx) {
     badge.classList.remove('past');
-    document.getElementById('badge-text').textContent = `Dia ${dayNum} de 14 · Ao vivo`;
+    document.getElementById('badge-text').textContent = `Dia ${dayNum} de 14 · Hoje`;
   } else {
     badge.classList.add('past');
     document.getElementById('badge-text').textContent = `Dia ${dayNum} de 14`;
@@ -2765,7 +2804,7 @@ function renderDay(dayIndex) {
 function startCountdown() {
   function tick() {
     const now = new Date();
-    const start = parseDate(CONFIG.dataInicio);
+    const start = parseDate(startDateStr());
     start.setHours(0, 0, 0, 0);
     const diff = start - now;
     if (diff <= 0) { location.reload(); return; }
@@ -2968,8 +3007,8 @@ document.getElementById('oficina-form').addEventListener('submit', async functio
       enviado = true;
     } else if (resp && resp.ok === false) {
       // A planilha respondeu e RECUSOU: não usa a reserva.
-      if (resp.erro === 'credenciais' || resp.erro === 'inativo') {
-        doLogout(resp.erro === 'inativo' ? loginMsg('inativo') : 'Sua sessão expirou. Entre de novo com seu e-mail e senha.');
+      if (resp.erro === 'credenciais' || resp.erro === 'inativo' || resp.erro === 'expirado') {
+        doLogout(resp.erro === 'credenciais' ? 'Sua sessão expirou. Entre de novo com seu e-mail e senha.' : loginMsg(resp.erro));
         return;
       }
       throw new Error(resp.erro || 'recusado');
@@ -3132,6 +3171,10 @@ function loginMsg(erro) {
     case 'credenciais': return 'E-mail ou senha incorretos. Confira os dados que você me passou. Se esqueceu, é só me chamar no Instagram.';
     case 'bloqueado':   return 'Muitas tentativas erradas seguidas. Por segurança, aguarde 15 minutos e tente de novo.';
     case 'inativo':     return 'Seu acesso está desativado no momento. Fale comigo no Instagram (@leaodoingles).';
+    case 'expirado':    return 'O prazo do seu acesso ao desafio terminou. Fale comigo no Instagram (@leaodoingles) pra saber como continuar.';
+    case 'sem_cadastro': return 'Não encontrei esse e-mail entre os alunos. Use exatamente o e-mail que você usou na compra. Se acabou de comprar, aguarde alguns minutos e tente de novo — ou fale comigo no Instagram (@leaodoingles).';
+    case 'ja_tem_senha': return 'Esse e-mail já tem uma senha criada. Clique em "Entrar" e use a sua senha. Se esqueceu, fale comigo no Instagram (@leaodoingles) que eu libero pra você criar outra.';
+    case 'senha_fraca':  return 'Escolha uma senha com pelo menos 6 caracteres (e que não seja o seu e-mail).';
     default:            return 'Não consegui entrar agora. Tente de novo em instantes.';
   }
 }
@@ -3179,13 +3222,8 @@ document.getElementById('login-form').addEventListener('submit', async function(
   try {
     const j = await apiPlanilha('login', email, senha);
     if (j && j.ok === true) {
-      setAuth({ email, senha, nome: j.nome || '' });
-      saveProfile(j.nome || '', email);
       document.getElementById('login-senha').value = '';
-      _authChecked = true;       // acabou de ser verificado
-      updateUserBox();
-      if (location.hash === '#/login') location.hash = '#/'; // (modo adm) volta ao painel
-      route();
+      entrouComoAluno(email, senha, j);
     } else {
       showLoginError(loginMsg(j && j.erro));
     }
@@ -3193,6 +3231,64 @@ document.getElementById('login-form').addEventListener('submit', async function(
     showLoginError('Não consegui conectar agora. Confira sua internet e tente de novo.');
   } finally {
     btn.disabled = false; btn.textContent = 'Entrar 🚀';
+  }
+});
+
+// Guarda a sessão e abre o site (usado no login e no primeiro acesso)
+function entrouComoAluno(email, senha, j) {
+  setAuth({ email, senha, nome: j.nome || '', inicio: j.inicio || '' });
+  saveProfile(j.nome || '', email);
+  _authChecked = true;       // acabou de ser verificado
+  updateUserBox();
+  if (location.hash === '#/login') location.hash = '#/'; // (modo adm) volta ao painel
+  route();
+}
+
+// Alterna entre "Entrar" e "Primeiro acesso" (criar senha)
+function mostrarPrimeiroAcesso(sim) {
+  document.getElementById('login-form').style.display = sim ? 'none' : 'block';
+  document.getElementById('primeiro-form').style.display = sim ? 'block' : 'none';
+  document.getElementById('switch-primeiro').style.display = sim ? 'none' : 'block';
+  document.getElementById('switch-login').style.display = sim ? 'block' : 'none';
+  document.getElementById('login-sub').textContent = sim
+    ? 'Use o mesmo e-mail da compra e crie uma senha só pra você. É rapidinho.'
+    : 'Use o e-mail da sua compra e a senha que você criou.';
+  document.getElementById('login-error').style.display = 'none';
+  document.getElementById('pa-error').style.display = 'none';
+}
+document.getElementById('go-primeiro').addEventListener('click', e => { e.preventDefault(); mostrarPrimeiroAcesso(true); });
+document.getElementById('go-login').addEventListener('click', e => { e.preventDefault(); mostrarPrimeiroAcesso(false); });
+document.getElementById('pa-show').addEventListener('change', function() {
+  const tipo = this.checked ? 'text' : 'password';
+  document.getElementById('pa-senha').type = tipo;
+  document.getElementById('pa-senha2').type = tipo;
+});
+
+document.getElementById('primeiro-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const email = document.getElementById('pa-email').value.trim().toLowerCase();
+  const senha = document.getElementById('pa-senha').value.trim();
+  const senha2 = document.getElementById('pa-senha2').value.trim();
+  const btn = document.getElementById('pa-btn');
+  const err = document.getElementById('pa-error');
+  const erro = (msg) => { err.textContent = msg; err.classList.remove('info'); err.style.display = 'block'; };
+  err.style.display = 'none';
+  if (!/^\S+@\S+\.\S+$/.test(email)) return erro('Digite o e-mail que você usou na compra.');
+  if (senha.length < 6 || senha.toLowerCase() === email) return erro(loginMsg('senha_fraca'));
+  if (senha !== senha2) return erro('As duas senhas não são iguais. Digite de novo.');
+  btn.disabled = true; btn.textContent = 'Criando...';
+  try {
+    const j = await apiPlanilha('primeiro_acesso', email, senha);
+    if (j && j.ok === true) {
+      document.getElementById('pa-senha').value = ''; document.getElementById('pa-senha2').value = '';
+      entrouComoAluno(email, senha, j);
+    } else {
+      erro(loginMsg(j && j.erro));
+    }
+  } catch (ex) {
+    erro('Não consegui conectar agora. Confira sua internet e tente de novo.');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Criar minha senha e entrar 🚀';
   }
 });
 
@@ -3206,8 +3302,12 @@ async function verifySessionSilently() {
   if (!a) return;
   try {
     const j = await apiPlanilha('login', a.email, a.senha);
-    if (j && j.ok === false && (j.erro === 'credenciais' || j.erro === 'inativo')) {
-      doLogout(j.erro === 'inativo' ? loginMsg('inativo') : 'Sua sessão expirou. Entre de novo com seu e-mail e senha.');
+    if (j && j.ok === false && (j.erro === 'credenciais' || j.erro === 'inativo' || j.erro === 'expirado')) {
+      doLogout(j.erro === 'credenciais' ? 'Sua sessão expirou. Entre de novo com seu e-mail e senha.' : loginMsg(j.erro));
+    } else if (j && j.ok === true && j.inicio && j.inicio !== a.inicio) {
+      // data de início mudou (ex.: você editou na planilha, ou sessão antiga sem data) → atualiza e redesenha
+      setAuth({ ...a, nome: j.nome || a.nome, inicio: j.inicio });
+      route();
     }
   } catch (err) { /* sem internet: segue com o que está salvo */ }
 }
@@ -3237,7 +3337,7 @@ function renderBoard() {
   if (todayIdx >= 0 && todayIdx < 14) {
     bBadge.style.display = 'inline-flex';
     bBadge.classList.remove('past');
-    bText.textContent = `Hoje é o Dia ${todayIdx + 1} de 14 · Ao vivo`;
+    bText.textContent = `Hoje é o seu Dia ${todayIdx + 1} de 14`;
   } else if (todayIdx >= 14) {
     bBadge.style.display = 'inline-flex';
     bBadge.classList.add('past');
@@ -3474,7 +3574,7 @@ function route() {
   if (CONFIG.loginObrigatorio && !adminOn() && !getAuth()) {
     showView('login-view');
     const pendente = sessionStorage.getItem(LS_LOGIN_MSG);
-    if (pendente) { showLoginError(pendente, true); sessionStorage.removeItem(LS_LOGIN_MSG); }
+    if (pendente) { mostrarPrimeiroAcesso(false); showLoginError(pendente, true); sessionStorage.removeItem(LS_LOGIN_MSG); }
     return;
   }
   verifySessionSilently();
