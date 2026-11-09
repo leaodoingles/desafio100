@@ -824,7 +824,7 @@
     .lion-fab {
       position: fixed;
       right: 18px;
-      bottom: 18px;
+      bottom: calc(18px + var(--player-h, 0px)); /* sobe sozinho quando o player de áudio abre */
       z-index: 90;
       display: flex;
       align-items: center;
@@ -835,7 +835,7 @@
       text-decoration: none;
       box-shadow: 0 8px 28px rgba(124,58,237,.45);
       animation: fabIn .4s ease, fabWiggle 3.5s ease-in-out 1.5s infinite;
-      transition: transform .15s, box-shadow .2s;
+      transition: transform .15s, box-shadow .2s, bottom .25s ease;
     }
     .lion-fab:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 12px 34px rgba(124,58,237,.6); }
     .lion-fab:active { transform: scale(.97); }
@@ -866,7 +866,7 @@
       98%  { transform: rotate(-3deg); }
     }
     @media (max-width: 480px) {
-      .lion-fab { right: 12px; bottom: 12px; padding: 7px 7px 7px 14px; }
+      .lion-fab { right: 12px; bottom: calc(12px + var(--player-h, 0px)); padding: 7px 7px 7px 14px; }
       .lion-fab-bubble { font-size: 13px; }
       .lion-fab-img { width: 40px; height: 40px; }
     }
@@ -1091,6 +1091,16 @@
       box-shadow: 0 -4px 20px rgba(0,0,0,.4);
     }
     .audio-player-top { display: flex; align-items: center; gap: 10px; }
+    /* Com o player aberto, abre espaço no fim da página (nada fica escondido atrás dele) */
+    body.player-on { padding-bottom: calc(60px + var(--player-h, 0px)); }
+    #audio-close {
+      width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+      background: transparent; border: 1px solid rgba(124,58,237,.4); color: var(--muted);
+      font-size: 14px; line-height: 1; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s, color .15s;
+    }
+    #audio-close:hover { background: rgba(124,58,237,.25); color: var(--text); }
     #audio-play-pause {
       width: 36px; height: 36px; border-radius: 50%;
       background: var(--purple); border: none; color: #fff;
@@ -1739,6 +1749,7 @@
       <input type="range" id="audio-seekbar" min="0" max="100" value="0" step="0.1">
       <span class="audio-time" id="audio-time-total">0:00</span>
     </div>
+    <button id="audio-close" type="button" aria-label="Fechar player de áudio" title="Fechar">✕</button>
   </div>
   <div class="audio-player-bottom">
     <span id="audio-player-label">Áudio</span>
@@ -2579,7 +2590,7 @@ function buildFields(containerEl, frases, prefix) {
     } else {
       phraseAudioBtn.style.display = 'flex';
       const pSrc = `audio/audio-dia-${pad(_currentDayNum)}-${prefix}-f${i + 1}.m4a`;
-      phraseAudioBtn.onclick = () => playAudioFile(pSrc, phraseAudioBtn);
+      phraseAudioBtn.onclick = () => playAudioFile(pSrc, phraseAudioBtn, `Parte ${prefix === 'p1' ? 1 : 2} · Frase ${i + 1}`);
     }
 
     const scaf = document.createElement('div');
@@ -2677,6 +2688,7 @@ function buildFields(containerEl, frases, prefix) {
    RENDER ACTIVE DAY
 ───────────────────────────────────────────────────── */
 function renderDay(dayIndex) {
+  closeAudioPlayer();                          // trocou de dia: para o áudio do dia anterior
   const o = OFICINAS[dayIndex];
   const dayNum = dayIndex + 1;
   const todayIdx = getDayIndex();
@@ -2772,8 +2784,8 @@ function renderDay(dayIndex) {
   bindAudio('p2-audio', dayNum, 2);
   buildFields(document.getElementById('p2-fields'), o.p2.frases, 'p2');
 
-  bindDayAudio('intro-audio',   `audio/audio-dia-${pad(dayNum)}-intro.m4a`);
-  bindDayAudio('sucesso-audio', `audio/audio-dia-${pad(dayNum)}-sucesso.m4a`);
+  bindDayAudio('intro-audio',   `audio/audio-dia-${pad(dayNum)}-intro.m4a`,   'Introdução do dia');
+  bindDayAudio('sucesso-audio', `audio/audio-dia-${pad(dayNum)}-sucesso.m4a`, 'O que fazer agora');
 
   document.getElementById('adm-preview-success').style.display = adminOn() ? 'block' : 'none';
 
@@ -3413,6 +3425,7 @@ function renderBoard() {
    ROTEADOR — troca de telas via #hash
 ───────────────────────────────────────────────────── */
 function showView(id) {
+  if (id !== 'day-view') closeAudioPlayer();   // saiu da Oficina: o áudio para e o player some
   ['login-view', 'countdown-view', 'welcome-view', 'board-view', 'day-view'].forEach(v => {
     document.getElementById(v).style.display = (v === id) ? 'block' : 'none';
   });
@@ -3435,6 +3448,28 @@ function fmtTime(s) {
   const m = Math.floor(s / 60);
   const sec = Math.floor(s % 60);
   return `${m}:${sec.toString().padStart(2, '0')}`;
+}
+
+// Avisa o resto da página que o player está aberto/fechado: o botão do Lion sobe a altura do player
+// e o fim da página ganha um espaço pra nada ficar escondido atrás dele.
+function syncPlayerLayout() {
+  const p = document.getElementById('audio-player');
+  const aberto = getComputedStyle(p).display !== 'none';
+  document.body.classList.toggle('player-on', aberto);
+  document.documentElement.style.setProperty('--player-h', aberto ? p.offsetHeight + 'px' : '0px');
+}
+window.addEventListener('resize', syncPlayerLayout);
+
+// Para o áudio, tira o destaque dos botões 🔊 e esconde o player
+function closeAudioPlayer() {
+  if (_currentAudio) {
+    _currentAudio.pause();
+    if (_onTimeUpdate) _currentAudio.removeEventListener('timeupdate', _onTimeUpdate);
+    _currentAudio = null;
+  }
+  if (_currentAudioBtn) { _currentAudioBtn.classList.remove('playing'); _currentAudioBtn = null; }
+  document.getElementById('audio-player').style.display = 'none';
+  syncPlayerLayout();
 }
 
 function playAudioFile(src, btn, label) {
@@ -3464,6 +3499,7 @@ function playAudioFile(src, btn, label) {
   timeTot.textContent = '0:00';
   ppBtn.textContent = '⏸';
   player.style.display = 'flex';
+  syncPlayerLayout();
 
   a.addEventListener('loadedmetadata', () => { timeTot.textContent = fmtTime(a.duration); });
 
@@ -3480,6 +3516,7 @@ function playAudioFile(src, btn, label) {
 }
 
 // Controles do mini-player
+document.getElementById('audio-close').addEventListener('click', closeAudioPlayer);
 document.getElementById('audio-play-pause').addEventListener('click', function() {
   if (!_currentAudio) return;
   if (_currentAudio.paused) {
@@ -3515,17 +3552,17 @@ function bindAudio(btnId, dayNum, parte) {
   if (!CONFIG.audioFrases) { btn.style.display = 'none'; return; }
   btn.style.display = 'flex';
   const src = `audio/audio-dia-${pad(dayNum)}-p${parte}.m4a`;
-  btn.onclick = () => playAudioFile(src, btn);
+  btn.onclick = () => playAudioFile(src, btn, `Parte ${parte} · Frase-padrão`);
 }
 
 // Liga (ou esconde) os botões largos de áudio (intro / final / pós-envio)
-function bindDayAudio(btnId, src) {
+function bindDayAudio(btnId, src, label) {
   const btn = document.getElementById(btnId);
   if (!btn) return;
   btn.classList.remove('playing');
   if (!CONFIG.audioFrases) { btn.style.display = 'none'; return; }
   btn.style.display = 'flex';
-  btn.onclick = () => playAudioFile(src, btn);
+  btn.onclick = () => playAudioFile(src, btn, label);
 }
 
 let countdownStarted = false;
