@@ -3120,16 +3120,22 @@ document.getElementById('copy-btn').addEventListener('click', function() {
 const LS_DONE = 'd100_concluidos';
 const LS_PROF = 'd100_perfil';
 
+// Progresso (dias concluídos). Com login, é do ALUNO (guardado na planilha, vale em qualquer aparelho).
+// Sem login (modo adm), fica só neste navegador.
 function getCompleted() {
+  const a = getAuth();
+  if (CONFIG.loginObrigatorio && a) return Array.isArray(a.concluidos) ? a.concluidos : [];
   try { return JSON.parse(localStorage.getItem(LS_DONE)) || []; }
   catch { return []; }
 }
 function addCompleted(dia) {
-  const arr = getCompleted();
-  if (!arr.includes(dia)) {
-    arr.push(dia);
-    localStorage.setItem(LS_DONE, JSON.stringify(arr));
-  }
+  const arr = getCompleted().slice();
+  if (arr.includes(dia)) return;
+  arr.push(dia);
+  arr.sort((x, y) => x - y);
+  const a = getAuth();
+  if (CONFIG.loginObrigatorio && a) { setAuth({ ...a, concluidos: arr }); return; }
+  localStorage.setItem(LS_DONE, JSON.stringify(arr));
 }
 function loadProfile() {
   try { return JSON.parse(localStorage.getItem(LS_PROF)) || {}; }
@@ -3236,7 +3242,7 @@ document.getElementById('login-form').addEventListener('submit', async function(
 
 // Guarda a sessão e abre o site (usado no login e no primeiro acesso)
 function entrouComoAluno(email, senha, j) {
-  setAuth({ email, senha, nome: j.nome || '', inicio: j.inicio || '' });
+  setAuth({ email, senha, nome: j.nome || '', inicio: j.inicio || '', concluidos: j.concluidos || [] });
   saveProfile(j.nome || '', email);
   _authChecked = true;       // acabou de ser verificado
   updateUserBox();
@@ -3304,10 +3310,14 @@ async function verifySessionSilently() {
     const j = await apiPlanilha('login', a.email, a.senha);
     if (j && j.ok === false && (j.erro === 'credenciais' || j.erro === 'inativo' || j.erro === 'expirado')) {
       doLogout(j.erro === 'credenciais' ? 'Sua sessão expirou. Entre de novo com seu e-mail e senha.' : loginMsg(j.erro));
-    } else if (j && j.ok === true && j.inicio && j.inicio !== a.inicio) {
-      // data de início mudou (ex.: você editou na planilha, ou sessão antiga sem data) → atualiza e redesenha
-      setAuth({ ...a, nome: j.nome || a.nome, inicio: j.inicio });
-      route();
+    } else if (j && j.ok === true) {
+      // atualiza com o que está na planilha (data de início e dias já enviados) e redesenha se mudou
+      const novos = Array.isArray(j.concluidos) ? j.concluidos : (a.concluidos || []);
+      const mudou = (j.inicio && j.inicio !== a.inicio) || JSON.stringify(novos) !== JSON.stringify(a.concluidos || []);
+      if (mudou) {
+        setAuth({ ...a, nome: j.nome || a.nome, inicio: j.inicio || a.inicio, concluidos: novos });
+        route();
+      }
     }
   } catch (err) { /* sem internet: segue com o que está salvo */ }
 }
