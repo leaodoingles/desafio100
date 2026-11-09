@@ -670,7 +670,7 @@
       letter-spacing: .04em;
       text-transform: uppercase;
     }
-    input[type="text"], input[type="email"] {
+    input[type="text"], input[type="email"], input[type="password"] {
       width: 100%;
       background: var(--bg3);
       border: 1px solid #2e2550;
@@ -682,6 +682,32 @@
       transition: border-color .2s;
     }
     input:focus { outline: none; border-color: var(--purple); }
+    /* Nome/e-mail travados (vêm do login do aluno) */
+    input[readonly].locked { opacity: .75; cursor: not-allowed; border-style: dashed; }
+
+    /* ── LOGIN ───────────────────────────────────────── */
+    #login-view { max-width: 420px; margin: 0 auto; padding: 24px 0 40px; text-align: center; }
+    #login-view .login-lion { width: 120px; height: auto; margin: 0 auto 14px; display: block; }
+    #login-view h1 { font-family: 'Outfit', sans-serif; font-size: clamp(26px, 7vw, 34px); font-weight: 900; margin-bottom: 8px; }
+    #login-view h1 span { color: var(--purple-l); }
+    #login-view .login-sub { color: var(--muted); font-size: 15px; line-height: 1.55; margin-bottom: 26px; }
+    #login-form { text-align: left; }
+    #login-form .field-wrap { margin-bottom: 16px; }
+    #login-form .btn-submit { margin-top: 22px; }
+    #login-form .btn-submit:disabled { opacity: .6; cursor: wait; }
+    .show-pass { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); margin-top: 8px; cursor: pointer; }
+    #login-error {
+      display: none; background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.3);
+      border-radius: 8px; padding: 12px 16px; font-size: 14px; color: #fca5a5; margin-top: 16px; line-height: 1.5;
+    }
+    #login-error.info { background: rgba(124,58,237,.12); border-color: rgba(124,58,237,.4); color: var(--text); }
+    .login-help { margin-top: 22px; font-size: 13.5px; color: var(--muted); line-height: 1.6; text-align: center; }
+    .login-help a { color: var(--purple-l); font-weight: 700; }
+
+    /* Saudação + "Sair" no cabeçalho */
+    .site-header .user-box { margin-left: auto; text-align: right; font-size: 13px; color: var(--muted); display: none; }
+    .site-header .user-box strong { color: var(--text); display: block; font-size: 13px; }
+    .site-header .user-box button { background: none; border: none; color: var(--purple-l); font-size: 12px; font-weight: 700; cursor: pointer; padding: 2px 0; text-decoration: underline; }
 
     /* ── DIVIDER ─────────────────────────────────────── */
     .divider {
@@ -1382,7 +1408,34 @@
       <div class="brand">Leão do Inglês</div>
       <div class="challenge-name">D100 – Desafio 100</div>
     </div>
+    <div class="user-box" id="user-box">
+      <strong id="user-name"></strong>
+      <button type="button" id="logout-btn">Sair</button>
+    </div>
   </header>
+
+  <!-- LOGIN VIEW -->
+  <div id="login-view" style="display:none;">
+    <img class="login-lion" src="lion.png" alt="Leão do Inglês" />
+    <h1>Entrar no <span>Desafio 100</span></h1>
+    <p class="login-sub">Use o e-mail e a senha que você me passou quando garantiu o seu acesso.</p>
+    <form id="login-form" novalidate>
+      <div class="field-wrap">
+        <label for="login-email">Seu e-mail</label>
+        <input type="email" id="login-email" autocomplete="username" placeholder="maria@email.com" required />
+      </div>
+      <div class="field-wrap">
+        <label for="login-senha">Sua senha</label>
+        <input type="password" id="login-senha" autocomplete="current-password" placeholder="Sua senha do desafio" required />
+        <label class="show-pass" for="login-show"><input type="checkbox" id="login-show" /> Mostrar senha</label>
+      </div>
+      <button type="submit" class="btn-submit" id="login-btn">Entrar 🚀</button>
+      <div id="login-error"></div>
+    </form>
+    <p class="login-help">Ainda não tem acesso? Depois de garantir o seu lugar, <strong>fale comigo no Instagram</strong>
+      <a href="https://instagram.com/leaodoingles" target="_blank" rel="noopener">@leaodoingles</a>
+      e me passe seu nome completo, seu e-mail e a senha que quer usar.</p>
+  </div>
 
   <!-- COUNTDOWN VIEW -->
   <div id="countdown-view" style="display:none;">
@@ -1411,7 +1464,7 @@
   <div id="board-view" style="display:none;">
 
     <div id="admin-banner" class="admin-banner" style="display:none;">
-      🔧 <strong>Modo administrador ativo</strong> — todos os 14 dias estão liberados para você conferir. <a href="?adm=0">Sair do modo admin</a>
+      🔧 <strong>Modo administrador ativo</strong> — todos os 14 dias estão liberados para você conferir. <a href="?adm=0">Sair do modo admin</a> · <a href="#/login">Entrar como aluno (teste de envio)</a>
     </div>
 
     <div class="badge" id="board-badge" style="display:none;"><span class="dot"></span> <span id="board-badge-text"></span></div>
@@ -1732,8 +1785,10 @@ const CONFIG = {
   desafioEncerrado: true,
   // Envio principal: planilha do Google (Apps Script). Sem limite mensal prático.
   sheetsUrl: 'https://script.google.com/macros/s/AKfycbygDGGfdlJRhUdmBhbh97HopgW-XFNFRpfeOq_zwcH8DtFMinj_2ku6CBhFGnZ-1aPN/exec',
-  sheetsSecret: 'PRIMÍCIAS', // precisa ser igual ao SEGREDO do Apps Script (barra spam; fica visível no código)
-  // Reserva: só é usada se a planilha falhar.
+  // Login obrigatório: o aluno só entra com e-mail + senha cadastrados na aba "Alunos" da planilha.
+  // O modo admin (?adm=1) pula a tela de login (mas o envio de respostas exige login de aluno).
+  loginObrigatorio: true,
+  // Reserva: só é usada se a planilha estiver fora do ar (nunca quando o login for recusado).
   web3formsKey: '567328cd-e9b7-4a50-99f3-cc0c3238d8af',
   // Link direto do Mecânico Lion (usado SÓ no Dia 1, para iniciar a conversa)
   linkMecanicoLion: 'https://chatgpt.com/g/g-6816a8bfd21881919f0327d722e7435d-lion-o-seu-mecanico',
@@ -2638,10 +2693,20 @@ function renderDay(dayIndex) {
   sBtn.setAttribute('title', 'Confirme cada frase com OK ✓ para liberar o envio');
   sBtn.textContent = 'Enviar Oficina do Dia 🚀';
 
-  // Pré-preenche nome/e-mail já salvos no navegador
-  const prof = loadProfile();
-  if (prof.nome)  document.getElementById('nome').value  = prof.nome;
-  if (prof.email) document.getElementById('email').value = prof.email;
+  // Nome/e-mail: com login, vêm do cadastro do aluno e ficam travados; sem login (modo adm), editáveis
+  const nomeEl0 = document.getElementById('nome');
+  const emailEl0 = document.getElementById('email');
+  const authAtual = getAuth();
+  if (authAtual) {
+    nomeEl0.value  = authAtual.nome || loadProfile().nome || '';
+    emailEl0.value = authAtual.email;
+    [nomeEl0, emailEl0].forEach(el => { el.readOnly = true; el.classList.add('locked'); el.title = 'Preenchido automaticamente com o seu cadastro'; });
+  } else {
+    const prof = loadProfile();
+    if (prof.nome)  nomeEl0.value  = prof.nome;
+    if (prof.email) emailEl0.value = prof.email;
+    [nomeEl0, emailEl0].forEach(el => { el.readOnly = false; el.classList.remove('locked'); el.removeAttribute('title'); });
+  }
 
   // Hidden fields
   document.getElementById('field-dia').value = dayNum;
@@ -2868,14 +2933,22 @@ document.getElementById('oficina-form').addEventListener('submit', async functio
   primeAudio();
 
   const data = new FormData(this);
+  const auth = getAuth();
 
-  // 1) Planilha do Google (principal). 2) Web3Forms (reserva, só se a planilha falhar).
+  // Sem login de aluno não há como gravar (o servidor confere e-mail + senha a cada envio)
+  if (!auth) {
+    btn.disabled = false;
+    btn.textContent = 'Enviar Oficina do Dia 🚀';
+    errEl.textContent = adminOn()
+      ? 'Para enviar de verdade, entre com um login de aluno. (Modo adm: acesse ?adm=0, entre com um login de teste e depois volte com ?adm=1.)'
+      : 'Sua sessão expirou. Entre de novo com seu e-mail e senha.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  // 1) Planilha do Google (principal, com verificação do aluno). 2) Web3Forms (reserva, só se a planilha estiver fora do ar).
   async function enviarParaPlanilha() {
-    const body = new URLSearchParams(data);
-    body.set('segredo', CONFIG.sheetsSecret);
-    const r = await fetch(CONFIG.sheetsUrl, { method: 'POST', body });
-    const j = await r.json();
-    return j && j.ok === true;
+    return await apiPlanilha('enviar', auth.email, auth.senha, data);
   }
   async function enviarParaWeb3Forms() {
     const d2 = new FormData(); data.forEach((v, k) => d2.append(k, v));
@@ -2888,8 +2961,21 @@ document.getElementById('oficina-form').addEventListener('submit', async functio
 
   try {
     let enviado = false;
-    try { enviado = await enviarParaPlanilha(); } catch (e) { enviado = false; }
-    if (!enviado) enviado = await enviarParaWeb3Forms();
+    let resp = null;
+    try { resp = await enviarParaPlanilha(); } catch (e) { resp = null; }
+
+    if (resp && resp.ok === true) {
+      enviado = true;
+    } else if (resp && resp.ok === false) {
+      // A planilha respondeu e RECUSOU: não usa a reserva.
+      if (resp.erro === 'credenciais' || resp.erro === 'inativo') {
+        doLogout(resp.erro === 'inativo' ? loginMsg('inativo') : 'Sua sessão expirou. Entre de novo com seu e-mail e senha.');
+        return;
+      }
+      throw new Error(resp.erro || 'recusado');
+    } else {
+      enviado = await enviarParaWeb3Forms(); // planilha fora do ar → reserva
+    }
     const res = { ok: enviado };
 
     if (res.ok) {
@@ -3020,6 +3106,112 @@ function adminOn() {
   return localStorage.getItem('d100_admin') === '1';
 }
 
+/* ─────────────────────────────────────────────────────
+   LOGIN DE ALUNOS (verificado no Apps Script — aba "Alunos" da planilha)
+   A lista de senhas NUNCA vem pro navegador: o site só pergunta "esse e-mail + senha é de aluno?".
+───────────────────────────────────────────────────── */
+const LS_AUTH = 'd100_auth';
+const LS_LOGIN_MSG = 'd100_login_msg';
+
+function getAuth() {
+  try { const a = JSON.parse(localStorage.getItem(LS_AUTH)); return (a && a.email && a.senha) ? a : null; }
+  catch { return null; }
+}
+function setAuth(a) { localStorage.setItem(LS_AUTH, JSON.stringify(a)); }
+
+// Chama o Apps Script. Lança erro só se a rede/resposta falhar; recusas voltam como {ok:false, erro}.
+async function apiPlanilha(acao, email, senha, extra) {
+  const body = new URLSearchParams(extra || {});
+  body.set('acao', acao); body.set('email', email); body.set('senha', senha);
+  const r = await fetch(CONFIG.sheetsUrl, { method: 'POST', body });
+  return await r.json();
+}
+
+function loginMsg(erro) {
+  switch (erro) {
+    case 'credenciais': return 'E-mail ou senha incorretos. Confira os dados que você me passou. Se esqueceu, é só me chamar no Instagram.';
+    case 'bloqueado':   return 'Muitas tentativas erradas seguidas. Por segurança, aguarde 15 minutos e tente de novo.';
+    case 'inativo':     return 'Seu acesso está desativado no momento. Fale comigo no Instagram (@leaodoingles).';
+    default:            return 'Não consegui entrar agora. Tente de novo em instantes.';
+  }
+}
+
+function updateUserBox() {
+  const a = getAuth();
+  const box = document.getElementById('user-box');
+  if (!box) return;
+  box.style.display = a ? 'block' : 'none';
+  document.getElementById('user-name').textContent = a ? ('Olá, ' + ((a.nome || '').split(' ')[0] || 'aluno(a)')) : '';
+}
+
+function doLogout(mensagem) {
+  localStorage.removeItem(LS_AUTH);
+  localStorage.removeItem(LS_PROF);          // não deixa nome/e-mail pré-preenchidos pro próximo
+  sessionStorage.removeItem('d100_welcomed');
+  if (mensagem) sessionStorage.setItem(LS_LOGIN_MSG, mensagem);
+  updateUserBox();
+  route();
+}
+document.getElementById('logout-btn').addEventListener('click', () => doLogout());
+
+function showLoginError(msg, info) {
+  const el = document.getElementById('login-error');
+  el.textContent = msg;
+  el.classList.toggle('info', !!info);
+  el.style.display = 'block';
+}
+
+document.getElementById('login-show').addEventListener('change', function() {
+  document.getElementById('login-senha').type = this.checked ? 'text' : 'password';
+});
+
+document.getElementById('login-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const senha = document.getElementById('login-senha').value.trim();
+  const btn = document.getElementById('login-btn');
+  document.getElementById('login-error').style.display = 'none';
+  if (!/^\S+@\S+\.\S+$/.test(email) || !senha) {
+    showLoginError('Preencha seu e-mail e a sua senha.');
+    return;
+  }
+  btn.disabled = true; btn.textContent = 'Entrando...';
+  try {
+    const j = await apiPlanilha('login', email, senha);
+    if (j && j.ok === true) {
+      setAuth({ email, senha, nome: j.nome || '' });
+      saveProfile(j.nome || '', email);
+      document.getElementById('login-senha').value = '';
+      _authChecked = true;       // acabou de ser verificado
+      updateUserBox();
+      if (location.hash === '#/login') location.hash = '#/'; // (modo adm) volta ao painel
+      route();
+    } else {
+      showLoginError(loginMsg(j && j.erro));
+    }
+  } catch (err) {
+    showLoginError('Não consegui conectar agora. Confira sua internet e tente de novo.');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Entrar 🚀';
+  }
+});
+
+// A cada abertura do site, confere em segundo plano se o aluno continua ativo
+// (se você trocar "Ativo" para Não na planilha, o acesso cai na próxima vez que ele abrir).
+let _authChecked = false;
+async function verifySessionSilently() {
+  if (_authChecked) return;
+  _authChecked = true;
+  const a = getAuth();
+  if (!a) return;
+  try {
+    const j = await apiPlanilha('login', a.email, a.senha);
+    if (j && j.ok === false && (j.erro === 'credenciais' || j.erro === 'inativo')) {
+      doLogout(j.erro === 'inativo' ? loginMsg('inativo') : 'Sua sessão expirou. Entre de novo com seu e-mail e senha.');
+    }
+  } catch (err) { /* sem internet: segue com o que está salvo */ }
+}
+
 // Quantos dias estão liberados: do Dia 1 até o dia de hoje (no máximo 14)
 function unlockedCount() {
   if (adminOn()) return 14;       // admin vê tudo
@@ -3111,7 +3303,7 @@ function renderBoard() {
    ROTEADOR — troca de telas via #hash
 ───────────────────────────────────────────────────── */
 function showView(id) {
-  ['countdown-view', 'welcome-view', 'board-view', 'day-view'].forEach(v => {
+  ['login-view', 'countdown-view', 'welcome-view', 'board-view', 'day-view'].forEach(v => {
     document.getElementById(v).style.display = (v === id) ? 'block' : 'none';
   });
   // O botão flutuante do Lion só aparece na tela da Oficina
@@ -3274,6 +3466,18 @@ function route() {
 
   // Desafio encerrado → tela de "missão concluída" (admin continua acessando o conteúdo)
   if (CONFIG.desafioEncerrado && !adminOn()) { showEndedScreen(); return; }
+
+  // Login obrigatório: sem sessão de aluno, só aparece a tela de login (admin pula essa tela)
+  updateUserBox();
+  // Modo adm: #/login abre a tela de login (pra você testar o envio entrando como um aluno de teste)
+  if (adminOn() && location.hash === '#/login') { showView('login-view'); return; }
+  if (CONFIG.loginObrigatorio && !adminOn() && !getAuth()) {
+    showView('login-view');
+    const pendente = sessionStorage.getItem(LS_LOGIN_MSG);
+    if (pendente) { showLoginError(pendente, true); sessionStorage.removeItem(LS_LOGIN_MSG); }
+    return;
+  }
+  verifySessionSilently();
 
   const idx = getDayIndex();
 
