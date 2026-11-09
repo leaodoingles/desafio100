@@ -1417,7 +1417,10 @@
     <div class="badge" id="board-badge" style="display:none;"><span class="dot"></span> <span id="board-badge-text"></span></div>
 
     <div id="board-congrats" class="congrats-banner" style="display:none;">
-      🏆 <strong>Você completou o D100!</strong> Parabéns pela consistência. Todas as Oficinas ficam liberadas pra você revisar quando quiser.
+      🏆 <strong>Parabéns, você chegou ao fim do DESAFIO 100!</strong><br>
+      Foram mais de 100 frases com sentido. Você agora quebrou a barreira da trava, da insegurança, e mostrou que consegue pensar, escrever e se expressar em inglês com leveza. Agora você tem vocabulário, ritmo e estrutura.<br>
+      Mas essa é só a primeira engrenagem. O inglês já está em movimento. E tem muito mais pela frente. Continue praticando e reaproveitando o que aprendeu. O próximo degrau está te esperando.<br>
+      <strong>Nos vemos nos próximos desafios!</strong> Todas as Oficinas ficam liberadas pra você revisar quando quiser.
     </div>
 
     <h1 class="board-title">Seu <span>Desafio 100</span></h1>
@@ -1537,6 +1540,14 @@
       </div>
     </div>
 
+    <!-- Mensagem final (só no Dia 14, depois de enviar) -->
+    <div id="final-msg" class="congrats-banner" style="display:none;">
+      🏆 <strong>Parabéns, você chegou ao fim do DESAFIO 100!</strong><br>
+      Foram mais de 100 frases com sentido. Você agora quebrou a barreira da trava, da insegurança, e mostrou que consegue pensar, escrever e se expressar em inglês com leveza. Agora você tem vocabulário, ritmo e estrutura.<br>
+      Mas essa é só a primeira engrenagem. O inglês já está em movimento. E tem muito mais pela frente. Continue praticando e reaproveitando o que aprendeu. O próximo degrau está te esperando.<br>
+      <strong>Nos vemos nos próximos desafios!</strong>
+    </div>
+
     <!-- Mecânico Lion -->
     <div class="lion-card">
       <img class="lion-icon" src="lion.png" alt="Mecânico Lion" />
@@ -1548,7 +1559,7 @@
     <!-- Enviar pro professor -->
     <div class="insta-card">
       <span class="insta-icon">📲</span>
-      <p>Depois de receber o feedback do Lion, <strong>me manda no privado</strong> um print da correção pra registrar sua conclusão do dia!</p>
+      <p>Depois de receber o feedback do Lion, <strong>me manda na DM do Instagram o link da sua conversa com o Lion</strong> (<a href="https://instagram.com/leaodoingles" target="_blank" rel="noopener" style="color:var(--purple-l);">@leaodoingles</a>) — assim eu posso fazer comentários e tirar dúvidas (caso necessário)!</p>
     </div>
 
     <div style="text-align:center;">
@@ -1747,7 +1758,7 @@ const OFICINAS = [
         { scaffold_en: 'I like coffee in the _____.', scaffold_pt: 'Eu gosto de café na/no _____.', placeholder: 'Ex: I like coffee in the evening.' },
         { scaffold_en: 'I like coffee in _____.', scaffold_pt: 'Eu gosto de café na/no _____.', placeholder: 'Ex: I like coffee in silence.' },
         { scaffold_en: 'I like coffee _____.', scaffold_pt: 'Eu gosto de café _____.', placeholder: 'Ex: I like coffee with milk.' },
-        { scaffold_en: 'I like _____.', scaffold_pt: 'Eu gosto de _____.', placeholder: 'Ex: I like music.' },
+        { scaffold_en: 'I like _____.', scaffold_pt: 'Eu gosto de/do/da _____.', placeholder: 'Ex: I like music.' },
         { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
       ],
     },
@@ -1855,7 +1866,7 @@ const OFICINAS = [
     },
   },
   {
-    titulo: 'Oficina 05 – Falando do que você fez ou viveu',
+    titulo: 'Oficina 05 – Falando do que eu fiz ou vivi',
     subtitulo: 'Estruturas: I went… / I had…',
     msg: '<strong>Hey hey hey! Já são 5 dias na ativa — isso é mais do que a metade da primeira semana!</strong> Se você chegou até aqui, é porque tá comprometido de verdade com o seu inglês. Você tá criando uma base forte com frases reais, com estrutura, clareza e leveza. Hoje é dia de <strong>relembrar momentos vividos</strong>.',
     dica: 'Puxar da memória o que aconteceu ontem, semana passada ou até hoje de manhã é um jeito <strong>natural de praticar</strong>. Quanto mais conectado com a sua realidade, mais poder essa frase tem.',
@@ -1915,7 +1926,7 @@ const OFICINAS = [
     },
   },
   {
-    titulo: 'Oficina 07 – Falando do que precisa ou quer fazer',
+    titulo: 'Oficina 07 – Falando do que preciso ou quero fazer',
     subtitulo: 'Estruturas: I need to… / I want to…',
     msg: '<strong>Hey hey hey! Metade do caminho já foi!</strong> Hoje é dia de praticar frases com <strong>necessidade e desejo</strong> — coisas que você precisa ou quer fazer. São expressões muito usadas no dia a dia e que ajudam você a falar de planos, tarefas e até sonhos de forma simples e direta. Bora transformar vontade em vocabulário?',
     dica: 'Use frases que façam sentido na sua rotina. Não tente "soar bonito", tente <strong>soar verdadeiro</strong>. E lembre-se: <strong>frase simples e verdadeira é melhor do que uma frase complexa</strong>.',
@@ -1946,7 +1957,7 @@ const OFICINAS = [
     },
   },
   {
-    titulo: 'Oficina 08 – Falando sobre o que gosta de comer ou beber',
+    titulo: 'Oficina 08 – Falando sobre o que eu gosto de comer ou beber',
     subtitulo: 'Estruturas: I like to eat… / I drink…',
     msg: '<strong>Hey hey hey! Você tá criando um vocabulário cada vez mais real e útil.</strong> Hoje é dia de falar sobre algo que faz parte da rotina de todo mundo: <strong>comida e bebida</strong>. Esses são temas que <strong>sempre aparecem em conversas informais</strong>, e saber se expressar aqui te dá mais segurança pra trocar ideia com qualquer pessoa.',
     dica: '<strong>Fale do que você realmente come, bebe e gosta.</strong> Não inventa coisa gourmet só pra parecer mais bonito em inglês. Fale do seu café com leite, da marmita, do pão com ovo. É isso que vai te fazer <strong>pensar em inglês com leveza e segurança</strong>.',
@@ -1997,18 +2008,18 @@ const OFICINAS = [
     p2: {
       estrutura: 'Estrutura: I talked…',
       frase_en: 'I talked to my friend last night.',
-      frase_pt: 'Eu conversei com meu amigo/minha amiga ontem à noite.',
+      frase_pt: 'Eu conversei/falei com meu amigo/minha amiga ontem à noite.',
       frases: [
-        { scaffold_en: 'I talked to my friend _____.', scaffold_pt: 'Eu conversei com meu amigo/minha amiga _____.', placeholder: 'Ex: I talked to my friend this morning.' },
-        { scaffold_en: 'I talked to _____.', scaffold_pt: 'Eu conversei com _____.', placeholder: 'Ex: I talked to my boss.' },
-        { scaffold_en: 'I talked about _____.', scaffold_pt: 'Eu conversei sobre _____.', placeholder: 'Ex: I talked about the project.' },
+        { scaffold_en: 'I talked to my friend _____.', scaffold_pt: 'Eu conversei/falei com meu amigo/minha amiga _____.', placeholder: 'Ex: I talked to my friend this morning.' },
+        { scaffold_en: 'I talked to _____.', scaffold_pt: 'Eu conversei/falei com _____.', placeholder: 'Ex: I talked to my boss.' },
+        { scaffold_en: 'I talked about _____.', scaffold_pt: 'Eu conversei/falei sobre _____.', placeholder: 'Ex: I talked about the project.' },
         { scaffold_en: 'I _____ last night.', scaffold_pt: 'Eu _____ ontem à noite.', placeholder: 'Ex: I called my mom last night.' },
         { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
       ],
     },
   },
   {
-    titulo: 'Oficina 10 – Falando de coisas que você ama ou odeia',
+    titulo: 'Oficina 10 – Falando de coisas que eu amo ou odeio',
     subtitulo: 'Estruturas: I love… / I hate…',
     msg: '<strong>Hey hey hey! Chegamos na oficina número 10!</strong> Faltam só 4 dias pro fim do desafio — e você já construiu dezenas de frases com vocabulário real, útil e com a sua cara. Hoje é dia de falar sobre <strong>coisas que você ama ou odeia</strong> — sentimentos que vêm com força e que fazem parte de quem você é.',
     dica: 'Fale com verdade. Pode ser uma série, um lugar, um tipo de pessoa, uma comida ou uma situação. Tanto faz se for "eu amo miojo com ketchup" ou "eu odeio filas longas" — o que importa é que seja <strong>real</strong> pra você. Essa é a base da fluência: <strong>falar de você com leveza e clareza</strong>.',
@@ -2049,7 +2060,7 @@ const OFICINAS = [
       frases: [
         { scaffold_en: 'I went to the supermarket _____.', scaffold_pt: 'Eu fui ao supermercado _____.', placeholder: 'Ex: I went to the supermarket today.' },
         { scaffold_en: 'I went to the _____ yesterday.', scaffold_pt: 'Eu fui ao/à _____ ontem.', placeholder: 'Ex: I went to the pharmacy yesterday.' },
-        { scaffold_en: 'I went to _____.', scaffold_pt: 'Eu fui (para) _____.', placeholder: 'Ex: I went to the park.' },
+        { scaffold_en: 'I went to _____.', scaffold_pt: 'Eu fui para _____.', placeholder: 'Ex: I went to the park.' },
         { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
       ],
     },
@@ -2066,7 +2077,7 @@ const OFICINAS = [
     },
   },
   {
-    titulo: 'Oficina 12 – Falando de algo que você comprou, achou ou recebeu',
+    titulo: 'Oficina 12 – Falando de algo que eu comprei ou recebi',
     subtitulo: 'Estruturas: I bought… / I got…',
     msg: '<strong>Hey hey hey! Já são 12 dias de prática com consistência!</strong> Você tá quase cruzando a linha de chegada — e com uma bagagem de frases reais que te fazem pensar e se expressar com muito mais clareza. Hoje é dia de praticar ações que <strong>aconteceram com você</strong>: algo que comprou, achou, ganhou...',
     dica: 'Foque em <strong>coisas simples e reais</strong>: um presente, uma blusa, um item do mercado, algo que achou em casa, algo que alguém te deu. Use seu mundo real como base.',
@@ -2089,7 +2100,7 @@ const OFICINAS = [
       frase_pt: 'Eu ganhei um presente da minha irmã.',
       frases: [
         { scaffold_en: 'I got a gift from my _____.', scaffold_pt: 'Eu ganhei um presente do(a) meu/minha _____.', placeholder: 'Ex: I got a gift from my mom.' },
-        { scaffold_en: 'I got a gift from _____.', scaffold_pt: 'Eu ganhei um presente de _____.', placeholder: 'Ex: I got a gift from a friend.' },
+        { scaffold_en: 'I got a gift from _____.', scaffold_pt: 'Eu ganhei um presente do(a) _____.', placeholder: 'Ex: I got a gift from a friend.' },
         { scaffold_en: 'I got a _____ as a gift.', scaffold_pt: 'Eu ganhei um/uma _____ de presente.', placeholder: 'Ex: I got a book as a gift.' },
         { scaffold_en: 'I got _____.', scaffold_pt: 'Eu ganhei _____.', placeholder: 'Ex: I got good news.' },
         { scaffold_en: 'I _____.', scaffold_pt: 'Eu _____.', placeholder: 'Crie sua própria frase!' },
@@ -2128,19 +2139,21 @@ const OFICINAS = [
     },
   },
   {
-    titulo: 'Oficina 14 – Encerrando o ciclo com sua apresentação pessoal em inglês',
+    titulo: 'Oficina 14 – Encerrando o ciclo com a minha apresentação pessoal em inglês',
     subtitulo: 'Apresentação: Quem sou eu / O que sinto e o que quero',
     msg: '<strong>Hey hey hey! Chegamos ao final da jornada!</strong> Se você chegou até aqui, saiba que você já venceu. Você praticou com constância, pensou em inglês todos os dias, e construiu um vocabulário que veio da sua própria realidade. Hoje a proposta é especial: <strong>montar sua apresentação pessoal</strong>. Falar sobre você, com suas palavras, com o que viveu, com o que sabe. Esse é o momento de olhar pra trás e ver o quanto você já consegue se expressar com clareza.',
     dica: 'Se apresente como você se sentir à vontade.\nVocê pode seguir um modelo simples, como:\n• Seu nome e idade\n• Onde mora\n• O que faz ou estuda\n• O que gosta de fazer\n• Algo que ama, algo que odeia\n• Algo que quer fazer no futuro\n• E o que achou do desafio\n<strong>Use frases que você já treinou. Reaproveitar é aprender.</strong>\nE lembre-se: a apresentação é sua. Pode ser simples, curta, leve. O importante é <strong>ser de verdade</strong>.',
     instrucoesCustom: {
       icon: '📌',
-      title: 'Instruções importantes',
-      html: `<p><strong>• Não se preocupe com perfeição.</strong><br>
-A fluência é construída com uso constante, leve e sincero.</p>
-<p><strong>• Hoje você pode reciclar tudo o que já usou.</strong><br>
+      title: 'Hoje a regra muda',
+      html: `<p><strong>• Hoje a regra muda: pode (e deve) reciclar frases e palavras dos dias anteriores.</strong><br>
 Vale repetir palavras, frases, ideias — porque agora é sobre <strong>mostrar o que já está em você</strong>.</p>
+<p><strong>• Não se preocupe com perfeição.</strong><br>
+A fluência é construída com uso constante, leve e sincero.</p>
 <p><strong>• Use frases completas.</strong><br>
-Esse é o seu momento de mostrar quem você é, com confiança.</p>`,
+Esse é o seu momento de mostrar quem você é, com confiança.</p>
+<p><strong>• Depois de montar sua apresentação, peça ao Lion:</strong><br>
+<em>"Agora me mostra a minha revisão final."</em></p>`,
     },
     p1: {
       estrutura: 'Tarefa Final – Apresentação Pessoal',
@@ -2322,40 +2335,51 @@ const EX_PT = {
 const COMO_USAR = {
   icon: '📘',
   title: 'Como usar a Oficina todos os dias',
-  html: `<p>Pra que o desafio funcione <strong>DE VERDADE</strong>, siga essa rotina simples:</p>
+  html: `<p><strong>Antes de cada Oficina, assista ao vídeo do dia.</strong> Nele, eu faço a minha Oficina na sua frente, linha por linha. Depois, é a sua vez de fazer a sua.</p>
+<p>Pra que o desafio funcione <strong>DE VERDADE</strong>, siga essa rotina simples:</p>
 <ol>
 <li>Leia as instruções e entenda as estruturas</li>
-<li>Crie suas <strong>5 frases (completas) da Parte 1</strong> e suas <strong>5 frases (completas) da Parte 2</strong></li>
-<li>Marque no seu PDF de acompanhamento (opcional)</li>
-<li>Envie as frases pro <strong>Mecânico Lion</strong> (vale digitar ou mandar print!)</li>
+<li>Crie suas frases (completas) da <strong>Parte 1</strong> e da <strong>Parte 2</strong></li>
+<li>Marque no seu Caderno de Implementação (opcional)</li>
+<li>Envie as frases pro <strong>Mecânico Lion</strong></li>
 <li>Se tiver dúvidas, diga o que queria dizer que ele te ajuda</li>
 <li>Tente reutilizar palavras dos dias anteriores</li>
-<li>Me manda no privado a Oficina do dia feita + o feedback do Mecânico Lion — assim eu posso fazer comentários e tirar dúvidas (caso necessário)</li>
+<li>Me manda na <strong>DM do Instagram</strong> o <strong>link da sua conversa com o Lion</strong> — assim eu posso fazer comentários e tirar dúvidas (caso necessário)</li>
 <li>Siga até o fim — são só <strong>14 dias</strong> pra transformar seu inglês</li>
 </ol>`,
+};
+
+// Bloco "O que dizer pro Lion em caso de dúvida" — aparece em TODOS os dias.
+const MODELO_LION = {
+  icon: '💬',
+  title: 'O que você pode dizer pro Lion em caso de dúvida',
+  html: `<p>Travou numa palavra ou não sabe como montar a frase? Copie e adapte esta mensagem:</p>
+<p style="background:rgba(124,58,237,.12);border-left:3px solid var(--purple);padding:12px 14px;border-radius:8px;font-style:italic;">Eu queria dizer isso: "[o que você queria dizer]". Mas, não sei como montar isso. Me ajuda e explica, por favor. E ah, coloca isso na minha revisão final, por favor!</p>`,
 };
 
 // Bloco "Material de apoio (PDF)" — aparece em TODOS os dias.
 const PDF_DOWNLOAD = {
   icon: '📄',
-  title: 'Material de apoio (PDF)',
-  html: `<p>Quer ter o conteúdo completo das 14 Oficinas pra acompanhar offline, marcar anotações ou imprimir? Baixe o PDF do Desafio.</p>
-<p style="text-align:center;margin-top:14px;"><a href="desafio-100.pdf" download class="btn-download">⬇ Baixar o PDF do Desafio</a></p>`,
+  title: 'Caderno de Implementação',
+  html: `<p>Quer ter o conteúdo completo das 14 Oficinas pra acompanhar offline, marcar anotações ou imprimir? Baixe o Caderno de Implementação do Desafio.</p>
+<p style="text-align:center;margin-top:14px;"><a href="desafio-100.pdf" download="Caderno de Implementação - Desafio 100.pdf" class="btn-download">⬇ Baixar o Caderno de Implementação</a></p>`,
 };
 
-// Bloco "Instruções importantes" — aparece em TODOS os dias.
+// Bloco "Regras de ouro" — aparece em TODOS os dias.
 // Cada Oficina pode personalizar a palavra-exemplo via o.instrucoesExemplo.
 function getInstrucoesImportantes(exemplo) {
   const palavra = exemplo || 'coffee';
   return {
-    icon: '📌',
-    title: 'Instruções importantes',
-    html: `<p><strong>• Não repita palavras dentro da mesma parte.</strong><br>
+    icon: '🏅',
+    title: 'Regras de ouro',
+    html: `<p><strong>1. Não repita a mesma resposta nas lacunas da mesma parte.</strong><br>
 Exemplo: se usou <em>"${palavra}"</em> em alguma frase da Parte 1, <strong>não use "${palavra}" de novo na mesma parte</strong>. No máximo, na Parte 2.<br>
 👉 Cada frase deve usar um vocabulário diferente — isso força sua criatividade e te ajuda a expandir suas ideias.</p>
-<p><strong>• Pode (e deve!) reciclar palavras ao longo dos dias.</strong><br>
+<p><strong>2. Pode (e deve!) repetir palavras entre os dias.</strong><br>
 A repetição em contextos diferentes é o que faz você <strong>fixar e consolidar</strong>.<br>
-O segredo da fluência não é só aprender palavra nova — é <strong>voltar nelas com confiança</strong>.</p>`,
+O segredo da fluência não é só aprender palavra nova — é <strong>voltar nelas com confiança</strong>.</p>
+<p><strong>3. Frase simples e real é melhor que frase bonita e travada.</strong><br>
+Se você realmente gosta de pizza, <em>"I like pizza."</em> é perfeito. Aqui a gente não tenta impressionar ninguém — a gente constrói o inglês que você usa.</p>`,
   };
 }
 
@@ -2587,6 +2611,7 @@ function renderDay(dayIndex) {
   const blocks = [
     COMO_USAR,
     instrBlock,
+    MODELO_LION,
     PDF_DOWNLOAD,
   ].concat(o.extras || []);
   blocks.forEach(block => {
@@ -2602,6 +2627,7 @@ function renderDay(dayIndex) {
   form.reset();
   form.style.display = 'block';
   document.getElementById('success-msg').style.display = 'none';
+  document.getElementById('final-msg').style.display = 'none';
   document.getElementById('error-msg').style.display = 'none';
   const sBtn = document.getElementById('submit-btn');
   sBtn.disabled = true; // só libera depois do OK na última frase
@@ -2654,7 +2680,8 @@ function renderDay(dayIndex) {
     lionLink.href = CONFIG.linkMecanicoLion;
     lionLink.textContent = 'Abrir o Mecânico Lion →';
   } else {
-    lionDesc.innerHTML = 'Abra o ChatGPT e <strong>volte na MESMA conversa</strong> com o Mecânico Lion que você começou no Dia 1 (ela fica na lista de conversas, à esquerda). Assim ele lembra do seu histórico e acompanha sua evolução. É só colar as frases de hoje lá.';
+    lionDesc.innerHTML = 'Abra o ChatGPT e <strong>volte na MESMA conversa</strong> com o Mecânico Lion que você começou no Dia 1 (ela fica na lista de conversas, à esquerda). Assim ele lembra do seu histórico e acompanha sua evolução. É só colar as frases de hoje lá.' +
+      (dayNum === 14 ? '<br><br>🏁 <strong>Depois de montar sua apresentação, peça ao Lion:</strong> “Agora me mostra a minha revisão final.”' : '');
     lionLink.href = CONFIG.linkChatGPT;
     lionLink.textContent = 'Abrir o ChatGPT (continuar conversa) →';
   }
@@ -2853,6 +2880,7 @@ document.getElementById('oficina-form').addEventListener('submit', async functio
       document.getElementById('copy-text').value = buildCopyText(dia);
       this.style.display = 'none';
       document.getElementById('success-msg').style.display = 'block';
+      document.getElementById('final-msg').style.display = (dia === 14) ? 'block' : 'none';
       window.scrollTo({ top: document.getElementById('success-msg').offsetTop - 20, behavior: 'smooth' });
       playRocketLaunch(); // 🚀 contagem regressiva + barulho das turbinas + fade out
     } else {
@@ -2922,6 +2950,7 @@ document.getElementById('adm-preview-success').addEventListener('click', functio
   document.getElementById('oficina-form').style.display = 'none';
   const s = document.getElementById('success-msg');
   s.style.display = 'block';
+  document.getElementById('final-msg').style.display = (_currentDayNum === 14) ? 'block' : 'none';
   window.scrollTo({ top: s.offsetTop - 20, behavior: 'smooth' });
 });
 
