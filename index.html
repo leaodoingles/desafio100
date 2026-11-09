@@ -1730,6 +1730,10 @@ const CONFIG = {
   // Desafio encerrado: quando true, o app mostra a tela animada de "missão concluída"
   // no lugar do conteúdo. O modo admin (?adm=1) continua acessando o conteúdo normalmente.
   desafioEncerrado: true,
+  // Envio principal: planilha do Google (Apps Script). Sem limite mensal prático.
+  sheetsUrl: 'https://script.google.com/macros/s/AKfycbygDGGfdlJRhUdmBhbh97HopgW-XFNFRpfeOq_zwcH8DtFMinj_2ku6CBhFGnZ-1aPN/exec',
+  sheetsSecret: 'PRIMÍCIAS', // precisa ser igual ao SEGREDO do Apps Script (barra spam; fica visível no código)
+  // Reserva: só é usada se a planilha falhar.
   web3formsKey: '567328cd-e9b7-4a50-99f3-cc0c3238d8af',
   // Link direto do Mecânico Lion (usado SÓ no Dia 1, para iniciar a conversa)
   linkMecanicoLion: 'https://chatgpt.com/g/g-6816a8bfd21881919f0327d722e7435d-lion-o-seu-mecanico',
@@ -2864,14 +2868,29 @@ document.getElementById('oficina-form').addEventListener('submit', async functio
   primeAudio();
 
   const data = new FormData(this);
-  data.append('access_key', CONFIG.web3formsKey);
+
+  // 1) Planilha do Google (principal). 2) Web3Forms (reserva, só se a planilha falhar).
+  async function enviarParaPlanilha() {
+    const body = new URLSearchParams(data);
+    body.set('segredo', CONFIG.sheetsSecret);
+    const r = await fetch(CONFIG.sheetsUrl, { method: 'POST', body });
+    const j = await r.json();
+    return j && j.ok === true;
+  }
+  async function enviarParaWeb3Forms() {
+    const d2 = new FormData(); data.forEach((v, k) => d2.append(k, v));
+    d2.append('access_key', CONFIG.web3formsKey);
+    const r = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST', body: d2, headers: { 'Accept': 'application/json' },
+    });
+    return r.ok;
+  }
 
   try {
-    const res = await fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      body: data,
-      headers: { 'Accept': 'application/json' },
-    });
+    let enviado = false;
+    try { enviado = await enviarParaPlanilha(); } catch (e) { enviado = false; }
+    if (!enviado) enviado = await enviarParaWeb3Forms();
+    const res = { ok: enviado };
 
     if (res.ok) {
       saveProfile(nome, email);
