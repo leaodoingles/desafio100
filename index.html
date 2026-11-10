@@ -1830,7 +1830,7 @@ const CONFIG = {
   // Reserva: só é usada se a planilha estiver fora do ar (nunca quando o login for recusado).
   web3formsKey: '567328cd-e9b7-4a50-99f3-cc0c3238d8af',
   // Link direto do Mecânico Lion (usado SÓ no Dia 1, para iniciar a conversa)
-  linkMecanicoLion: 'https://chatgpt.com/g/g-6816a8bfd21881919f0327d722e7435d-lion-o-seu-mecanico',
+  linkMecanicoLion: 'https://chatgpt.com/share/6af353da-6700-83e9-80eb-f1da94e168e0',
   // Link do ChatGPT normal (usado a partir do Dia 2, para o aluno voltar na MESMA conversa)
   linkChatGPT: 'https://chatgpt.com/',
   // Áudio de listening das frases-padrão. Deixe false enquanto não houver os MP3.
@@ -2588,8 +2588,8 @@ function buildFields(containerEl, frases, prefix) {
     if (!CONFIG.audioFrases) {
       phraseAudioBtn.style.display = 'none';
     } else {
-      phraseAudioBtn.style.display = 'flex';
       const pSrc = `audio/audio-dia-${pad(_currentDayNum)}-${prefix}-f${i + 1}.m4a`;
+      mostrarSeExiste(phraseAudioBtn, pSrc, 'flex');   // só aparece se o áudio existir
       phraseAudioBtn.onclick = () => playAudioFile(pSrc, phraseAudioBtn, `Parte ${prefix === 'p1' ? 1 : 2} · Frase ${i + 1}`);
     }
 
@@ -3544,14 +3544,31 @@ document.querySelectorAll('.speed-btn').forEach(function(btn) {
   });
 });
 
+// O botão 🔊 só aparece se o arquivo de áudio EXISTE no site. Basta subir o áudio no GitHub (pasta audio/)
+// com o nome certo que o botão passa a aparecer sozinho — sem mexer no código.
+const _audioExiste = {};   // só guarda os que EXISTEM; os que faltam são conferidos de novo a cada vez
+function audioExiste(src) {
+  if (_audioExiste[src]) return Promise.resolve(true);
+  return fetch(src, { method: 'HEAD' })
+    .then(r => { if (r.ok) _audioExiste[src] = true; return r.ok; })
+    .catch(() => false);
+}
+// Mostra o botão (com o display dado) só se o áudio existir. O data-src evita que uma resposta
+// atrasada de outro dia acenda o botão errado.
+function mostrarSeExiste(btn, src, display) {
+  btn.style.display = 'none';
+  btn.dataset.src = src;
+  audioExiste(src).then(ok => { if (ok && btn.dataset.src === src) btn.style.display = display; });
+}
+
 // Liga (ou esconde) o botão de áudio de uma parte
 function bindAudio(btnId, dayNum, parte) {
   const btn = document.getElementById(btnId);
   if (!btn) return;
   btn.classList.remove('playing');
   if (!CONFIG.audioFrases) { btn.style.display = 'none'; return; }
-  btn.style.display = 'flex';
   const src = `audio/audio-dia-${pad(dayNum)}-p${parte}.m4a`;
+  mostrarSeExiste(btn, src, 'flex');
   btn.onclick = () => playAudioFile(src, btn, `Parte ${parte} · Frase-padrão`);
 }
 
@@ -3561,7 +3578,7 @@ function bindDayAudio(btnId, src, label) {
   if (!btn) return;
   btn.classList.remove('playing');
   if (!CONFIG.audioFrases) { btn.style.display = 'none'; return; }
-  btn.style.display = 'flex';
+  mostrarSeExiste(btn, src, 'flex');
   btn.onclick = () => playAudioFile(src, btn, label);
 }
 
